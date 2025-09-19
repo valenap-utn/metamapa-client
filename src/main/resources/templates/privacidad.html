@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Términos y Condiciones | MetaMapa</title>
 
-    <link rel="icon" href="../static/components/logo-ico.png" >
+    <link rel="icon" th:href="@{/components/logo-ico.png}" >
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,17 +18,17 @@
     <link href="../static/css/styles-commons.css" rel="stylesheet">
 
   <!-- ...otros links... -->
-    <link href="../static/css/styles-commons.css" rel="stylesheet">
-    <link href="../static/css/styles-main.css" rel="stylesheet">
-    <link href="../static/css/styles-layout.css" rel="stylesheet">
+    <link th:href="@{/css/styles-commons.css}" rel="stylesheet">
+    <link th:href="@{/css/styles-main.css}" rel="stylesheet">
+    <link th:href="@{/css/styles-layout.css}" rel="stylesheet">
 
 </head>
 <body>
 
     <header class="mm-header-2" role="banner">
         <div class="mm-header__container text-center py-3">
-            <a href="../templates/index.html" class="mm-header__logo-link">
-                <img src="../static/components/logo-mm.png" alt="MetaMapa" class="mm-header__logo" style="max-width: 180px;">
+            <a th:href="@{/}" class="mm-header__logo-link">
+                <img th:src="@{/components/logo-mm.png}" alt="MetaMapa" class="mm-header__logo" style="max-width: 180px;">
             </a>
         </div>
     </header>
@@ -63,7 +63,7 @@
             <p>Si tenés dudas sobre esta política, escribinos a <a href="mail:contacto@metamapa.com" class="blue-link">contacto@metamapa.com</a></p>
 
            <div class="mt-5 text-center">
-    <a href="../templates/index.html">
+    <a th:href="@{/}">
         <button class="btn btn-back btn-lg mb-3" aria-label="Volver al inicio">Volver al inicio</button>
     </a>
 </div>
@@ -76,8 +76,8 @@
                 <div class="col-md-4 text-md-end justify-content-center">
                     <small class="footer-text">&copy; 2025 MetaMapa - Todos los derechos reservados</small>
                     <br>
-                    <a href="terminos.html" class="footer-link" aria-label="Ver términos y condiciones">Términos</a> |
-                    <a href="privacidad.html" class="footer-link" aria-label="Ver política de privacidad">Privacidad</a>
+                    <a th:href="@{/terminos}" class="footer-link" aria-label="Ver términos y condiciones">Términos</a> |
+                    <a th:href="@{/privacidad}" class="footer-link" aria-label="Ver política de privacidad">Privacidad</a>
                 </div>
             </div>
         </div>

@@ -6,21 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador | MetaMapa</title>
 
-    <link rel="icon" href="../static/components/logo-ico.png" >
+    <link rel="icon" th:href="@{/components/logo-ico.png}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lexend:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/styles-commons.css" rel="stylesheet">
-    <link href="../static/css/styles-main.css" rel="stylesheet">
-    <link href="../static/css/styles-layout.css" rel="stylesheet">
+    <link th:href="@{/css/styles-commons.css}" rel="stylesheet">
+    <link th:href="@{/css/styles-main.css}" rel="stylesheet">
+    <link th:href="@{/css/styles-layout.css}" rel="stylesheet">
 </head>
 <body>
     <header class="mm-header-2" role="banner">
         <div class="mm-header__container text-center py-3">
-            <a href="../templates/index.html" class="mm-header__logo-link">
-                <img src="../static/components/logo-mm.png" alt="MetaMapa" class="mm-header__logo" style="max-width: 180px;">
+            <a th:href="@{/}" class="mm-header__logo-link">
+                <img th:src="@{/components/logo-mm.png}" alt="MetaMapa" class="mm-header__logo" style="max-width: 180px;">
             </a>
         </div>
     </header>
@@ -36,7 +36,7 @@
                     <div class="card mm-card mm-metric w-100 h-100">
                         <div class="card-body">
                             <h5 class="card-title">Hechos</h5>
-                            <p class="mm-metric__number">124</p>
+                            <p class="mm-metric__number" th:text="${metrics.hechos}">124</p>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <div class="card mm-card mm-metric w-100 h-100">
                         <div class="card-body">
                             <h5 class="card-title">Fuentes</h5>
-                            <p class="mm-metric__number">8</p>
+                            <p class="mm-metric__number" th:text="${metrics.fuentes}">8</p>
                         </div>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                     <div class="card mm-card mm-metric w-100 h-100">
                         <div class="card-body">
                             <h5 class="card-title">Solicitudes de eliminación</h5>
-                            <p class="mm-metric__number">3</p>
+                            <p class="mm-metric__number" th:text="${metrics.solicitudes}">3</p>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
             <!-- Gestión de colecciones -->
             <h2 class="h5 mt-4 mb-3">Gestión de Colecciones</h2>
             <div class="mm-actions">
-                <a class="btn btn-back btn-lg mb-3" aria-label="Crear coleccion" href="admins/crear-coleccion.html">Crear colección</a>
+                <a class="btn btn-back btn-lg mb-3" aria-label="Crear coleccion" th:href="@{/admin/crear-coleccion}">Crear colección</a>
                 <!--                <button class="btn btn-back btn-lg mb-3" aria-label="Crear coleccion">Crear colección</button>-->
                 <button class="btn btn-back btn-lg mb-3" aria-label="Editar colección">Editar colección</button>
                 <button class="btn btn-back btn-lg mb-3" aria-label="Eliminar colección">Eliminar colección</button>
@@ -71,7 +71,7 @@
             <h2 class="h5 mt-4 mb-3">Acciones sobre hechos y solicitudes</h2>
             <!--            <div class="d-flex gap-2 flex-wrap mb-3">-->
             <div class="mm-actions">
-                <a class="btn btn-back btn-lg mb-3" aria-label="Rechazar solicitud" href="admins/importar-csv.html">Importar hechos CSV</a>
+                <a class="btn btn-back btn-lg mb-3" aria-label="Rechazar solicitud" th:href="@{/admin/importar-csv}">Importar hechos CSV</a>
                 <!--                <button class="btn btn-back btn-lg mb-3" aria-label="Aprobar hecho">Aprobar hecho</button>-->
                 <!--                <button class="btn btn-back btn-lg mb-3" aria-label="Rechazar hecho">Rechazar hecho</button>-->
 
@@ -79,8 +79,8 @@
                 <button class="btn btn-back btn-lg mb-3" aria-label="Aceptar con modificaciones">Aceptar con modificaciones</button>
 
                 <!--                <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" href="admins/gest-solEliminacion.html">Gestionar Solicitudes de Eliminación de Hechos</a>-->
-                <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" href="admins/gest-solEliminacion.html">Gestionar Hechos</a>
-                <a class="btn btn-back btn-lg mb-3" aria-label="Consultar estadísticas" href="admins/dashboard-estadisticas.html">Consultar estadísticas</a>
+                <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" th:href="@{/admin/gestionar-solicitudes}">Gestionar Hechos</a>
+                <a class="btn btn-back btn-lg mb-3" aria-label="Consultar estadísticas" th:href="@{/admin/estadisticas}">Consultar estadísticas</a>
             </div>
         </section>
     </main>
@@ -91,8 +91,8 @@
                 <div class="col-md-4 text-md-end justify-content-center">
                     <small class="footer-text">&copy; 2025 MetaMapa - Todos los derechos reservados</small>
                     <br>
-                    <a href="terminos.html" class="footer-link" aria-label="Ver términos y condiciones">Términos</a> |
-                    <a href="privacidad.html" class="footer-link" aria-label="Ver política de privacidad">Privacidad</a>
+                    <a th:href="@{/terminos}" class="footer-link" aria-label="Ver términos y condiciones">Términos</a> |
+                    <a th:href="@{/privacidad}" class="footer-link" aria-label="Ver política de privacidad">Privacidad</a>
                 </div>
             </div>
         </div>

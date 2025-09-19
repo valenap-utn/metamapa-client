@@ -31,7 +31,7 @@ body.scrolled .mm-header {
     align-content: center;
     color: #fff;
     background: linear-gradient(rgba(59, 79, 97, 0.55), rgba(59, 79, 97, 0.55)),
-    url("../../static/components/mapa-login-azulado.png") center/cover no-repeat;
+    url("/components/mapa-login-azulado.png") center/cover no-repeat;
     min-height: 85vh;
 }
 

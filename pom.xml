@@ -34,10 +34,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-security</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -118,7 +118,32 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+            <!-- Asegurar encoding del plugin de resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
 		</plugins>
+
+        <!-- No filtrar resources (o al menos properties/yml) -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+<!--                <nonFilteredFileExtensions>-->
+<!--                    <nonFilteredFileExtension>properties</nonFilteredFileExtension>-->
+<!--                    <nonFilteredFileExtension>yml</nonFilteredFileExtension>-->
+<!--                    <nonFilteredFileExtension>yaml</nonFilteredFileExtension>-->
+<!--                </nonFilteredFileExtensions>-->
+            </resource>
+        </resources>
+
+
 	</build>
 
 </project>

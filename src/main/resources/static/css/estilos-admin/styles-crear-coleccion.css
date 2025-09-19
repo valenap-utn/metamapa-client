@@ -7,7 +7,7 @@ body.bg-map-hero{
     font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
     background:
             linear-gradient(rgba(59,79,97,0.55), rgba(59,79,97,0.55)),
-            url("../../../static/components/mapa-login-azulado.png") center/cover no-repeat;
+            url("/components/mapa-login-azulado.png") center/cover no-repeat;
 }
 
 /* Centrado vertical y padding como subir-hecho */
