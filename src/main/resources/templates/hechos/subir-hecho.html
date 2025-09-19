@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Hecho</title>
+
+    <link rel="icon" href="../../static/components/logo-ico.png" >
+
+    <!--  META-TAGS DE COMPARTIR ENLACE  -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://valenap-utn.github.io/landing-page-dds/index.html" />
+    <meta property="og:title" content="MetaMapa" />
+    <!--    <meta property="og:description" content="Compartí Hechos en MetaMapa" />-->
+    <meta property="og:image" content="../components/logo-mm.png" />
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lexend:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="../../static/css/styles-subir-hecho.css" rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Iconos -->
+    <script src="https://kit.fontawesome.com/d4dda767ac.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <section class="mm-form-wrap">
+        <div class="mm-card">
+            <h1 class="mm-form-title">Subir Hecho</h1>
+            <p class="mm-form-sub">Cargá la información del hecho para que quede disponible en MetaMapa</p>
+
+            <form id="form-hecho" class="mm-form" novalidate>
+                <!-- Progreso -->
+                <ol class="mm-steps" role="list" aria-label="Progreso">
+                    <li class="is-active" data-step="1"><span>Ubicación</span></li>
+                    <li data-step="2"><span>Datos</span></li>
+                    <li data-step="3"><span>Multimedia</span></li>
+                </ol>
+                <div class="mm-progress" aria-hidden="true">
+                    <div class="mm-progress__bar" id="progressBar" style="width: 33%"></div>
+                </div>
+
+                <!-- PASO 1: Ubicación -->
+                <section class="mm-step is-active" data-step="1" aria-labelledby="step1-title">
+                    <h2 id="step1-title" class="visually-hidden">Elegí la ubicación</h2>
+                    <p class="mm-help mb-2">Hacé click en el mapa para marcar dónde ocurrió el hecho</p>
+
+                    <div id="map" aria-label="Mapa interactivo para seleccionar la ubicación del hecho"></div>
+
+                    <!-- guardamos coordenadas y mostramos un preview -->
+                    <input id="lat" name="lat" type="hidden" required>
+                    <input id="lng" name="lng" type="hidden" required>
+
+                    <div id="locPreview" class="mm-pill mt-2" hidden>
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span id="locText">Latitud: — , Longitud: —</span>
+                        <button type="button" class="mm-pill__edit" id="btnReubicar" aria-label="Volver a elegir ubicación">Reubicar</button>
+                    </div>
+
+                    <div class="mm-actions mt-3">
+                        <a href="../main-gral.html" class="mm-btn mm-btn-ghost">
+                            <span class="arrow"><i class="fa-solid fa-arrow-left"></i></span>
+                        </a>
+                        <button type="button" id="btnNext1" class="mm-btn mm-btn-primary" disabled>
+                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- PASO 2: Datos -->
+                <section class="mm-step" data-step="2" aria-labelledby="step2-title">
+                    <h2 id="step2-title" class="visually-hidden">Completá los datos del hecho</h2>
+
+                    <div class="mm-grid">
+                        <!-- Título -->
+                        <div class="mm-field mm-col-span-all">
+                            <label for="titulo" class="mm-label">Título</label>
+                            <input id="titulo" name="titulo" type="text" class="mm-input" placeholder="Ej: Derrame en ribera del río" required>
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="mm-field">
+                            <label for="categoria" class="mm-label">Categoría</label>
+                            <select id="categoria" name="categoria" class="mm-input" required>
+                                <option value="" disabled selected>Seleccioná una categoría…</option>
+                                <option value="EVENTO_SANITARIO">Evento sanitario</option>
+                                <option value="CONTAMINACION">Contaminación</option>
+                                <option value="DERRAME">Derrame</option>
+                                <!-- agregá más si aplica -->
+                            </select>
+                        </div>
+
+                        <!-- Fecha acontecimiento -->
+                        <div class="mm-field">
+                            <label for="fechaAcontecimiento" class="mm-label">Fecha del acontecimiento</label>
+                            <input id="fechaAcontecimiento" name="fechaAcontecimiento" type="date" class="mm-input" required>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mm-field" style="grid-column: 1 / -1;">
+                            <label for="descripcion" class="mm-label">Descripción</label>
+                            <textarea id="descripcion" name="descripcion" class="mm-input mm-input--textarea"
+                                      minlength="500" required data-min-guest="500" data-min-auth="0"
+                                      placeholder="Contá brevemente qué ocurrió…"></textarea>
+<!--                            <div id="descCounter" class="form-text">0 / 500</div>-->
+                            <div class="d-flex justify-content-between mt-1">
+                                <small id="descReq" class="text-muted"></small>
+                                <small id="descCounter" class="text-muted"></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mm-actions">
+                        <button type="button" id="btnPrev2" class="mm-btn mm-btn-ghost">
+                            <span class="arrow"><i class="fa-solid fa-arrow-left"></i></span>
+                        </button>
+                        <button type="button" id="btnNext2" class="mm-btn mm-btn-primary">
+                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                        </button>
+                    </div>
+
+                </section>
+
+                <!-- PASO 3 (opcional) -->
+                <section class="mm-step" data-step="3" aria-labelledby="step3-title">
+                    <h2 id="step3-title" class="visually-hidden">Adjuntar multimedia</h2>
+
+                    <div class="mm-field mm-col-span-all">
+                        <label class="mm-label">Fotos o videos</label>
+
+                        <div id="dropzone" class="mm-dropzone" tabindex="0" aria-label="Arrastrá y soltá archivos o hacé click para seleccionarlos">
+                            <i class="fa-regular fa-images"></i>
+                            <p class="m-0">Arrastrá y soltá aquí, o <strong>hace click</strong> para seleccionar</p>
+                            <small>Se aceptan imagenes y videos. Podes añadir varios.</small>
+                            <input id="mediaInput" type="file" accept="image/*, video/*" multiple hidden>
+                        </div>
+
+                        <div id="mediaPreview" class="mm-media-grid" aria-live="polite"></div>
+                    </div>
+
+                    <div class="mm-actions">
+                        <button type="button" id="btnPrev3" class="mm-btn mm-btn-ghost">
+                            <span class="arrow"><i class="fa-solid fa-arrow-left"></i></span>
+                        </button>
+                        <button type="submit" class="mm-btn mm-btn-primary">Enviar</button>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </section>
+
+    <script src="../../static/js/commons.js"></script>
+    <script src="../../static/js/subir-hecho.js"></script>
+</body>
+</html>

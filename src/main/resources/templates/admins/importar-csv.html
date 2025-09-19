@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar CSV</title>
+
+    <link rel="icon" href="../../static/components/logo-ico.png" >
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lexend:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="../../static/css/estilos-admin/styles-importar-csv.css" rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Iconos -->
+    <script src="https://kit.fontawesome.com/d4dda767ac.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <section class="mm-form-wrap">
+        <div class="mm-card">
+            <h1 class="mm-form-title">Importar CSV</h1>
+            <p class="mm-form-sub">Importar hechos desde archivo CSV</p>
+
+            <!-- FORM -->
+            <form id="csvForm" class="needs-validation" novalidate>
+                <!-- Dropzone -->
+                <div id="dropzone" class="dropzone mb-3">
+                    <div class="dz-icon mb-2"><i class="fa-solid fa-file-csv"></i></div>
+                    <p class="mb-1">Arrastrá tu archivo <strong>.csv</strong> aquí</p>
+                    <p class="text-muted mb-2">o</p>
+                    <label class="btn btn-outline-mm btn-pill px-3"><input id="fileInput" type="file" accept=".csv" hidden> Elegir archivo </label>
+
+                    <div class="mt-2 small">
+                        <span id="fileName" class="file-name d-none"></span>
+                    </div>
+                </div>
+
+<!--                <div class="d-flex gap-2">-->
+<!--                    <button id="btnImportar" type="submit" class="btn btn-primary-mm btn-pill px-4" disabled>-->
+<!--                      <span class="me-2" id="btnSpinner" style="display:none;">-->
+<!--                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>-->
+<!--                      </span>-->
+<!--                        Importar archivo-->
+<!--                    </button>-->
+<!--                    <a href="../main-gral.html" class="btn btn-outline-mm btn-pill px-4">Volver a inicio</a>-->
+<!--                </div>-->
+
+                <div class="mm-actions">
+                    <a href="../admin.html" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
+
+                    <button id="btnImportar" type="submit" class="mm-btn mm-btn-primary" disabled>
+                        <span id="btnSpinner" class="me-2 d-none">
+                          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        </span>
+                        Importar Archivo
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal resultado -->
+        <div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-success" id="modalVariant">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">¡Tu archivo se ha importado con éxito!</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+<!--                        Se procesaron N hechos.-->
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <a href="../admin.html" class="btn btn-back btn-pill">Volver a inicio</a>
+                        <button type="button" class="btn btn-cerrar btn-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/js/admins/importar-csv.js"></script>
+
+</body>
+</html>

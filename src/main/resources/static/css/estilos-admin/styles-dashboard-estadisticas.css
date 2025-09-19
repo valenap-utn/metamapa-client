@@ -1,0 +1,90 @@
+/* Contenedor principal de la sección */
+.mm-dashboard {
+    padding-top: 60px;
+}
+
+/* Títulos */
+.mm-form-title {
+    font-family: "Raleway", "Open Sans", Arial, sans-serif;
+    font-weight: 800;
+    color: var(--brand-800, #3B4F61);
+}
+
+.mm-form-sub {
+    color: #445c6d;
+}
+
+/* Grid responsive de tarjetas */
+.mm-stats {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+/* Cada tarjeta/estadística: usa el mismo estilo de mm-card del resto del sitio */
+.mm-stat {
+    grid-column: span 12;
+    background: #fff;
+    border: 1px solid var(--muted);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: clamp(16px, 2.6vw, 22px);
+}
+
+@media (min-width: 768px) {
+    /* tablet */
+    .mm-stat {
+        grid-column: span 6;
+    }
+}
+
+@media (min-width: 1200px) {
+    /* desktop ancho: 3 por fila */
+    .mm-stat {
+        grid-column: span 4;
+    }
+}
+
+/* Titulares de tarjeta con tipografía del sistema */
+.mm-stat__title {
+    margin: 0 0 8px;
+    font-family: "Raleway", "Open Sans", Arial, sans-serif;
+    font-weight: 700;
+    color: var(--brand-800);
+}
+
+/* Valor/pildorita suave, consistente con chips/badges brand */
+.mm-chip {
+    display: inline-block;
+    background: #EAF3FA;
+    color: var(--brand-800);
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    line-height: 1.2;
+}
+
+.mm-chip--strong {
+    background: #E1F2EA;
+}
+
+.titulo-dashboard {
+    display: none;
+}
+
+/* Estilos para CANVAS | GRAFIQUITOS */
+.mm-chart-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.mm-chart {
+    display: block;
+    height: 240px;
+}
+
+@media (min-width: 1200px) {
+    .mm-chart {
+        height: 260px;
+    }
+}
