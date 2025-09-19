@@ -32,12 +32,12 @@ public class AdminController {
     return "admins/importar-csv";
   }
 
-  @GetMapping("/gestionar-solicitudes")
+  @GetMapping("/gest-solEliminacion")
   public String solicitudes() {
     return "admins/gest-solEliminacion";
   }
 
-  @GetMapping("/estadisticas")
+  @GetMapping("/dashboard-estadisticas")
   public String estadisticas() {
     return "admins/dashboard-estadisticas";
   }

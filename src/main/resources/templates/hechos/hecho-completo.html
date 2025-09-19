@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle del Hecho</title>
 
-    <link rel="icon" href="../../static/components/logo-ico.png">
+    <link rel="icon" th:href="@{/components/logo-ico.png}">
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link href="../../static/css/styles-subir-hecho.css" rel="stylesheet">
+    <link th:href="@{/css/styles-subir-hecho.css}" rel="stylesheet">
 </head>
 <body>
 
@@ -87,7 +87,7 @@
             </div>
 
             <div class="mm-actions">
-                <a href="nav-hechos.html" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
+                <a th:href="@{/nav-hechos}" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
                 <button class="mm-btn mm-btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolicitud">
                 Solicitar Eliminación
                 </button>
@@ -129,6 +129,6 @@
     </div>
 <!--    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>-->
     <script src="../js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="../../static/js/hecho-completo.js"></script>
+    <script type="module" th:src="@{/js/hecho-completo.js}"></script>
 </body>
 </html>
