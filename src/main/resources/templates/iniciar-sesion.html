@@ -52,34 +52,38 @@
                         <p class="text-secondary">Acceder a cuenta</p>
                     </div>
 
-                    <!-- Ingreso con email/usuario y contrasenia (onda form) -->
-                    <form id="login-form" action="#" novalidate>
+                    <form method="post" th:action="@{/auth/login}" novalidate>
                         <div class="input-group mb-3">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="fa-solid fa-envelope" style="color: #3B4F61"></i>
-                                </span>
-                            <input type="email" id="email" class="form-control form-control-lg fs-6 border-start-0" placeholder="Email" required aria-label="Ingresar correo electrónico" autocomplete="on">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fa-solid fa-envelope" style="color: #3B4F61"></i>
+                            </span>
+                            <input type="email" name="email" id="email" class="form-control form-control-lg fs-6 border-start-0" placeholder="Email" required autocomplete="on">
                         </div>
 
                         <div class="input-group mb-3">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="fa-solid fa-lock" style="color: #3B4F61"></i>
-                                </span>
-                            <input type="password" id="password" class="form-control form-control-lg fs-6 border-start-0" placeholder="Contraseña" minlength="8" required aria-label="Ingresar contraseña">
+                            <span class="input-group-text bg-white border-end-0">
+                              <i class="fa-solid fa-lock" style="color: #3B4F61"></i>
+                            </span>
+                            <input type="password" name="password" id="password" class="form-control form-control-lg fs-6 border-start-0" placeholder="Contraseña" minlength="8" required>
                         </div>
 
+                        <!-- Opcional: recordarme (si querés pasarlo al server) -->
                         <div class="mb-3 d-flex justify-content-between">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="form-check" aria-label="Recordar datos de inicio de sesión">
-                                <label for="form-check" class="form-check-label text-secondary"><small>Recuérdamelo</small></label>
+                                <input type="checkbox" class="form-check-input" id="form-check" name="remember" value="1">
+                                <label for="form-check" class="form-check-label text-secondary">
+                                    <small>Recuérdamelo</small>
+                                </label>
                             </div>
-                            <div>
-                                <small>
-                                    <a href="#">Olvidaste tu contraseña?</a>
-                                </small>
-                            </div>
+                            <div><small><a href="#">Olvidaste tu contraseña?</a></small></div>
                         </div>
-                        <button class="btn btn-access btn-lg w-100 mb-3" type="submit" aria-label="Ingresar a MetaMapa con credenciales">Ingresar</button>
+
+                        <!-- Mensaje de error si ?error=1 -->
+                        <div class="alert alert-danger py-2" th:if="${param.error}">
+                            Email o contraseña inválidos.
+                        </div>
+
+                        <button class="btn btn-access btn-lg w-100 mb-3" type="submit">Ingresar</button>
                     </form>
 
 <!--                    <a href="main-gral.html"><button class="btn btn-sin-login btn-lg w-100 mb-3" aria-label="Ingresar a MetaMapa sin iniciar sesión">Ingresar mas tarde</button></a>-->
@@ -101,83 +105,6 @@
             </div>
         </div>
     </div>
-
-<!--    <script src="../static/js/commons.js"></script>-->
-    <script th:src="@{/js/commons.js}"></script>
-
-    <!-- Script mockeado para probar -->
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            const mockUsers = [
-                { email: 'valucha@gmail.com', password: 'valuchaa', role: 'contribuyente' },
-                { email: 'contrib@example.com', password: 'metamapa', role: 'contribuyente' },
-                { email: 'admin@example.com', password: 'metamapa', role: 'administrador' }
-            ];
-
-            // URLs absolutas resueltas por Thymeleaf (fallback por si abres el HTML suelto)
-            const URL_ADMIN = /*[[@{/admin}]]*/ '/admin';
-            const URL_CONTRIBUYENTE = /*[[@{/main-gral}]]*/ '/main-gral';
-            const URL_MOCK  = /*[[@{/auth/mock}]]*/ '/auth/mock';
-
-            const form = document.getElementById('login-form');
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const email = document.getElementById('email');
-                const pass = document.getElementById('password');
-                const remember = document.getElementById('form-check');
-
-                if (!email.value.trim() || !email.checkValidity()) {
-                    email.classList.add('is-invalid');
-                    email.focus();
-                    return;
-                }
-                email.classList.remove('is-invalid');
-
-                if (!pass.value.trim()) {
-                    pass.classList.add('is-invalid');
-                    pass.focus();
-                    return;
-                }
-                pass.classList.remove('is-invalid');
-
-                const user = mockUsers.find(u => u.email === email.value.trim() && u.password === pass.value);
-                if (!user) {
-                    alert('Email o contraseña inválidos');
-                    return;
-                }
-
-                const auth = MM.setAuth(
-                    {
-                        loggedIn: true,
-                        userId: user.id,
-                        email: user.email,
-                        role: user.role
-                    },
-                    remember.checked ? 'local' : 'session'
-                );
-
-                // setea rol en sesión del servidor (lo que usa el guard)
-                const body = new URLSearchParams({role: auth.role});
-                await fetch(URL_MOCK, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body
-                });
-
-                if (auth.role === 'ADMIN') {
-                    window.location.assign(URL_ADMIN);
-                } else {
-                    window.location.assign(URL_CONTRIBUYENTE);
-                }
-            });
-
-            // Si eligen "Ingresar más tarde", dejamos explícitamente anónimo
-            document.querySelector('.btn-sin-login')?.addEventListener('click', () => {
-                MM.clearAuth();
-            });
-        });
-    </script>
 
 </body>
 </html>
