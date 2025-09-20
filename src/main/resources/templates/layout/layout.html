@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(titulo, extraLinks, contenido)">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+    <link rel="icon" th:href="@{/components/logo-ico.png}">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lexend:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    <link th:href="@{/css/styles-layout.css}" rel="stylesheet">
+    <th:block th:replace="${extraLinks}"></th:block>
+</head>
+<body>
+
+    <header class="mm-header-2" role="banner">
+        <div class="mm-header__container text-center py-3">
+            <a th:href="@{/}" class="mm-header__logo-link">
+                <img th:src="@{/components/logo-mm.png}" alt="MetaMapa" class="mm-header__logo" style="max-width: 180px;">
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container py-5">
+        <th:block th:replace="${contenido}"></th:block>
+    </main>
+
+    <footer class="footer-metamapa mt-auto py-4">
+        <div class="container-fluid px-4">
+            <div class="footer-content row justify-content-end">
+                <div class="col-md-4 text-md-end justify-content-center">
+                    <small class="footer-text">&copy; 2025 MetaMapa - Todos los derechos reservados</small>
+                    <br>
+                    <a th:href="@{/terminos}" class="footer-link" aria-label="Ver términos y condiciones">Términos</a> |
+                    <a th:href="@{/privacidad}" class="footer-link" aria-label="Ver política de privacidad">Privacidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script para Header -->
+    <script>
+        (function(){
+            const body = document.body;
+            let lastY = window.scrollY;
+            const delta  = 6;   // ignora micro scroll
+            const showAt = 10;  // no ocultar muy arriba
+
+            window.addEventListener('scroll', () => {
+                const y = window.scrollY;
+                if (Math.abs(y - lastY) < delta) return;
+                if (y > lastY && y > showAt) body.classList.add('scrolled');   // bajando
+                else                          body.classList.remove('scrolled'); // subiendo / arriba
+                lastY = y;
+            }, { passive:true });
+
+            if (window.scrollY > showAt) body.classList.add('scrolled');
+        })();
+    </script>
+</body>
+</html>
