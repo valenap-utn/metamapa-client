@@ -52,6 +52,15 @@
                         <p class="text-secondary">Acceder a cuenta</p>
                     </div>
 
+                    <!-- Para detectar errores -->
+                    <div class="alert alert-danger" role="alert" th:if="${param.error}">
+                      <span th:switch="${param.error}">
+                        <span th:case="'invalid_credentials'">Email o contraseña inválidos.</span>
+                        <span th:case="'locked'">Tu cuenta está bloqueada.</span>
+                        <span th:case="*">No pudimos iniciar sesión. Intentá nuevamente.</span>
+                      </span>
+                    </div>
+
                     <form method="post" th:action="@{/auth/login}" novalidate>
                         <div class="input-group mb-3">
                             <span class="input-group-text bg-white border-end-0">
@@ -95,12 +104,19 @@
                     </div>
 
                     <!-- Divider -->
-                    <!--                    <div class="position-relative">-->
-                    <!--                        <hr class="text-secondary divider">-->
-                    <!--                        <div class="divider-content-center">or</div>-->
-                    <!--                    </div>-->
-
-                    <!-- Ingreso con cuenta de Google u otra cosa -->
+                    <div class="position-relative">
+                        <hr class="text-secondary divider">
+                        <div class="divider-content-center">o ingresar con</div>
+                    </div>
+                    <!-- Todavía sin implementar - solo de facha -->
+                    <div class="d-flex flex-column gap-2 mt-3">
+                        <button class="btn btn-social btn-google w-100" aria-label="Ingresar con Google">
+                            <i class="fab fa-google me-2"></i> Ingresar con Google
+                        </button>
+                        <button class="btn btn-social btn-facebook w-100" aria-label="Ingresar con Facebook">
+                            <i class="fab fa-facebook-f me-2"></i> Ingresar con Facebook
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

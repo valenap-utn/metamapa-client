@@ -35,7 +35,18 @@
             <h1 class="mm-form-title">Crear cuenta</h1>
             <p class="mm-form-sub">Completá tus datos para empezar a utilizar MetaMapa</p>
 
-            <form id="form-usuario" class="mm-form" novalidate>
+            <!-- Para detectar errores -->
+            <div class="alert alert-danger" role="alert" th:if="${param.error}">
+              <span th:switch="${param.error}">
+                <span th:case="'email_taken'">Ese email ya está registrado.</span>
+                <span th:case="'invalid_form'">Revisá los datos del formulario.</span>
+                <span th:case="*">No pudimos crear tu cuenta. Intentá de nuevo.</span>
+              </span>
+            </div>
+            <div class="alert alert-success" th:if="${param.ok}">Cuenta creada…</div>
+
+            <!--            <form id="form-usuario" class="mm-form" novalidate>-->
+            <form method="post" th:action="@{/auth/register}" >
                 <!-- Alertas -->
                 <div id="formAlert" class="alert alert-danger d-none" role="alert"></div>
 

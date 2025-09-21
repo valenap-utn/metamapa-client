@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Open+Sans:wght@400;600&display=swap');
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #3B4F61;
+    background-color: #F2F7FA;
+    margin: 0;
+    padding: 0;
+}
+
+.error-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+}
+
+.error-logo {
+    width: 120px;
+}
+
+.error-title {
+    color: #3B4F61;
+    margin-bottom: 0.5rem;
+}
+
+/* Card de detalle */
+.error-card {
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+    border: none;
+    background-color: #ffffff;
+}
+
+/* Botones */
+.btn-back {
+    font-size: medium;
+    color: #F2F7FA;
+    background-color: #86a8c2;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: #3B4F61;
+    color: #F2F7FA;
+}

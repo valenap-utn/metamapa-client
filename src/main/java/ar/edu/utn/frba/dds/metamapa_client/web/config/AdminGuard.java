@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.metamapa_client.config;
+package ar.edu.utn.frba.dds.metamapa_client.web.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,4 +15,5 @@ public class AdminGuard implements HandlerInterceptor {
     }
     response.sendRedirect("/iniciar-sesion?forbidden=1"); return false;
   }
+
 }
