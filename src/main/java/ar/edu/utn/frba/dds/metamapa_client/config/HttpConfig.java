@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.metamapa_client.web.config;
+package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

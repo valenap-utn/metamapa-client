@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.metamapa_client.web.config;
+package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

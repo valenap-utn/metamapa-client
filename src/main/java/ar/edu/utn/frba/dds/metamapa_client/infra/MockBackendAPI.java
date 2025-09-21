@@ -17,6 +17,7 @@ public class MockBackendAPI implements BackendAPI {
 
   public MockBackendAPI() {
     users.put("valucha@gmail.com",    new User("valucha@gmail.com",    "valuchaa", "CONTRIBUYENTE"));
+    users.put("rufinagonz4lez@gmail.com",    new User("rufinagonz4lez@gmail.com",    "valuchaa", "CONTRIBUYENTE"));
     users.put("admin@example.com",   new User("admin@example.com",   "metamapa", "ADMIN"));
     users.put("contrib@example.com", new User("contrib@example.com", "metamapa", "CONTRIBUYENTE"));
   }
@@ -47,6 +48,20 @@ public class MockBackendAPI implements BackendAPI {
     String role = normalizeRole(rol);
     users.put(k, new User(email.trim(), password, role));
     return LoginResp.ok(role);
+  }
+
+  @Override
+  public LoginResp socialLogin(String provider, String email) {
+    String k = key(email);
+    var u = users.get(k);
+    if(u == null){
+      // regla demo: todo social se crea como CONTRIBUYENTE,
+      // salvo un correo específico que marcamos como admin
+      String role = email.equalsIgnoreCase("admin@example.com") ? "ADMIN" : "CONTRIBUTE";
+      users.put(k, new User(email.trim(), "oauth", role));
+      return LoginResp.ok(role);
+    }
+    return LoginResp.ok(u.rol);
   }
 
   @Override

@@ -14,6 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @Builder
 @Service
 @ConditionalOnProperty(name = "metamapa.mode", havingValue = "api")
@@ -43,6 +45,17 @@ public class HttpBackendAPI implements BackendAPI {
         .onStatus(HttpStatusCode::is4xxClientError, rsp->Mono.just(new WebClientResponseException(400, "invalid_form",null,null,null)))
         .bodyToMono(LoginResp.class)
         .onErrorReturn(new LoginResp(false,"","unknown"))
+        .block();
+  }
+
+  @Override
+  public LoginResp socialLogin(String provider, String email) {
+    return http.post().uri("/api/auth/social-login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(Map.of("provider",provider, "email",email))
+        .retrieve()
+        .bodyToMono(LoginResp.class)
+        .onErrorReturn(new LoginResp(false,"","oauth_backend_fail"))
         .block();
   }
 
