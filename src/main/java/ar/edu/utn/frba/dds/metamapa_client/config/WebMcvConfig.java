@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import ar.edu.utn.frba.dds.metamapa_client.security.RememberInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

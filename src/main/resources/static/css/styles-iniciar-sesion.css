@@ -110,3 +110,36 @@ a:hover{
     }
 }
 
+/* Botones de Social Login */
+.btn-social {
+    font-size: medium;
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-google {
+    background-color: #ffffff;
+    color: #3B4F61;
+    border: 1px solid #ddd;
+}
+
+.btn-google:hover {
+    background-color: #f2f2f2;
+}
+
+.btn-facebook {
+    background-color: #3b5998;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-facebook:hover {
+    color: #ffffff;
+    background-color: #2d4373;
+}

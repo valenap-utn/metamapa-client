@@ -15,4 +15,5 @@ public class AdminGuard implements HandlerInterceptor {
     }
     response.sendRedirect("/iniciar-sesion?forbidden=1"); return false;
   }
+
 }

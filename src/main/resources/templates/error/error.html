@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout('Ups, algo salió mal', ~{::link}, ~{::section})}">
+<head>
+    <link th:href="@{/css/styles-error.css}" rel="stylesheet">
+</head>
+<body>
+<section class="container" style="max-width: 720px">
+    <h1 class="mt-4">Algo salió mal</h1>
+    <p class="text-muted">No pudimos completar tu solicitud.</p>
+
+    <div class="card p-3 my-3">
+        <p><strong>Status:</strong> <span th:text="${status}">500</span></p>
+        <p><strong>Error:</strong> <span th:text="${error}">Internal Server Error</span></p>
+        <p th:if="${message}"><strong>Detalle:</strong> <span th:text="${message}">Mensaje</span></p>
+        <p class="text-muted" th:if="${path}"><strong>Ruta:</strong> <span th:text="${path}">/algo</span></p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a class="btn btn-back" th:href="@{/}">Volver al inicio</a>
+        <a class="btn btn-back" href="javascript:history.back()">Volver atrás</a>
+    </div>
+</section>
+</body>
+</html>
