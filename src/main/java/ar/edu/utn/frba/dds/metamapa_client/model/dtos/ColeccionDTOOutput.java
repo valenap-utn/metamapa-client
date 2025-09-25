@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class ColeccionDTOOutput {
   private UUID id;
-  private String nombre;
+  private String titulo;
   private String descripcion;
   private List<FuenteDTO> fuentes;
   private List<CriterioDTO> criterios;
-  private String algoritmo;
+  private String algoritmoDeConsenso;
 }

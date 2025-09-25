@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ColeccionDTOInput {
-  private String nombre;
+  private String titulo;
   private String descripcion;
   private Long usuario;
   private List<FuenteDTO> fuentes;

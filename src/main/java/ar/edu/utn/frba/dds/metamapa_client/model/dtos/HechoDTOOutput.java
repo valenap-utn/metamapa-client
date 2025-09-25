@@ -2,9 +2,11 @@ package ar.edu.utn.frba.dds.metamapa_client.model.dtos;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class HechoDTOOutput {
   private Long id;
   private String titulo;
