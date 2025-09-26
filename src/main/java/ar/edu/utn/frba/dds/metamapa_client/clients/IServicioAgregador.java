@@ -27,4 +27,6 @@ public interface IServicioAgregador {
   ColeccionDTOOutput eliminarColeccion(UUID idColeccion);
 
   ColeccionDTOOutput crearColeccion(ColeccionDTOInput coleccion);
+
+  HechoDTOOutput getHecho(Long idHecho);
 }

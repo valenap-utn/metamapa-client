@@ -95,4 +95,10 @@ public class ServicioAgregador implements IServicioAgregador {
             .bodyValue(coleccion)
             .retrieve().bodyToMono(ColeccionDTOOutput.class).block();
   }
+
+  @Override
+  public HechoDTOOutput getHecho(Long idHecho) {
+    //TODO
+    return null;
+  }
 }

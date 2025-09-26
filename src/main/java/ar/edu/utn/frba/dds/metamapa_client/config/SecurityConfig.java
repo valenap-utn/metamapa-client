@@ -4,7 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 public class SecurityConfig {
@@ -26,7 +28,17 @@ public class SecurityConfig {
             .loginPage("/iniciar-sesion")
             .defaultSuccessUrl("/oauth2/success", true) //se procesa el email/rol
         ).logout(Customizer.withDefaults())
-        .csrf((csrf->csrf.disable()));
+        .csrf((AbstractHttpConfigurer::disable))
+            .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                    httpSecuritySessionManagementConfigurer
+            .invalidSessionUrl("/iniciar-sesion"));
+
     return http.build();
+  }
+
+  //Para evitar que se autentique 2 veces y tenga dos sesiones distintas
+  @Bean
+  public HttpSessionEventPublisher httpSessionEventPublisher() {
+    return new HttpSessionEventPublisher();
   }
 }

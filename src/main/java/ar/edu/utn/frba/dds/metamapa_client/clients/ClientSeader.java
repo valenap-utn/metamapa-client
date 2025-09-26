@@ -265,6 +265,11 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     return coleccionDTOOutput;
   }
 
+  @Override
+  public HechoDTOOutput getHecho(Long idHecho) {
+    return this.hechos.get(idHecho);
+  }
+
   private ColeccionDTOOutput toColeccionDTOOutput(ColeccionDTOInput coleccionDTOInput) {
     ColeccionDTOOutput coleccionDTOOutput = new ColeccionDTOOutput();
     coleccionDTOOutput.setAlgoritmoDeConsenso(coleccionDTOInput.getAlgoritmo());

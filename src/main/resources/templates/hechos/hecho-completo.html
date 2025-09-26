@@ -25,29 +25,29 @@
 
     <section class="mm-form-wrap">
         <div class="mm-card">
-            <h1 id="hTitulo" class="mm-form-title">Hecho</h1>
-            <p id="hBajada" class="mm-form-sub">Descripción breve del hecho</p>
+            <h1 id="hTitulo" class="mm-form-title" th:text="${hecho.getTitulo()}">Hecho</h1>
+            <p id="hBajada" class="mm-form-sub" th:text="${hecho.getDescripcion()}">Descripción breve del hecho</p>
 
             <!-- Detalles del Hecho -->
             <div class="row g-3 mb-4">
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Categoría</small>
-                    <span id="hCategoria">-</span>
+                    <span id="hCategoria" th:text="${hecho.getCategoria().getNombre()}">-</span>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Aconteció</small>
-                    <span id="hFecha">-</span>
+                    <span id="hFecha" th:text="${hecho.getFechaAcontecimiento()}">-</span>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Fecha de carga</small>
-                    <span id="hFechaCarga">-</span>
+                    <span id="hFechaCarga" th:text="${hecho.getFechaCarga()}">-</span>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Origen</small>
-                    <span id="hOrigen">—</span>
+                    <span id="hOrigen" th:text="${hecho.getOrigen().getTipo()}">—</span>
                 </div>
             </div>
 
@@ -76,7 +76,7 @@
             <!-- Creador -->
             <div class="mb-4">
                 <h2 class="h6 mm-label mb-1">Creado por</h2>
-                <div id="hCreador">-</div>
+                <div id="hCreador" th:text="${hecho.getIdUsuario()}">-</div>
                 <div id="hRoles" class="mt-1 d-flex flex-wrap gap-2"></div>
             </div>
 
@@ -128,7 +128,7 @@
         </div> 
     </div>
 <!--    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>-->
-    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script type="module" th:src="@{/js/hecho-completo.js}"></script>
 </body>
 </html>
