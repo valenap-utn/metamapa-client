@@ -170,7 +170,7 @@ input?.addEventListener('change', (e) => addFiles(e.target.files));
 drop?.addEventListener('drop', e => addFiles(e.dataTransfer.files));
 
 // ===== Envío del formulario (multimedia opcional) =====
-form?.addEventListener('submit', (e) => {
+/*form?.addEventListener('submit', (e) => {
     // Validación global mínima:
     if (!latEl.value || !lngEl.value) {
         e.preventDefault();
@@ -195,7 +195,7 @@ form?.addEventListener('submit', (e) => {
     console.log('Form listo para enviar', Object.fromEntries(fd.entries()), MEDIA_FILES);
     alert('Simulación: Hecho enviado ✅');
 });
-
+*/
 // (opcional) permitir retroceder clickeando los “steps” solo hacia atrás
 dots.forEach(li => {
     li.addEventListener('click', () => {

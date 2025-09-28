@@ -72,6 +72,7 @@ public class AdminController {
 
   @GetMapping("/dashboard-estadisticas")
   public String estadisticas() {
+
     return "admins/dashboard-estadisticas";
   }
 }

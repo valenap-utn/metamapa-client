@@ -45,12 +45,13 @@ public class HechosController {
   }
 
   @GetMapping("/subir-hecho")
-  public String subirHecho() {
+  public String subirHecho(Model model) {
+    model.addAttribute("hecho", new HechoDTOInput());
     return "hechos/subir-hecho";
   }
 
   @PostMapping("/subir-hecho")
-  public String subirHechoPost(@ModelAttribute("hechoNuevo") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+  public String subirHechoPost(@ModelAttribute("hecho") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
     HechoDTOOutput hechoDTO = this.agregador.crearHecho(hechoDtoInput, "http://localhost:4000");
 
     return "hechos/subir-hecho";
