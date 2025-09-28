@@ -44,7 +44,7 @@ function showFileName(){
 // --------- POST a la API ----------
 const form = document.getElementById('csvForm');
 
-form.addEventListener('submit', async (e)=>{
+/*form.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const file = fileInput.files[0];
     if(!file) return;
@@ -58,7 +58,7 @@ form.addEventListener('submit', async (e)=>{
 
     try{
         // ⚠️ Si el back corre en otro puerto/host, usá la URL completa:
-        // const resp = await fetch('http://localhost:8080/api/hechos/importar', { method: 'POST', body: fd });
+        const resp = await fetch('http://localhost:8080/api/hechos/importar', { method: 'POST', body: fd });
         const resp = await fetch('/api/hechos/importar', { method: 'POST', body: fd });
 
         const text = await resp.text(); // tu controller devuelve String
@@ -70,7 +70,7 @@ form.addEventListener('submit', async (e)=>{
         btnImport.disabled = false;
         btnSpin.classList.add('d-none');
     }
-});
+});*/
 
 // --------- Modal resultado ----------
 const resultModal = new bootstrap.Modal(document.getElementById('resultModal')); // <-- así
@@ -105,7 +105,7 @@ async function readBodySmart(resp) {
     return plainTextFromResponseBody(raw);
 }
 
-form.addEventListener('submit', async (e)=>{
+/*form.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const file = fileInput.files[0];
     if(!file) return;
@@ -139,4 +139,4 @@ form.addEventListener('submit', async (e)=>{
         btnImport.disabled = false;
         btnSpin.classList.add('d-none');
     }
-});
+});*/

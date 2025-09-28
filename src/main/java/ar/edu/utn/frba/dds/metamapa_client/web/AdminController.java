@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Builder
@@ -56,7 +57,12 @@ public class AdminController {
   }
 
   @GetMapping("/importar-csv")
-  public String importarCsv(MultipartFile file, Model model) {
+  public String importarCsv() {
+    return "admins/importar-csv";
+  }
+
+  @PostMapping("/importar-csv")
+  public String importarCsvPost(@RequestParam("file") MultipartFile file) {
 
     this.agregador.subirHechosCSV(file, 1L, "http://localhost:5000/");
     return "admins/importar-csv";

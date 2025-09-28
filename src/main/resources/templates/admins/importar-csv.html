@@ -32,13 +32,13 @@
             <p class="mm-form-sub">Importar hechos desde archivo CSV</p>
 
             <!-- FORM -->
-            <form id="csvForm" class="needs-validation" novalidate>
+            <form id="csvForm" class="needs-validation" novalidate th:action="@{/admin/importar-csv}" enctype="multipart/form-data" method="post">
                 <!-- Dropzone -->
                 <div id="dropzone" class="dropzone mb-3">
                     <div class="dz-icon mb-2"><i class="fa-solid fa-file-csv"></i></div>
                     <p class="mb-1">Arrastrá tu archivo <strong>.csv</strong> aquí</p>
                     <p class="text-muted mb-2">o</p>
-                    <label class="btn btn-outline-mm btn-pill px-3"><input id="fileInput" type="file" accept=".csv" hidden> Elegir archivo </label>
+                    <label class="btn btn-outline-mm btn-pill px-3"><input id="fileInput" type="file" accept=".csv" hidden name="file"> Elegir archivo </label>
 
                     <div class="mt-2 small">
                         <span id="fileName" class="file-name d-none"></span>
