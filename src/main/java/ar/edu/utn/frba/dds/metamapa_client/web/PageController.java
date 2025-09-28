@@ -16,7 +16,7 @@ public class PageController {
   }
 
   @GetMapping("/main-gral")
-  public String main() {
+  public String mainGral() {
     return "main-gral";
   }
 

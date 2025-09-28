@@ -37,7 +37,9 @@ public class AdminController {
   }
 
   @GetMapping("/crear-coleccion")
-  public String crearColeccion() {
+  public String crearColeccion(Model model) {
+    model.addAttribute("coleccion", new ColeccionDTOInput());
+    model.addAttribute("titulo", "Crear Coleccion");
     return "admins/crear-coleccion";
   }
 
