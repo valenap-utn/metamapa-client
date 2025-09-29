@@ -207,13 +207,13 @@ function initMap(h){
 /* ---------- Init ---------- */
 (async function init(){
     const id = new URLSearchParams(location.search).get('id');
-    if (!id) { set('#hTitulo','Hecho no encontrado'); return; }
+    //if (!id) { set('#hTitulo','Hecho no encontrado'); return; }
 
-    const h = await fetchHechoById(id);
-    if (!h) { set('#hTitulo','Hecho no encontrado'); return; }
+    const h = {}// await fetchHechoById(id);
+    //if (!h) { set('#hTitulo','Hecho no encontrado'); return; }
 
     // Título / bajada
-    set('#hTitulo',      h.titulo || `Hecho #${h.id}`);
+/*    set('#hTitulo',      h.titulo || `Hecho #${h.id}`);
     set('#hBajada',      h.categoria ? `Categoría: ${h.categoria}` : '—');
 
     // Meta
@@ -235,10 +235,14 @@ function initMap(h){
         set('#hCreador', creadorTxt);
     }
     renderRoles(h.roles);
-    renderTags(h.etiquetas);
+    */
+    h.id = Number(document.getElementById('hId').textContent)
+    h.lat = Number(document.getElementById('hLat').textContent)
+    h.long = Number(document.getElementById('hLong').textContent)
+    h.titulo = document.getElementById('hTitulo').textContent
 
     // Media y mapa
-    renderMedia(h);
+    // renderMedia(h);
     initMap(h);
 
     // Acciones demo

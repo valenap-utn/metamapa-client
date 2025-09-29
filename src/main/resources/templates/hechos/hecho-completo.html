@@ -25,24 +25,24 @@
 
     <section class="mm-form-wrap">
         <div class="mm-card">
-            <h1 id="hTitulo" class="mm-form-title" th:text="${hecho.getTitulo()}">Hecho</h1>
-            <p id="hBajada" class="mm-form-sub" th:text="${hecho.getDescripcion()}">Descripción breve del hecho</p>
-
+            <h1 id="hTitulo" class="mm-form-title" th:text="${hecho.getTitulo() }">Hecho</h1>
+            <p id="hBajada" class="mm-form-sub" th:text="${hecho.getDescripcion() != null ? hecho.getDescripcion() : 'Sin Descripcion' }">Descripción breve del hecho</p>
+            <span id="hId" style="display:none;" th:text="${hecho.getId()}" ></span>
             <!-- Detalles del Hecho -->
             <div class="row g-3 mb-4">
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Categoría</small>
-                    <span id="hCategoria" th:text="${hecho.getCategoria().getNombre()}">-</span>
+                    <span id="hCategoria" th:text="${'Categoría: ' + hecho.getCategoria().getNombre()}">-</span>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Aconteció</small>
-                    <span id="hFecha" th:text="${hecho.getFechaAcontecimiento()}">-</span>
+                    <span id="hFecha" th:text="${hecho.getFechaAcontecimiento().getDayOfMonth() + '/'+ hecho.getFechaAcontecimiento().getMonthValue() + '/' + hecho.getFechaAcontecimiento().getYear()}">-</span>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <small class="mm-label d-block">Fecha de carga</small>
-                    <span id="hFechaCarga" th:text="${hecho.getFechaCarga()}">-</span>
+                    <span id="hFechaCarga" th:text="${hecho.getFechaCarga().getDayOfMonth() + '/'+ hecho.getFechaCarga().getMonthValue() + '/' + hecho.getFechaCarga().getYear()}">-</span>
                 </div>
 
                 <div class="col-12 col-md-6">
@@ -52,17 +52,20 @@
             </div>
 
             <!-- Contenido multimedia del Hecho -->
-            <div id="mediaWrap" class="mm-media mb-4" aria-label="Contenido multimedia del hecho"></div>
+            <div id="mediaWrap" class="mm-media mb-4" aria-label="Contenido multimedia del hecho">
+                <div th:if="${hecho.contenidoMultimedia != null and hecho.contenidoMultimedia.getEsVideo()}" class="ratio ratio-16x9"><iframe th:src="${hecho.contenidoMultimedia.path}" allowfullscreen></iframe></div>
+                <img th:if="${hecho.contenidoMultimedia != null and !hecho.contenidoMultimedia.getEsVideo()}" th:src="${hecho.contenidoMultimedia.path}" alt="Imagen del hecho"/>
+            </div>
 
             <!-- Ubicación -->
             <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6 col-lg-3">
                     <small class="mm-label d-block">Latitud</small>
-                    <span id="hLat">-</span>
+                    <span id="hLat" th:text="${hecho.ubicacion.latitud}">-</span>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
                     <small class="mm-label d-block">Longitud</small>
-                    <span id="hLong">-</span>
+                    <span id="hLong" th:text="${hecho.ubicacion.longitud}">-</span>
                 </div>
             </div>
 
@@ -70,7 +73,7 @@
 
             <div class="mb-4">
                 <h2 class="h5 mm-label mb-2">Descripción</h2>
-                <p id="hDescripcion" class="mb-0">-</p>
+                <p id="hDescripcion" class="mb-0" th:text="${hecho.getDescripcion() != null ? hecho.getDescripcion() : 'No hay Descripción' }">-</p>
             </div>
 
             <!-- Creador -->
@@ -83,11 +86,13 @@
             <!-- Etiquetas -->
             <div class="mb-4">
                 <h2 class="h6 mm-label mb-1">Etiquetas relacionadas</h2>
-                <ul id="hTags" class="mm-tags list-unstyled d-flex flex-wrap gap-2 mb-0"></ul>
+                <ul id="hTags" class="mm-tags list-unstyled d-flex flex-wrap gap-2 mb-0">
+                    <li th:each=" etiqueta : ${hecho.getEtiquetas()}" th:text="${etiqueta}"></li>
+                </ul>
             </div>
 
             <div class="mm-actions">
-                <a th:href="@{/nav-hechos}" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
+                <a th:href="@{/hechos/nav-hechos}" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
                 <button class="mm-btn mm-btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolicitud">
                 Solicitar Eliminación
                 </button>

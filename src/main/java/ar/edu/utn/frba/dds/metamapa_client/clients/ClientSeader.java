@@ -13,6 +13,7 @@ import ar.edu.utn.frba.dds.metamapa_client.model.dtos.OrigenDTO;
 import ar.edu.utn.frba.dds.metamapa_client.model.dtos.RevisionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.model.dtos.SolicitudEdicionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.model.dtos.SolicitudEliminacionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.model.dtos.Ubicacion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
             .fechaAcontecimiento(LocalDateTime.of(2025, 3, 7, 0, 0))
             .contenidoMultimedia(contenidoMultimedia)
             .origen(origenDinamica)
+            .ubicacion(new Ubicacion(-34.914536f,-60.035774f))
             .idUsuario(usuarioAdmin)
             .id(this.idHecho.getAndIncrement())
             .build();
@@ -104,6 +106,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
             .categoria(new Categoria("Inundacion"))
             .fechaAcontecimiento(LocalDateTime.of(2025, 3, 7, 0 , 0))
             .idUsuario(usuarioContribuyente)
+            .ubicacion(new Ubicacion(-27.691883f,-67.052886f))
             .origen(origenDinamica)
             .id(this.idHecho.getAndIncrement())
             .build();
@@ -115,6 +118,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
             .categoria(new Categoria("Inundacion"))
             .fechaAcontecimiento(LocalDateTime.of(2025, 3, 7, 0 , 0))
             .idUsuario(usuarioContribuyente)
+            .ubicacion(new Ubicacion(-25.575639f,-54.543917f))
             .id(this.idHecho.getAndIncrement())
             .build();
 

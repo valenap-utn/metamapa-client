@@ -286,7 +286,7 @@ function popupHtml(h){
       <small>Categoría:</small> ${h.categoria || '-'}<br/>
       <small>Fecha:</small> ${fecha}
       <div class="mm-popup__actions">
-        <a class="mm-link" href="hecho-completo.html?id=${encodeURIComponent(h.id)}">
+        <a class="mm-link" href="${ h.url ? h.url : "hecho-completo.html?id=" + encodeURIComponent(h.id)}">
           <i class="fa-regular fa-eye"></i> Ver más
         </a>
         <button type="button"
@@ -399,8 +399,9 @@ function clearFilters() {
 document.addEventListener('DOMContentLoaded', async () => {
     initMap();
     await loadData();
-    populateCategoryFilter(HECHOS);
-    render(HECHOS);
+    const hechos = getHechosReales()
+    populateCategoryFilter(hechos);
+    render(hechos);
 
     // Botones
     $('#btnAplicar')?.addEventListener('click', applyFilters);
@@ -417,6 +418,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => map.invalidateSize(), 220);
     });
 });
+
+function getHechosReales() {
+    const containerHechos = document.getElementById('conjuntoDeHechosMapa')
+    const divsHechos = containerHechos.querySelectorAll('div.datosHecho')
+    return [...divsHechos].map(divHecho => {
+        const hecho = {}
+        hecho.id = toNum(divHecho.querySelector('span.idHecho').textContent)
+        hecho.titulo = String(divHecho.querySelector('span.tituloHecho').textContent).trim()
+        hecho.categoria = String(divHecho.querySelector('span.categoriaHecho').textContent).trim()
+        hecho.fecha = toISOShortFromAny(new Date(divHecho.querySelector('span.fechaHecho').textContent))
+        hecho.lat = toNum(divHecho.querySelector('span.latitudHecho').textContent)
+        hecho.long = toNum(divHecho.querySelector('span.longitudHecho').textContent)
+        hecho.url = divHecho.querySelector('span.urlHecho').textContent
+        return hecho
+    })
+}
 
 // === Keywords chips UI ===
 const kwInput = document.getElementById('fTexto');

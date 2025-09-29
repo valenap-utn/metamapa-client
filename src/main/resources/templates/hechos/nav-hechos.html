@@ -142,6 +142,17 @@
             </div>
         </div>
     </div>
+    <div id="conjuntoDeHechosMapa" style="display: none;">
+        <div class="datosHecho"  th:each="hecho, indiceHecho : ${hechos}">
+            <span class="idHecho" th:text="${hecho.getId()}"></span>
+            <span class="tituloHecho" th:text="${hecho.titulo}"></span>
+            <span class="latitudHecho" th:text="${hecho.ubicacion.latitud}"></span>
+            <span class="longitudHecho" th:text="${hecho.ubicacion.longitud}"></span>
+            <span class="categoriaHecho" th:text="${hecho.categoria.nombre}"></span>
+            <span class="fechaHecho" th:text="${hecho.fechaAcontecimiento}"></span>
+            <span class="urlHecho" th:text="@{/hechos/{id}(id=${hecho.getId()})}"></span>
+        </div>
+    </div>
 
     <!-- Mockeo de datos para prueba -->
     <script type="module" th:src="@{/js/nav-hechos.js}"></script>

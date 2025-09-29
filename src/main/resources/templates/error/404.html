@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/layout :: layout('Página no encontrada', ~{::link}, ~{::section})}">
-<head></head>
+<th:block th:fragment="~{extraLinks}"></th:block>
 <body>
 <section class="container text-center" style="max-width: 700px">
     <h1 class="mt-4">404 – Página no encontrada</h1>
