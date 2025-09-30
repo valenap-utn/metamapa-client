@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.metamapa_client.model.dtos;
+package ar.edu.utn.frba.dds.metamapa_client.dtos;
 
 import java.util.ArrayList;
 import java.util.List;

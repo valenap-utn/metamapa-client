@@ -3,9 +3,9 @@ package ar.edu.utn.frba.dds.metamapa_client.web;
 import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 import ar.edu.utn.frba.dds.metamapa_client.core.BackendAPI;
 import ar.edu.utn.frba.dds.metamapa_client.core.dtos.StatsResp;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.ColeccionDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.ColeccionDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.SolicitudEliminacionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import java.util.List;
 import lombok.Builder;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Map;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 

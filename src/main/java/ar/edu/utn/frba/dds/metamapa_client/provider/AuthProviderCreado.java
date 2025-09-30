@@ -1,0 +1,67 @@
+package ar.edu.utn.frba.dds.metamapa_client.provider;
+
+import ar.edu.utn.frba.dds.metamapa_client.dtos.AuthUserDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.RolesPermisosDTO;
+import ar.edu.utn.frba.dds.metamapa_client.exceptions.FalloEnLaAutenticacion;
+import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+@Component
+public class AuthProviderCreado implements AuthenticationProvider {
+  private final ConexionServicioUser conexionServicioUser;
+
+  public AuthProviderCreado(ConexionServicioUser conexionServicioUser) {
+
+    this.conexionServicioUser = conexionServicioUser;
+  }
+  @Override
+  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    String password = authentication.getCredentials().toString();
+    String username = authentication.getName();
+
+    try {
+      AuthUserDTO tokensDeAcceso = this.conexionServicioUser.getTokens(username, password);
+      if(tokensDeAcceso == null) {
+        throw new FalloEnLaAutenticacion("No se pudo recuperar el token");
+      }
+      ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+      HttpServletRequest request = attributes.getRequest();
+
+      request.getSession().setAttribute("accessToken", tokensDeAcceso.getTokenAcceso());
+      request.getSession().setAttribute("refreshToken", tokensDeAcceso.getTokenRefresh());
+      request.getSession().setAttribute("username", username);
+      //request.getSession().setAttribute("idUsuario", tokensDeAcceso.getTokenAcceso());
+
+      RolesPermisosDTO rolesPermisos = conexionServicioUser.getRolesPermisos(tokensDeAcceso.getTokenAcceso());
+
+      request.getSession().setAttribute("rol", rolesPermisos.getRol());
+      request.getSession().setAttribute("permisos", rolesPermisos.getPermisos());
+      List<GrantedAuthority> authorities = new ArrayList<>();
+      rolesPermisos.getPermisos().forEach(permiso -> {
+        authorities.add(new SimpleGrantedAuthority(permiso));
+      });
+      authorities.add(new SimpleGrantedAuthority("ROLE_" + rolesPermisos.getRol()));
+
+      return new UsernamePasswordAuthenticationToken(username, password, authorities);
+    } catch (Exception e) {
+      throw new FalloEnLaAutenticacion("Hubo un error en la autenticación: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public boolean supports(Class<?> authentication) {
+    return authentication.equals(UsernamePasswordAuthenticationToken.class);
+  }
+}

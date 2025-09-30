@@ -1,11 +1,10 @@
 package ar.edu.utn.frba.dds.metamapa_client.clients;
 
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.ColeccionDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.ColeccionDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.FiltroDTO;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.SolicitudEliminacionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import java.util.List;
 import java.util.UUID;
 

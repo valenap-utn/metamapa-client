@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.metamapa_client.clients;
 
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.RevisionDTO;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.SolicitudEdicionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.RevisionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
 
 public interface IFuenteDinamica {
   public HechoDTOOutput crearHecho(HechoDTOInput hecho, String baseUrl);

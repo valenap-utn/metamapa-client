@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.metamapa_client.web;
 
 import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.FiltroDTO;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.http.HttpHeaders;

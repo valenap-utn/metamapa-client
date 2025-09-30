@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.metamapa_client.clients;
 
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.HechoDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.RevisionDTO;
-import ar.edu.utn.frba.dds.metamapa_client.model.dtos.SolicitudEdicionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.RevisionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
