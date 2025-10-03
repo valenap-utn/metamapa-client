@@ -165,10 +165,10 @@ function cardHTML(c){
 // ---- Inicialización: por ahora una colección armada desde tu JSON de prueba ----
 (async function init(){
     const cont = document.getElementById('coleccionesList');
-    cont.innerHTML = '<p class="text-muted">Cargando colecciones…</p>';
+    //cont.innerHTML = '<p class="text-muted">Cargando colecciones…</p>';
 
     try{
-        // 1) cargamos una FUENTE desde tu archivo de prueba
+        /* // 1) cargamos una FUENTE desde tu archivo de prueba
         const fuente1 = await loadFuenteFromJson('../data/desastres_tecnologicos_argentina_20.json', 'Desastres tecnológicos (JSON)');
 
         if(!fuente1){
@@ -186,13 +186,15 @@ function cardHTML(c){
 
         // 3) pintamos
         cont.innerHTML = cardHTML(coleccion);
-
+        */
     }catch(e){
         console.error(e);
         cont.innerHTML = '<p class="text-danger">Ocurrió un error cargando colecciones.</p>';
     }
 })();
 
-
+function accionCompartir(titulo, id) {
+    navigator.share ? navigator.share({title: titulo, url: location.href + `${id}/nav-hechos`}) : alert('Copiá el enlace y compartilo'); return false;
+}
 
 

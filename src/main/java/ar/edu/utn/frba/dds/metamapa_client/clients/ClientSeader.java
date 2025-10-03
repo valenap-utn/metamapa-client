@@ -67,6 +67,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     coleccion.setFuentes(List.of(fuenteColeccionEstatica, fuenteColeccionDinamica));
 
     CriterioDTO criterioFechaCarga = new CriterioDTO();
+    criterioFechaCarga.setTipo("FECHACARGA");
     criterioFechaCarga.setFechaCargaInicial(LocalDate.of(2020, 1, 12).atStartOfDay());
     criterioFechaCarga.setFechaCargaFinal(LocalDateTime.now());
     coleccion.setCriterios(List.of(criterioFechaCarga));
@@ -272,6 +273,11 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   @Override
   public HechoDTOOutput getHecho(Long idHecho) {
     return this.hechos.get(idHecho);
+  }
+
+  @Override
+  public List<ColeccionDTOOutput> findColecciones() {
+    return this.coleccion.values().stream().toList();
   }
 
   private ColeccionDTOOutput toColeccionDTOOutput(ColeccionDTOInput coleccionDTOInput) {

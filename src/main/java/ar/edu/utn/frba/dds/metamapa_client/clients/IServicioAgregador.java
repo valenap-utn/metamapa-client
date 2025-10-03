@@ -28,4 +28,6 @@ public interface IServicioAgregador {
   ColeccionDTOOutput crearColeccion(ColeccionDTOInput coleccion);
 
   HechoDTOOutput getHecho(Long idHecho);
+
+  List<ColeccionDTOOutput> findColecciones();
 }

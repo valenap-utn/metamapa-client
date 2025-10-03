@@ -12,7 +12,54 @@
             </header>
 
             <!-- GRID de colecciones -->
-            <section id="coleccionesList" class="mm-collections-grid"></section>
+            <section id="coleccionesList" class="mm-collections-grid">
+                <article class="mm-collection-card" th:each="coleccion : ${colecciones}">
+                    <div class="mm-card-header">
+                        <img class="mm-card-icon" src="../components/sachet_7909215.png" alt="">
+                        <div>
+                            <h3 class="mm-card-title" th:text="${coleccion.titulo}"></h3>
+                            <p class="mm-card-sub" th:text="${coleccion.descripcion != null ? coleccion.descripcion : 'Colección sin descripción.' }"></p>
+                        </div>
+                    </div>
+
+                    <ul class="mm-meta">
+                        <li class="mm-chip">Hechos: <span th:text="${'Indefinido'}"></span></li>
+                        <th:block th:each="filtroFecha : ${coleccion.criterios}" th:if="${ filtroFecha.getTipo().equals('FECHACARGA') or filtroFecha.getTipo().equals('FECHAACONTECIMENTO')}" >
+                                <li class="mm-chip">Desde: <span th:text="${ filtroFecha.fechaAcontecimientoInicial != null ? filtroFecha.fechaAcontecimientoInicial : (filtroFecha.fechaCargaInicial != null ? filtroFecha.fechaCargaInicial : filtroFecha.fechaCargaFinal)}"></span></li>
+                                <li class="mm-chip">Hasta: <span th:text="${ filtroFecha.fechaAcontecimientoInicial != null ? filtroFecha.fechaAcontecimientoInicial : (filtroFecha.fechaCargaInicial != null ? filtroFecha.fechaCargaInicial : filtroFecha.fechaCargaFinal)}"></span></li>
+                        </th:block>
+                    </ul>
+
+                    <ul class="mm-meta" style="margin-top:6px" >
+                        <li class="mm-chip" th:each="filtroCategoria : ${coleccion.criterios}" th:if="${filtroCategoria.getTipo().equalsIgnoreCase('CATEGORIA')}" th:text="${filtroCategoria.categoria}"></li>
+                    </ul>
+
+                    <div class="accordion mm-accordion" th:id="${'acc-'+ coleccion.id}">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" th:id="${'h-' + coleccion.id}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#c-'+coleccion.id}">
+                                    Fuentes
+                                </button>
+                            </h2>
+                            <div th:id="${'c-' + coleccion.id}" class="accordion-collapse collapse" th:aria-labelledby="${'h-' + coleccion.id}" th:data-bs-parent="${'#acc-' + coleccion.id}">
+                                <div class="accordion-body">
+                                    <ul class="mm-sources">
+                                        <li th:each="fuente : ${coleccion.fuentes}">
+                                            <span th:text="${fuente.tipoOrigen}"></span>
+                                            <a class="mm-link" th:href="${fuente.url}" target="_blank" rel="noreferrer" th:text="${fuente.url}"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mm-card-actions d-flex justify-content-between">
+                        <a class="mm-btn mm-btn-primary" th:href="@{/colecciones/{id}/nav-hechos(id=${coleccion.getId()})}">Ver colección</a>
+                        <a class="mm-btn mm-btn-ghost" href="#" th:attr="onclick=|accionCompartir( '${coleccion.titulo}', '${coleccion.getId()}' )|" >Compartir</a>
+                    </div>
+                </article>
+            </section>
     <!--        <section id="coleccionesGrid" class="mm-collections-grid"></section>-->
         </main>
 

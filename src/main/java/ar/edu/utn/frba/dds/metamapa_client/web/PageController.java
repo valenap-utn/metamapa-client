@@ -1,10 +1,24 @@
 package ar.edu.utn.frba.dds.metamapa_client.web;
 
+import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class PageController {
+  private final ClientSeader cliente;
+
+  public PageController(ClientSeader cliente) {
+    this.cliente = cliente;
+  }
+
   @GetMapping({"/","/index"})
   public String home() {
     return "index";
@@ -21,8 +35,18 @@ public class PageController {
   }
 
   @GetMapping("/colecciones")
-  public String colecciones() {
+  public String colecciones(Model model) {
+    List<ColeccionDTOOutput> colecciones = this.cliente.findColecciones();
+    model.addAttribute("colecciones", colecciones);
     return "colecciones";
+  }
+
+  @GetMapping("/colecciones/{id}/nav-hechos")
+  public String coleccionesNavHechos(Model model, @PathVariable UUID id, FiltroDTO filtroDTO) {
+    List<HechoDTOOutput> hechos =  this.cliente.findHechosByColeccionId(id, filtroDTO);
+    model.addAttribute("hechos", hechos);
+    //model.addAttribute("urlColeccion", "/colecciones/" + id + "/nav-hechos");
+    return "hechos/nav-hechos";
   }
 
   @GetMapping("/crear-cuenta")

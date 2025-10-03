@@ -101,4 +101,9 @@ public class ServicioAgregador implements IServicioAgregador {
     //TODO
     return null;
   }
+
+  @Override
+  public List<ColeccionDTOOutput> findColecciones() {
+    return List.of();
+  }
 }

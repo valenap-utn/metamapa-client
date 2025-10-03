@@ -44,6 +44,8 @@ public class HechosController {
     return "hechos/nav-hechos";
   }
 
+
+
   @GetMapping("/subir-hecho")
   public String subirHecho(Model model) {
     model.addAttribute("hecho", new HechoDTOInput());

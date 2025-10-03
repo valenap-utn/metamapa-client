@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout('Página no encontrada', ~{::link}, ~{::section})}">
+<th:block th:fragment="~{extraLinks}"></th:block>
+<body>
+<section class="container text-center" style="max-width: 700px">
+    <h1 class="mt-4">403 – No tenés permiso para acceder a esta página/funcionalidad</h1>
+    <p class="text-muted">La URL solicitada no existe o fue movida.</p>
+    <a class="btn btn-back mt-3" th:href="@{/}">Ir al inicio</a>
+</section>
+</body>
+</html>
