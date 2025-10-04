@@ -36,7 +36,7 @@
                 <div class="form-group col-cat">
                     <label for="fCategoria" class="form-label">Categoría</label>
                     <select id="fCategoria" class="form-select chip select-categoria"
-                            aria-label="Filtrar por categoría" th:field="*{categoria}" th:value="${filtros.categoria}">
+                            aria-label="Filtrar por categoría" th:field="*{categoria}">
                         <option value="">Categoría</option>
                         <option value="EventoSanitario">Evento sanitario</option>
                         <option value="Contaminación">Contaminación</option>
@@ -47,7 +47,7 @@
                 <div class="form-group col-acon-des">
                     <label for="fAcontDesde" class="form-label">Fecha Del Acontecimiento desde</label>
                     <input id="fAcontDesde" type="datetime-local" class="form-control chip style-ap-filtros"
-                           placeholder="Fecha desde" aria-label="Filtrar desde fecha" th:field="*{fecha_acontecimiento_desde}"/>
+                           placeholder="Fecha desde" aria-label="Filtrar desde fecha" th:field="*{fecha_acontecimiento_desde}" />
                 </div>
 
                 <div class="form-group col-acon-des">
@@ -76,13 +76,13 @@
                         <div class="form-group col-crea-des">
                             <label for="fCreacionDesde" class="form-label">Creación desde</label>
                             <input id="fCreacionDesde" type="datetime-local"
-                                   class="form-control chip style-ap-filtros" th:value="${filtros.fecha_reporte_desde != null ? filtros.fecha_reporte_desde.toString() : null}">
+                                   class="form-control chip style-ap-filtros" th:field="*{fecha_reporte_desde}">
                         </div>
 
                         <div class="form-group col-crea-has">
                             <label for="fCreacionHasta" class="form-label">Creación hasta</label>
                             <input id="fCreacionHasta" type="datetime-local"
-                                   class="form-control chip style-ap-filtros" th:value="${filtros.fecha_reporte_hasta != null ? filtros.fecha_reporte_hasta.toString() : null}">
+                                   class="form-control chip style-ap-filtros" th:field="*{fecha_reporte_hasta}">
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a th:href="@{/main-gral}">
+        <a th:with="baseUrl=(${urlColeccion} != null ? '/colecciones' : '/main-gral')" th:href="@{${baseUrl}}">
             <button class="btn btn-ap-filter" aria-label="Volver a la página principal">
                 Volver atrás
             </button>

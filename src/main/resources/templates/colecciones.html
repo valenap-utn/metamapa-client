@@ -23,7 +23,6 @@
                     </div>
 
                     <ul class="mm-meta">
-                        <li class="mm-chip">Hechos: <span th:text="${'Indefinido'}"></span></li>
                         <th:block th:each="filtroFecha : ${coleccion.criterios}" th:if="${ filtroFecha.getTipo().equals('FECHACARGA') or filtroFecha.getTipo().equals('FECHAACONTECIMENTO')}" >
                                 <li class="mm-chip">Desde: <span th:text="${ filtroFecha.fechaAcontecimientoInicial != null ? filtroFecha.fechaAcontecimientoInicial : (filtroFecha.fechaCargaInicial != null ? filtroFecha.fechaCargaInicial : filtroFecha.fechaCargaFinal)}"></span></li>
                                 <li class="mm-chip">Hasta: <span th:text="${ filtroFecha.fechaAcontecimientoInicial != null ? filtroFecha.fechaAcontecimientoInicial : (filtroFecha.fechaCargaInicial != null ? filtroFecha.fechaCargaInicial : filtroFecha.fechaCargaFinal)}"></span></li>
