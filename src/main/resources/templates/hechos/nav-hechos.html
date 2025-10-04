@@ -10,90 +10,94 @@
 <!--    <div class="d-flex justify-content-center flex-column align-items-center vh-100">-->
 <!--<div class="container py-5">-->
 <section>
-    <!-- Modo de Navegación -->
-    <h3 class="sub-title text-center mb-4">Modo de Navegación</h3>
-    <div class="d-flex justify-content-center gap-4 mb-4" role="radiogroup"
-         aria-labelledby="titulo-modo">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="modo" id="modoIrrestricto"
-                   value="irrestricto" checked aria-label="Modo de navegación irrestricto"/>
-            <label class="form-check-label" for="modoIrrestricto">Irrestricto</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="modo" id="modoCurado" value="curado"
-                   aria-label="Modo de navegación curado"/>
-            <label class="form-check-label" for="modoCurado">Curado</label>
-        </div>
-    </div>
-
-    <!-- Aplicar Filtros -->
-    <h2 class="title-main text-center mb-3">Aplicar Filtros</h2>
-
-    <div class="mm-filters mb-3">
-        <!-- Esenciales -->
-        <div class="mm-filters__row">
-            <div class="form-group col-cat">
-                <label for="fCategoria" class="form-label">Categoría</label>
-                <select id="fCategoria" class="form-select chip select-categoria"
-                        aria-label="Filtrar por categoría">
-                    <option value="">Categoría</option>
-                    <option value="EventoSanitario">Evento sanitario</option>
-                    <option value="Contaminación">Contaminación</option>
-                    <option value="Derrame">Derrame</option>
-                </select>
+    <form th:with="baseUrl=(${urlColeccion} != null ? ${urlColeccion} : '/hechos/nav-hechos')" th:action="@{${baseUrl}}" th:object="${filtros}" method="post" novalidate>
+        <!-- Modo de Navegación -->
+        <h3 class="sub-title text-center mb-4">Modo de Navegación</h3>
+        <div class="d-flex justify-content-center gap-4 mb-4" role="radiogroup"
+             aria-labelledby="titulo-modo">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="modoIrrestricto"
+                       th:checked="${!filtros.curada}" aria-label="Modo de navegación irrestricto" name="modo"/>
+                <label class="form-check-label" for="modoIrrestricto">Irrestricto</label>
             </div>
-
-            <div class="form-group col-acon-des">
-                <label for="fAcontDesde" class="form-label">Fecha Del Acontecimiento desde</label>
-                <input id="fAcontDesde" type="date" class="form-control chip style-ap-filtros"
-                       placeholder="Fecha desde" aria-label="Filtrar desde fecha"/>
-            </div>
-
-            <div class="form-group col-acon-des">
-                <label for="fAcontHasta" class="form-label">Fecha Del Acontecimiento hasta</label>
-                <input id="fAcontHasta" type="date" class="form-control chip style-ap-filtros"
-                       placeholder="Fecha hasta" aria-label="Filtrar hasta fecha"/>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="modoCurado"
+                       aria-label="Modo de navegación curado" th:checked="${!filtros.curada}" th:field="*{curada}"/>
+                <label class="form-check-label" for="modoCurado">Curado</label>
             </div>
         </div>
 
-        <!-- Avanzados plegados -->
-        <details class="mm-adv mb-3">
-            <summary>Más filtros</summary>
-            <div class="mm-adv__body">
-                <div class="mm-adv__grid">
-                    <div class="form-group col-search">
-                        <label for="fTexto" class="form-label">Buscar por texto</label>
+        <!-- Aplicar Filtros -->
+        <h2 class="title-main text-center mb-3">Aplicar Filtros</h2>
 
-                        <input id="fTexto" type="text"
-                               class="form-control style-ap-filtros mm-kw-input"
-                               placeholder="palabra clave, ej: río, humo…"
-                               style="box-shadow: var(--shadow-sm);">
+        <div class="mm-filters mb-3">
+            <!-- Esenciales -->
+            <div class="mm-filters__row">
+                <div class="form-group col-cat">
+                    <label for="fCategoria" class="form-label">Categoría</label>
+                    <select id="fCategoria" class="form-select chip select-categoria"
+                            aria-label="Filtrar por categoría" th:field="*{categoria}" th:value="${filtros.categoria}">
+                        <option value="">Categoría</option>
+                        <option value="EventoSanitario">Evento sanitario</option>
+                        <option value="Contaminación">Contaminación</option>
+                        <option value="Derrame">Derrame</option>
+                    </select>
+                </div>
 
-                        <div id="kwChips" class="mm-chips" aria-live="polite"></div>
-                    </div>
+                <div class="form-group col-acon-des">
+                    <label for="fAcontDesde" class="form-label">Fecha Del Acontecimiento desde</label>
+                    <input id="fAcontDesde" type="datetime-local" class="form-control chip style-ap-filtros"
+                           placeholder="Fecha desde" aria-label="Filtrar desde fecha" th:field="*{fecha_acontecimiento_desde}"/>
+                </div>
 
-                    <div class="form-group col-crea-des">
-                        <label for="fCreacionDesde" class="form-label">Creación desde</label>
-                        <input id="fCreacionDesde" type="date"
-                               class="form-control chip style-ap-filtros">
-                    </div>
-
-                    <div class="form-group col-crea-has">
-                        <label for="fCreacionHasta" class="form-label">Creación hasta</label>
-                        <input id="fCreacionHasta" type="date"
-                               class="form-control chip style-ap-filtros">
-                    </div>
+                <div class="form-group col-acon-des">
+                    <label for="fAcontHasta" class="form-label">Fecha Del Acontecimiento hasta</label>
+                    <input id="fAcontHasta" type="datetime-local" class="form-control chip style-ap-filtros"
+                           placeholder="Fecha hasta" aria-label="Filtrar hasta fecha" th:field="*{fecha_acontecimiento_hasta}" />
                 </div>
             </div>
-        </details>
 
-        <!-- Aplicar || Limpiar filtros -->
-        <div class="mm-filters__actions">
-            <button id="btnAplicar" class="btn btn-ap-filter">Aplicar filtros</button>
-            <button id="btnLimpiar" class="btn btn-clear-filter">Limpiar</button>
+            <!-- Avanzados plegados -->
+            <details class="mm-adv mb-3">
+                <summary>Más filtros</summary>
+                <div class="mm-adv__body">
+                    <div class="mm-adv__grid">
+                        <div class="form-group col-search">
+                            <label for="fTexto" class="form-label">Buscar por texto</label>
+
+                            <input id="fTexto" type="text"
+                                   class="form-control style-ap-filtros mm-kw-input"
+                                   placeholder="palabra clave, ej: río, humo…"
+                                   style="box-shadow: var(--shadow-sm);">
+
+                            <div id="kwChips" class="mm-chips" aria-live="polite"></div>
+                        </div>
+
+                        <div class="form-group col-crea-des">
+                            <label for="fCreacionDesde" class="form-label">Creación desde</label>
+                            <input id="fCreacionDesde" type="datetime-local"
+                                   class="form-control chip style-ap-filtros" th:value="${filtros.fecha_reporte_desde != null ? filtros.fecha_reporte_desde.toString() : null}">
+                        </div>
+
+                        <div class="form-group col-crea-has">
+                            <label for="fCreacionHasta" class="form-label">Creación hasta</label>
+                            <input id="fCreacionHasta" type="datetime-local"
+                                   class="form-control chip style-ap-filtros" th:value="${filtros.fecha_reporte_hasta != null ? filtros.fecha_reporte_hasta.toString() : null}">
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Aplicar || Limpiar filtros -->
+            <div class="mm-filters__actions">
+                <button id="btnAplicar" class="btn btn-ap-filter" type="submit">Aplicar filtros</button>
+                <button id="btnLimpiar" class="btn btn-clear-filter" type="reset">Limpiar</button>
+            </div>
+
         </div>
+    </form>
 
-    </div>
+
 
     <!-- Imple. Mapa -->
     <div class="row justify-content-center">
@@ -150,7 +154,7 @@
             <span class="longitudHecho" th:text="${hecho.ubicacion.longitud}"></span>
             <span class="categoriaHecho" th:text="${hecho.categoria.nombre}"></span>
             <span class="fechaHecho" th:text="${hecho.fechaAcontecimiento}"></span>
-            <span class="urlHecho" th:text="@{/hechos/{id}(id=${hecho.getId()})}"></span>
+            <span class="urlHecho" th:text="@{/hechos/{id}(id=${hecho.getId()}, urlColeccion=${urlColeccion})}"></span>
         </div>
     </div>
 

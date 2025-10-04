@@ -97,39 +97,7 @@ function toNum(v) {
     return Number.isFinite(n) ? n : null;
 }
 
-// ====== NORMALIZACIÓN DE HECHOS ======
-/** Intenta mapear cualquier objeto "hecho" en:
- * {
- *      id, titulo, descripcion, categoria,
- *      fechaAcontecimiento (YYYY-MM-DD) | null,
- *      fechaCreacion (YYYY-MM-DD) | null,
- *      lat, long
- * }
- */
 
-// Detecta mapeo de claves a partir de una fila
-// function inferKeyMap(row) {
-//     const key = (cands) => pickKey(row, cands);
-//     return {
-//         id:       key(['id','codigo','identificador']),
-//         titulo:   key(['titulo','título','title','nombre']),
-//         descripcion: key(['descripcion','descripción','description','detalle','resumen']),
-//         categoria:key(['categoria','categoría','category','tipo']),
-//         // Separadas:
-//         fechaAcontecimiento: key([
-//             'fecha acontecimiento','fecha_del_hecho','fecha del hecho','fechasuceso',
-//             'fechaevento','fecha evento','acontecimiento','f. acontecimiento'
-//         ]),
-//         fechaCreacion: key([
-//             'fecha carga','fechacarga','fecha creacion','fecha creación','fecha_de_creacion',
-//             'fecha_de_creación','created_at','create_date'
-//         ]),
-//         // Fallback genérico si sólo hay una 'fecha'
-//         fecha:     key(['fecha','date','fecha evento','fecha suceso']),
-//         lat:      key(['lat','latitud','latitude']),
-//         long:     key(['long','lon','lng','longitud','longitude'])
-//     };
-// }
 function inferKeyMap(row) {
     const key = (cands) => pickKey(row, cands);
     return {
@@ -144,38 +112,6 @@ function inferKeyMap(row) {
     };
 }
 
-
-// function normalizeHecho(row, inferredMap = null) {
-//     const map = inferredMap || inferKeyMap(row);
-//
-//     const id     = row[map.id] ?? null;
-//     const titulo = row[map.titulo] ?? '';
-//     const desc   = row[map.descripcion] ?? '';
-//     const cat    = row[map.categoria] ?? '';
-//
-//     // const fecha  = row[map.fecha] ?? null;
-//
-//     // Fuentes de fechas (ante ausencia, hace fallback a 'fecha')
-//     const faconRaw = (map.fechaAcontecimiento && row[map.fechaAcontecimiento]) ?? row[map.fecha];
-//     const fcreaRaw = (map.fechaCreacion       && row[map.fechaCreacion])       ?? row[map.fecha];
-//
-//     const fechaAcontecimiento = toISOShortFromAny(faconRaw);
-//     const fechaCreacion       = toISOShortFromAny(fcreaRaw);
-//
-//     const lat = row[map.lat];
-//     const lon = row[map.long];
-//
-//     return {
-//         id:     id != null ? String(id) : '',
-//         titulo: String(titulo || '').trim(),
-//         descripcion: String(desc || '').trim(),
-//         categoria: String(cat || '').trim(),
-//         fechaAcontecimiento,
-//         fechaCreacion,
-//         lat: toNum(lat),
-//         long: toNum(lon)
-//     };
-// }
 function normalizeHecho(row, inferredMap = null) {
     const map     = inferredMap || inferKeyMap(row);
     const id      = row[map.id] ?? null;
@@ -264,19 +200,7 @@ function initMap() {
     markersLayer = L.layerGroup().addTo(map);
 }
 
-// ====== POP-UP del MAPA ======
-// function popupHtml(h){
-//     const fecha = h.fecha || h.creado || '-';
-//     return `
-//     <div class="mm-popup">
-//       <strong>${h.titulo || '(sin título)'}</strong><br/>
-//       <small>Categoría:</small> ${h.categoria || '-'}<br/>
-//       <small>Fecha:</small> ${fecha}
-//       <div class="mt-2">
-//         <a class="mm-link" href="hecho-completo.html?id=${encodeURIComponent(h.id)}">Ver más...</a>
-//       </div>
-//     </div>`;
-// }
+
 function popupHtml(h){
     const fecha = h.fecha || h.creado || '-';
     // Usamos un botón linkeado al modal con data-* para pasar info del hecho
@@ -398,26 +322,32 @@ function clearFilters() {
 // ====== INIT ======
 document.addEventListener('DOMContentLoaded', async () => {
     initMap();
-    await loadData();
+    //await loadData();
     const hechos = getHechosReales()
     populateCategoryFilter(hechos);
     render(hechos);
-
+    $('#modoCurado')?.addEventListener('click', () => simularRadioButton('#modoIrrestricto', '#modoCurado'))
+    $('#modoIrrestricto')?.addEventListener('click', () => simularRadioButton('#modoCurado', '#modoIrrestricto'))
     // Botones
-    $('#btnAplicar')?.addEventListener('click', applyFilters);
-    $('#btnLimpiar')?.addEventListener('click', clearFilters);
+    //$('#btnAplicar')?.addEventListener('click', applyFilters);
+    //$('#btnLimpiar')?.addEventListener('click', clearFilters);
 
     // Enter aplica
-    ['#fCategoria','#fAcontDesde','#fAcontHasta','#fCreacionDesde','#fCreacionHasta','#fTexto']
+    /*['#fCategoria','#fAcontDesde','#fAcontHasta','#fCreacionDesde','#fCreacionHasta','#fTexto']
         .forEach(sel => $(sel)?.addEventListener('keydown', e => {
             if (e.key === 'Enter') { e.preventDefault(); applyFilters(); }
-        }));
+        }));*/
 
     // Recalcular mapa al abrir/cerrar “Más filtros”
     document.querySelector('.mm-adv')?.addEventListener('toggle', () => {
         setTimeout(() => map.invalidateSize(), 220);
     });
 });
+
+function simularRadioButton(modoContrario, modoActual) {
+    $(modoContrario).checked = false
+    $(modoActual).checked = true
+}
 
 function getHechosReales() {
     const containerHechos = document.getElementById('conjuntoDeHechosMapa')

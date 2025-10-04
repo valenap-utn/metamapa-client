@@ -29,17 +29,29 @@ public class HechosController {
   }
 
   @GetMapping("/{idHecho}")
-  public String hechoCompleto(@PathVariable Long idHecho, Model model) {
+  public String hechoCompleto(@PathVariable Long idHecho, Model model, @RequestParam(value = "urlColeccion", required = false) String urlColeccion) {
     HechoDTOOutput hecho = this.agregador.getHecho(idHecho);
     model.addAttribute("titulo", "Detalle de Hecho");
     model.addAttribute("hecho", hecho);
+    model.addAttribute("urlColeccion", urlColeccion);
     return "hechos/hecho-completo";
   }
 
   @GetMapping("/nav-hechos")
-  public String navHechos(Model model, @ModelAttribute("filtros") FiltroDTO filtroDTO) {
+  public String navHechos(Model model) {
+    FiltroDTO filtroDTO = new FiltroDTO();
     List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO);
     model.addAttribute("hechos", hechos);
+    model.addAttribute("filtros", filtroDTO);
+    model.addAttribute("titulo", "Listado de todos los hechos");
+    return "hechos/nav-hechos";
+  }
+
+  @PostMapping("/nav-hechos")
+  public String navHechosPost(Model model, @ModelAttribute("filtros") FiltroDTO filtroDTO) {
+    List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO);
+    model.addAttribute("hechos", hechos);
+    model.addAttribute("filtros", filtroDTO);
     model.addAttribute("titulo", "Listado de todos los hechos");
     return "hechos/nav-hechos";
   }

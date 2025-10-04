@@ -92,7 +92,7 @@
             </div>
 
             <div class="mm-actions">
-                <a th:href="@{/hechos/nav-hechos}" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
+                <a th:with="baseUrl=(${urlColeccion} == null ? ${urlColeccion} : '/hechos/nav-hechos')" th:href="@{${baseUrl}}" class="mm-btn mm-btn-ghost"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span> Volver</a>
                 <button class="mm-btn mm-btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolicitud">
                 Solicitar Eliminación
                 </button>

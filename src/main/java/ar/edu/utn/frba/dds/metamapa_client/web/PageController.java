@@ -9,7 +9,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class PageController {
@@ -42,10 +44,21 @@ public class PageController {
   }
 
   @GetMapping("/colecciones/{id}/nav-hechos")
-  public String coleccionesNavHechos(Model model, @PathVariable UUID id, FiltroDTO filtroDTO) {
+  public String coleccionesNavHechos(Model model, @PathVariable UUID id) {
+    FiltroDTO filtroDTO = new FiltroDTO();
     List<HechoDTOOutput> hechos =  this.cliente.findHechosByColeccionId(id, filtroDTO);
     model.addAttribute("hechos", hechos);
-    //model.addAttribute("urlColeccion", "/colecciones/" + id + "/nav-hechos");
+    model.addAttribute("filtros", filtroDTO);
+    model.addAttribute("urlColeccion", "/colecciones/" + id + "/nav-hechos");
+    return "hechos/nav-hechos";
+  }
+
+  @PostMapping("/colecciones/{id}/nav-hechos")
+  public String coleccionesNavHechos(Model model, @PathVariable UUID id, @ModelAttribute("filtroDTO") FiltroDTO filtroDTO) {
+    List<HechoDTOOutput> hechos =  this.cliente.findHechosByColeccionId(id, filtroDTO);
+    model.addAttribute("hechos", hechos);
+    model.addAttribute("filtros", filtroDTO);
+    model.addAttribute("urlColeccion", "/colecciones/" + id + "/nav-hechos");
     return "hechos/nav-hechos";
   }
 
