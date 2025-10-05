@@ -1,0 +1,12 @@
+package ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios;
+
+public enum Permiso {
+  CREARCOLECCION,
+  MODIFICARCOLECCION,
+  ELIMINARCOLECCION,
+  VISITARESTADISTICAS,
+  MODIFICARHECHO,
+  REVISARHECHO,
+  REVISARSOLICITUD,
+  SUBIDAARCHIVO
+}

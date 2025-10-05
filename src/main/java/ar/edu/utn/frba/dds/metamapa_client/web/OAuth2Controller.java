@@ -29,6 +29,12 @@ public class OAuth2Controller {
     if(email.isBlank()){
       return "redirect:/iniciar-sesion?error=oauth_no_email";
     }
+    Object usernameAttr = principal.getAttributes().get("username");
+    String username = usernameAttr == null ? "" : String.valueOf(usernameAttr);
+
+    if (username.isBlank()){
+      return "redirect:/iniciar-sesion?error=oauth_no_username";
+    }
 
     // Pedimos al backend (o mock) el rol efectivo para este email+provider
     LoginResp r = api.socialLogin(provider,email);
