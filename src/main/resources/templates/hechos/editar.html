@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout('Editar Hecho', ~{::link}, ~{::section})}">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles-mis-hechos.css}">
+</head>
+<body class="body-metamapa" th:object="${hecho}">
+    <section>
+        <div class="container-mis-hechos">
+            <h1 class="mm-form-title" style="margin:0 0 6px;">Editar hecho</h1>
+            <p class="mm-form-sub">Modificá los campos y guardá los cambios</p>
+
+            <div th:if="${ok}" class="alert alert-success" role="alert" th:text="${ok}">Actualizado</div>
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
+
+            <!-- Ajustar el action a endpoint de guardado -->
+            <form th:action="@{'/hechos/' + *{id}}" method="post" enctype="multipart/form-data" class="mm-form">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+
+                <!-- Título -->
+                <div class="mm-field">
+                    <label class="mm-label" for="titulo">Título</label>
+                    <input id="titulo" name="titulo" class="mm-input" type="text" required
+                           th:value="*{titulo}" maxlength="200">
+                </div>
+
+                <!-- Descripción -->
+                <div class="mm-field">
+                    <label class="mm-label" for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" class="mm-input" rows="6"
+                              th:text="*{descripcion}"></textarea>
+                </div>
+
+                <!-- Imagen (opcional) -->
+                <div class="mm-field">
+                    <label class="mm-label" for="imagenNueva">Imagen</label>
+                    <input id="imagenNueva" name="imagenNueva" type="file" accept="image/*" class="mm-input">
+                    <small class="mm-help">Si no seleccionás una imagen, se mantiene la actual.</small>
+                </div>
+
+                <!-- Ubicación (sin mapa) -->
+                <div class="mm-grid-2">
+                    <div class="mm-field">
+                        <label class="mm-label" for="lat">Latitud</label>
+                        <input id="lat" name="lat" class="mm-input" type="number" step="0.000001"
+                               th:value="*{ubicacion != null ? ubicacion.latitud : null}">
+                    </div>
+                    <div class="mm-field">
+                        <label class="mm-label" for="lng">Longitud</label>
+                        <input id="lng" name="lng" class="mm-input" type="number" step="0.000001"
+                               th:value="*{ubicacion != null ? ubicacion.longitud : null}">
+                    </div>
+                </div>
+
+                <!-- (Opcional) Fecha de acontecimiento si editás eso -->
+<!--                <div class="mm-field">-->
+<!--                    <label class="mm-label" for="fechaAcontecimiento">Fecha del acontecimiento</label>-->
+<!--                    <input id="fechaAcontecimiento" name="fechaAcontecimiento" class="mm-input" type="date"-->
+<!--                           th:value="${#temporals.format(hecho.fechaAcontecimiento, 'yyyy-MM-dd')}">-->
+<!--                </div>-->
+
+                <div class="mm-toolbar" style="margin-top:14px;">
+                    <button class="mm-btn" type="submit">Guardar cambios</button>
+                    <a class="mm-btn" th:href="@{/hechos/mis-hechos}" role="button">Volver</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

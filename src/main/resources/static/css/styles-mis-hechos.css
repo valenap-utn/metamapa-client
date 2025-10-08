@@ -1,0 +1,124 @@
+@import url("styles-layout.css");
+@import url("estilos-admin/styles-gest-solEliminacion.css");
+
+/* ---------- Contenedores ---------- */
+.container-mis-hechos{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* Variante más angosta para la pantalla de edición (opcional)
+   Usala agregando la clase .container-mis-hechos--narrow en editar.html si querés. */
+.container-mis-hechos--narrow{
+    max-width: 860px;
+}
+
+/* ---------- Grilla de cards ---------- */
+.container-mis-hechos .mm-requests{
+    display: grid; /* (ya lo tenés, pero por si esta hoja carga aislada) */
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+}
+
+/* ---------- Acciones en la card ---------- */
+.mm-btn[disabled]{
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+/* ---------- Paginación y "Cargar más" ---------- */
+.mm-pagination{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 18px 0 6px;
+}
+
+.mm-page-link{
+    display: inline-block;
+    text-decoration: none;
+    color: var(--brand-800);
+    background: #fff;
+    border: 1px solid var(--muted);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-weight: 600;
+    transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.mm-page-link:hover{
+    background: #f7fbff;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06);
+}
+
+.mm-page-status{
+    color: #6b8397;
+}
+
+/* Fallback básico si no usás Bootstrap utilidades */
+.text-center{ text-align: center; }
+
+/* ---------- Formularios de edición ----------
+   Reusamos .mm-input del CSS existente y sumamos layout de form. */
+.mm-form{
+    display: grid;
+    gap: 14px;
+}
+
+.mm-field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mm-label{
+    font-weight: 700;
+    color: var(--brand-800);
+}
+
+.mm-help{
+    color: #6b8397;
+    font-size: .9rem;
+}
+
+.mm-grid-2{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* ---------- Alertas (fallback simple si no cargás Bootstrap) ---------- */
+.alert{
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    margin: .75rem 0;
+    border: 1px solid transparent;
+    background: #f8fafc;
+    color: #3B4F61;
+}
+.alert-success{
+    border-color: rgba(46, 204, 113, .35);
+    background: rgba(46, 204, 113, .14);
+    color: #13844b;
+}
+.alert-danger{
+    border-color: rgba(231, 76, 60, .35);
+    background: rgba(231, 76, 60, .14);
+    color: #a83225;
+}
+
+/* ---------- Accesibilidad ---------- */
+.visually-hidden{
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px){
+    .container-mis-hechos{ padding: .75rem; }
+    .mm-grid-2{ grid-template-columns: 1fr; }
+}

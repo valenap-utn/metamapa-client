@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout('Mis Hechos', ~{::link}, ~{::section})}">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles-mis-hechos.css}">
+</head>
+<body class="body-metamapa">
+
+<section class="container-mis-hechos">
+
+    <div style="font-size:.9rem;color:#6b8397;margin-bottom:8px;">
+        (debug) user_id sesión:
+        <strong th:text="${#httpSession.getAttribute('user_id')}">null</strong>
+    </div>
+
+    <!-- Si no hay items -->
+    <div th:if="${#lists.isEmpty(items)}">Aún no cargaste hechos.</div>
+
+    <!-- Tarjeta -->
+    <article class="mm-req" th:each="h : ${items}" th:with="
+           ahora=${T(java.time.LocalDateTime).now()},
+           fc=${h.fechaCarga},
+           editable=${fc != null} ? ahora.isBefore(fc.plusDays(7)) : false ">
+
+        <header class="mm-req__header">
+            <h3 class="mm-req__title" th:text="${h.titulo}">Título</h3>
+
+            <div class="mm-req__meta">
+            <span class="badge badge-neutral">
+              Creado el&nbsp;
+              <span th:text="${h.fechaCarga} != null ? #temporals.format(h.fechaCarga,'dd/MM/yyyy') : '—'">—</span>
+            </span>
+
+                <span class="badge" th:classappend="${editable} ? ' badge-brand' : ' badge-neutral'">
+              <span th:text="${editable} ? 'Editable (≤ 7 días)' : 'Edición vencida'">Estado</span>
+            </span>
+            </div>
+        </header>
+
+        <div class="mm-req__body">
+            <p th:text="${h.descripcion} ?: '—'">—</p>
+        </div>
+
+        <div class="mm-req__actions">
+            <form th:action="@{'/hechos/' + ${h.id} + '/editar'}" method="get">
+                <button type="submit" class="mm-btn mm-btn--round" th:disabled="${!editable}" title="Editar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- Mensaje de error si viene de redirect -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    </article>
+
+</section>
+</body>
+</html>
