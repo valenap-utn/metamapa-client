@@ -4,8 +4,16 @@ import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios.Rol;
+import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
 import jakarta.servlet.http.HttpSession;
+
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +32,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HechosController {
   private final ClientSeader agregador;
 
-  public HechosController(ClientSeader agregador) {
+  private final ConexionServicioUser servicioUsuarios;
+
+  public HechosController(ClientSeader agregador, ConexionServicioUser servicioUsuarios) {
     this.agregador = agregador;
+    this.servicioUsuarios = servicioUsuarios;
   }
 
   @GetMapping("/{idHecho}")
@@ -56,8 +67,6 @@ public class HechosController {
     return "hechos/nav-hechos";
   }
 
-
-
   @GetMapping("/subir-hecho")
   public String subirHecho(Model model) {
     model.addAttribute("hecho", new HechoDTOInput());
@@ -71,9 +80,116 @@ public class HechosController {
     return "hechos/subir-hecho";
   }
 
+  //Método para chequear que tenga rol
+  private boolean hasRole(HttpSession session, Rol r) {
+    boolean isAdmin  = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+    boolean isContrib= Boolean.TRUE.equals(session.getAttribute("isContribuyente"));
+    return (r == Rol.ADMINISTRADOR && isAdmin) || (r == Rol.CONTRIBUYENTE && isContrib);
+  }
+
+  private static final Logger log = LoggerFactory.getLogger(HechosController.class);
+
+  // Para ver Hechos subidos por uno mismo
+  @GetMapping("/mis-hechos")
+  public String misHechos(@RequestParam(defaultValue = "12") int limit, @RequestParam(defaultValue = "12") int step, @RequestParam(required = false) boolean partial, HttpSession session, Model model, RedirectAttributes ra) {
+
+    if(!hasRole(session, Rol.CONTRIBUYENTE)) {
+      ra.addFlashAttribute("error", "Necesitas rol CONTRIBUYENTE");
+      return "redirect:/main-gral";
+    }
+
+    Long userId = resolveUserId(session);
+    if(userId == null) {
+      return "redirect:/iniciar-sesion";
+    }
+
+    // Listamos y acumulamos los hechos
+    List<HechoDTOOutput> all = agregador.listHechosDelUsuario(userId);
+
+    log.info("[mis-hechos] userId={}, isContrib={}, totalItems={}", userId, hasRole(session, Rol.CONTRIBUYENTE), (all==null?0:all.size()));
+    if (all != null && !all.isEmpty()) {
+      log.info("[mis-hechos] firstItemId={}, title={}", all.get(0).getId(), all.get(0).getTitulo());
+    }
+
+    int total = all.size();
+    int shown = Math.min(Math.max(limit,0), total);
+
+    model.addAttribute("items", all.subList(0, shown));
+    model.addAttribute("shown", shown);
+    model.addAttribute("total", total);
+    model.addAttribute("hasMore", shown < total);
+    model.addAttribute("nextLimit", Math.min(shown + step, total));
+    model.addAttribute("step", step);
+    model.addAttribute("titulo", "Mis Hechos");
+    return "hechos/mis-hechos";
+  }
+
+  // Para editar el Hecho
+  // Validamos existencia del Usuario actual,
+  // y ventana de 7 días desde fecha de Carga del Hecho
+  // Si falla => redirige con flash error (ver si lo queremos cambiar a esto)
+  // Sino => renderiza editar.html (reutilizamos subir-hecho con click-to-edit)
+  @GetMapping("/{idHecho}/editar")
+  public String editar(@PathVariable Long idHecho, HttpSession session, RedirectAttributes ra, Model model) {
+    if(!hasRole(session, Rol.CONTRIBUYENTE)) {
+      ra.addFlashAttribute("error", "Necesitas rol CONTRIBUYENTE");
+      return "redirect:/main-gral";
+    }
+
+    Long userId = resolveUserId(session);
+    if(userId == null) {
+        return "redirect:/iniciar-sesion";
+    }
+
+    HechoDTOOutput hecho = agregador.revisarHecho(idHecho, "http://localhost:3000");
+    if (hecho == null) {
+      ra.addFlashAttribute("error", "El hecho no existe.");
+      return "redirect:/hechos/mis-hechos";
+    }
+    if (!userId.equals(hecho.getIdUsuario())) {
+      ra.addFlashAttribute("error", "No podés editar un hecho que no es tuyo.");
+      return "redirect:/hechos/mis-hechos";
+    }
+
+    boolean editable = hecho.getFechaCarga() != null && LocalDateTime.now().isBefore(hecho.getFechaCarga().plusDays(7));
+    if(!editable){
+      ra.addFlashAttribute("error", "La edición está disponible solo durante los primeros 7 días");
+      return "redirect:/hechos/mis-hechos";
+    }
+
+    model.addAttribute("hecho", hecho);
+    model.addAttribute("titulo", "Editar Hecho");
+    return "hechos/editar";
+  }
+
+  // ---------- Helper para el ID ----------
+
+  // Fallback de dev: si está vacío, no se usa
+  @Value("${metamapa.dev.forceUserId:}")
+  private Long forceUserId;
+
+  private Long resolveUserId(HttpSession session) {
+    Object cached = session.getAttribute("user_id");
+    if (cached instanceof Long id) return id;
+
+    // Intento real: /auth/me (usa access/refresh token y WebApiCallerService)
+    try {
+      var me = servicioUsuarios.getMe();
+      if (me != null && me.getId() != null) {
+        session.setAttribute("user_id", me.getId());
+        return me.getId();
+      }
+    } catch (Exception ignored) { /* si falla, pasamos al fallback */ }
+
+    // Fallback DEV (propiedad) — quitalo en prod
+    if (forceUserId != null) {
+      session.setAttribute("user_id", forceUserId);
+      return forceUserId;
+    }
+    return null;
+  }
 
   //-------------------------------------
-
 
   record HechoDto(Long id, String titulo, String fecha, String categoria, String ubicacion) {}
 

@@ -18,10 +18,10 @@ import java.util.Optional;
 @Component
 public class RememberService {
 
-  @Value("${mm.remember.secret")
+  @Value("${mm.remember.secret}")
   private String secret;
 
-  @Value("${mm.rememvber.days:30}")
+  @Value("${mm.remember.days:30}")
   private int days;
 
   @Value("${mm.remember.secure:false}")

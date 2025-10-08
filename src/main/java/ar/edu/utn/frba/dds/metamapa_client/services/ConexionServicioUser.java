@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.metamapa_client.exceptions.FalloEnLaAutenticacion;
 import ar.edu.utn.frba.dds.metamapa_client.exceptions.ServicioDesconectado;
 import ar.edu.utn.frba.dds.metamapa_client.exceptions.UsuarioNoEncontrado;
 import ar.edu.utn.frba.dds.metamapa_client.services.internal.WebApiCallerService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -17,13 +18,26 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 public class ConexionServicioUser {
   private final WebApiCallerService webApiCallerService;
-  private final WebClient webClient;
+//  private final WebClient webClient;
+  private final WebClient.Builder webClientBuilder;
+
   @Value("${api.servicioUsuarios.url}")
   private String baseUrl;
-  ConexionServicioUser(WebApiCallerService webApiCallerService) {
+
+  private WebClient webClient;
+
+  ConexionServicioUser(WebApiCallerService webApiCallerService, WebClient.Builder webClientBuilder) {
     this.webApiCallerService = webApiCallerService;
-    this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+    this.webClientBuilder = webClientBuilder;
   }
+
+  // El PostConstruct es para armar el baseUrl,
+  // que para el momento del Constructor todavía no fue Inyectado
+  @PostConstruct
+  void init(){
+    this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+  }
+
   public AuthResponseDTO getTokens(String username, String password) {
     try {
       CredencialesUserDTO credenciales = new CredencialesUserDTO(username, password);
@@ -45,22 +59,36 @@ public class ConexionServicioUser {
 
   public RolesPermisosDTO getRolesPermisos(String tokenAcceso) {
     try {
-      RolesPermisosDTO response = webApiCallerService.getWithAuth(
+      return webApiCallerService.getWithAuth(
               baseUrl + "/api/auth/user/roles-permisos",
               tokenAcceso,
               RolesPermisosDTO.class
       );
-      return response;
     } catch (Exception e) {
       throw new RuntimeException("Error al obtener roles y permisos: " + e.getMessage(), e);
     }
   }
 
-  public UsuarioDTO crearUsuario(UsuarioDTO alumnoDTO) {
-    UsuarioDTO response = webApiCallerService.post(baseUrl + "/api/users", alumnoDTO, UsuarioDTO.class);
-    if (response == null) {
-      throw new RuntimeException("Error al crear alumno en el servicio externo");
-    }
-    return response;
+//  public UsuarioDTO crearUsuario(UsuarioDTO alumnoDTO) {
+//    UsuarioDTO response = webApiCallerService.post(baseUrl + "/api/users", alumnoDTO, UsuarioDTO.class);
+//    if (response == null) {
+//      throw new RuntimeException("Error al crear alumno en el servicio externo");
+//    }
+//    return response;
+//  }
+
+  // Para usuario actual (lee el accessToken de sesión y maneja el refresh)
+  public UsuarioDTO getMe() {
+    return webApiCallerService.get(baseUrl + "/api/auth/me", UsuarioDTO.class);
+  } // a chequear,,,
+
+  // REGISTRO
+  public UsuarioDTO crearUsuario(UsuarioDTO dto) {
+    return this.webClient.post()
+        .uri("/api/users")
+        .bodyValue(dto)
+        .retrieve()
+        .bodyToMono(UsuarioDTO.class)
+        .block();
   }
 }

@@ -47,6 +47,7 @@
 
             <!--            <form id="form-usuario" class="mm-form" novalidate>-->
             <form method="post" th:action="@{/auth/register}" >
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <!-- Alertas -->
                 <div id="formAlert" class="alert alert-danger d-none" role="alert"></div>
 

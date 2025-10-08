@@ -129,6 +129,31 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     //Usuario contribuyente = Usuario.of(new Contribuyente(), "Carlos", "Romualdo");
     //Usuario administrador = Usuario.of(new Administrador(), "Josefina", "Mariel");
 
+    //Más ejemplitos para ver funcionamiento de mis-hechos y editar
+
+    // aniado descripción en los 3 ejemplos iniciales
+    hecho.setDescripcion("Evento de inundación en Bahía Blanca, cargado por admin.");
+    hecho2.setDescripcion("Inundación reportada por contribuyente. Ejemplo editable si <= 7 días.");
+    hecho3.setDescripcion("Reporte similar, con origen PROXY.");
+
+    // Agrego más hechos del contribuyente para probar el listado y el 7-días
+    for (int i = 1; i <= 18; i++) {
+      LocalDateTime carga = LocalDateTime.now().minusDays(i % 11); // mezcla 0..10 días (algunos >7)
+      HechoDTOOutput hx = HechoDTOOutput.builder()
+          .titulo("Hecho contribuyente #" + i)
+          .descripcion("Descripción de ejemplo " + i + ". Carga hace " + (i % 11) + " día(s).")
+          .categoria(new Categoria((i % 2 == 0) ? "Inundacion" : "Terremoto"))
+          .fechaCarga(carga)
+          .fechaAcontecimiento(LocalDateTime.of(2025, 3, 7, 0, 0).minusDays(i))
+          .contenidoMultimedia(contenidoMultimedia)
+          .origen((i % 3 == 0) ? origenProxy : origenDinamica)
+          .ubicacion(new Ubicacion(-34.60f + i * 0.01f, -58.38f - i * 0.01f))
+          .idUsuario(usuarioContribuyente) // todos pertenecen al contribuyente
+          .id(this.idHecho.getAndIncrement())
+          .build();
+      this.hechos.put(hx.getId(), hx);
+    }
+
   }
 
   @Override
@@ -290,5 +315,24 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     return coleccionDTOOutput;
   }
 
+  //Para obtener hechos por ID de Usuario
+//  public List<HechoDTOOutput> listHechosDelUsuario(Long userId) {
+//    return this.hechos.values().stream()
+//        .filter(h -> userId != null && userId.equals(h.getIdUsuario()))
+//        .toList();
+//  }
+
+  public List<HechoDTOOutput> listHechosDelUsuario(Long userId) {
+    return this.hechos.values().stream()
+        .filter(h -> userId != null && userId.equals(h.getIdUsuario()))
+        .sorted((a,b) -> {
+          var fa = a.getFechaCarga(); var fb = b.getFechaCarga();
+          if (fa == null && fb == null) return 0;
+          if (fa == null) return 1;
+          if (fb == null) return -1;
+          return fb.compareTo(fa); // DESC
+        })
+        .toList();
+  }
 
 }
