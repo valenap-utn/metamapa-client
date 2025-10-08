@@ -35,14 +35,14 @@ public class AuthController {
 //  private final WebClient backend;
   private final BackendAPI api;
   private final RememberService rememberService;
-  private final ConexionServicioUser servicioUsuarios;
+  //private final ConexionServicioUser servicioUsuarios;
   private final Environment env;
 
-  public AuthController(/*WebClient backend, */ BackendAPI api , RememberService rememberService, ConexionServicioUser servicioUsuarios, Environment enviroment) {
+  public AuthController(/*WebClient backend, */ BackendAPI api , RememberService rememberService, Environment enviroment) {
 //    this.backend = backend;
     this.api = api;
     this.rememberService =  rememberService;
-    this.servicioUsuarios = servicioUsuarios;
+
     this.env = enviroment;
   }
 
@@ -51,7 +51,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public String login(@RequestParam String email, @RequestParam String password, HttpSession session, RedirectAttributes ra) {
-    try {
+    /*try {
       if (authMock) {
         // ✅ Fallback local: acepto cualquier user/pass y seteo sesión
         session.setAttribute("accessToken", "dev");
@@ -93,7 +93,8 @@ public class AuthController {
     } catch (Exception e) {
       ra.addFlashAttribute("error", "No se pudo iniciar sesión.");
       return "redirect:/iniciar-sesion";
-    }
+    }*/
+    return null;
   }
 
   // Dev: ver qué quedó en sesión
@@ -115,7 +116,7 @@ public class AuthController {
     return "redirect:/";
   }
 
-  @PostMapping("/register")
+  @PostMapping("/regi")
   public String register(@RequestParam String email, @RequestParam String password, @RequestParam String rol, @RequestParam(name="remember", required=false) String remember, HttpSession session, HttpServletResponse response) {
     var r = api.register(email, password, rol);
     if (r == null || !r.ok()) {

@@ -61,8 +61,7 @@
                       </span>
                     </div>
 
-                    <form method="post" th:action="@{/auth/login}" novalidate>
-                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <form method="post" th:action="@{/iniciar-sesion}" novalidate>
 
                         <div class="input-group mb-3">
                             <span class="input-group-text bg-white border-end-0">

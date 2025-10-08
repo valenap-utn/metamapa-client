@@ -46,8 +46,7 @@
             <div class="alert alert-success" th:if="${param.ok}">Cuenta creada…</div>
 
             <!--            <form id="form-usuario" class="mm-form" novalidate>-->
-            <form method="post" th:action="@{/auth/register}" >
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <form method="post" th:action="@{/auth/register}" th:object="${cuenta}"  >
                 <!-- Alertas -->
                 <div id="formAlert" class="alert alert-danger d-none" role="alert"></div>
 
@@ -67,12 +66,12 @@
                     <div id="seccionDeRoles" class="mm-grid">
                         <div class="mm-field" style="padding: 10px 10px">
                             <label for="rolAdministrador" class="mm-label">Administrador
-                                <input id="rolAdministrador" type="radio" name="rol" value="administrador" style="margin: 0 0 0 10px; padding: 10px 10px ">
+                                <input id="rolAdministrador" type="radio" th:field="*{rol}" value="administrador" style="margin: 0 0 0 10px; padding: 10px 10px ">
                             </label>
                         </div>
                         <div class="mm-field" style="padding: 10px 10px">
                             <label for="rolContribuyente" class="mm-label">Contribuyente
-                                <input id="rolContribuyente" type="radio" name="rol" value="contribuyente" style="margin: 0 0 0 10px; padding: 10px 10px "/>
+                                <input id="rolContribuyente" type="radio" th:field="*{rol}" value="contribuyente" style="margin: 0 0 0 10px; padding: 10px 10px "/>
                             </label>
                         </div>
                     </div>
@@ -94,27 +93,27 @@
                     <div class="mm-grid">
                         <div class="mm-field mm-col-span-all">
                             <label for="email" class="mm-label">Email</label>
-                            <input id="email" name="email" type="email" class="mm-input" placeholder="tu@correo.com" required>
+                            <input id="email" th:field="*{email}" type="email" class="mm-input" placeholder="tu@correo.com" required>
                         </div>
 
                         <div class="mm-field mm-col-span-all">
                             <label for="password" class="mm-label">Contraseña</label>
-                            <input id="password" name="password" type="password" class="mm-input" minlength="8" required>
+                            <input id="password" th:field="*{password}" type="password" class="mm-input" minlength="8" required>
                         </div>
 
                         <div class="mm-field mm-col-span-all">
                             <label for="nombre" class="mm-label">Nombre<span class="visually-hidden">(obligatorio)</span></label>
-                            <input id="nombre" name="nombre" type="text" class="mm-input" placeholder="Tu nombre" required aria-label="Ingresar nombre">
+                            <input id="nombre" th:field="*{nombre}" type="text" class="mm-input" placeholder="Tu nombre" required aria-label="Ingresar nombre">
                         </div>
 
                         <div class="mm-field">
                             <label for="apellido" class="mm-label">Apellido</label>
-                            <input id="apellido" name="apellido" type="text" class="mm-input" placeholder="Tu apellido" required aria-label="Ingresar apellido">
+                            <input id="apellido" th:field="*{apellido}" type="text" class="mm-input" placeholder="Tu apellido" required aria-label="Ingresar apellido">
                         </div>
 
                         <div class="mm-field">
                             <label for="fechaDeNacimiento" class="mm-label">Fecha de nacimiento</label>
-                            <input id="fechaDeNacimiento" name="fechaDeNacimiento" type="date" class="mm-input" placeholder="Ejemplo: 19/11/2024" required>
+                            <input id="fechaDeNacimiento" th:field="*{fechaDeNacimiento}" type="date" class="mm-input" placeholder="Ejemplo: 19/11/2024" required>
                         </div>
                     </div>
 

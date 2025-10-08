@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.AuthResponseDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.RolesPermisosDTO;
 import ar.edu.utn.frba.dds.metamapa_client.exceptions.FalloEnLaAutenticacion;
 import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
+import ar.edu.utn.frba.dds.metamapa_client.services.IConexionServicioUser;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Component
 public class AuthProviderCreado implements AuthenticationProvider {
-  private final ConexionServicioUser conexionServicioUser;
+  private final IConexionServicioUser conexionServicioUser;
 
-  public AuthProviderCreado(ConexionServicioUser conexionServicioUser) {
+  public AuthProviderCreado(IConexionServicioUser conexionServicioUser) {
     this.conexionServicioUser = conexionServicioUser;
   }
   @Override

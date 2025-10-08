@@ -3,8 +3,11 @@
       th:replace="~{layout/layout :: layout('Editar Hecho', ~{::link}, ~{::section})}">
 <head>
     <link rel="stylesheet" th:href="@{/css/styles-mis-hechos.css}">
+    <!-- CSRF (Spring Security) -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
-<body class="body-metamapa" th:object="${hecho}">
+<body class="body-metamapa" >
     <section>
         <div class="container-mis-hechos">
             <h1 class="mm-form-title" style="margin:0 0 6px;">Editar hecho</h1>
@@ -14,7 +17,7 @@
             <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
 
             <!-- Ajustar el action a endpoint de guardado -->
-            <form th:action="@{'/hechos/' + *{id}}" method="post" enctype="multipart/form-data" class="mm-form">
+            <form th:object="${hecho}" th:action="@{'/hechos/' + ${hecho.getId()}}"  method="post" enctype="multipart/form-data" class="mm-form">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
 
                 <!-- Título -->
@@ -43,12 +46,12 @@
                     <div class="mm-field">
                         <label class="mm-label" for="lat">Latitud</label>
                         <input id="lat" name="lat" class="mm-input" type="number" step="0.000001"
-                               th:value="*{ubicacion != null ? ubicacion.latitud : null}">
+                               th:field="*{ubicacion.latitud}">
                     </div>
                     <div class="mm-field">
                         <label class="mm-label" for="lng">Longitud</label>
                         <input id="lng" name="lng" class="mm-input" type="number" step="0.000001"
-                               th:value="*{ubicacion != null ? ubicacion.longitud : null}">
+                               th:field="*{ubicacion.longitud}">
                     </div>
                 </div>
 

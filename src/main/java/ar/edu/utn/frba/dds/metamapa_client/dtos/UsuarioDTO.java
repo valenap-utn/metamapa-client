@@ -15,6 +15,7 @@ public class UsuarioDTO {
   private Long id;
   private String email;
   private String password;
+  private String username;
   private String nombre;
   private String apellido;
   private LocalDate fechaDeNacimiento;

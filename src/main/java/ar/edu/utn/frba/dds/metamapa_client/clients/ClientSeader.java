@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.metamapa_client.clients;
 
+import ar.edu.utn.frba.dds.metamapa_client.clients.utils.JwtUtil;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.AuthResponseDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.Categoria;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
@@ -11,9 +13,13 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.OrigenDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.RevisionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.RolesPermisosDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.Ubicacion;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.UsuarioDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios.Permiso;
+import ar.edu.utn.frba.dds.metamapa_client.services.IConexionServicioUser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,14 +33,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
-public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicioAgregador {
+public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicioAgregador, IConexionServicioUser {
   private final Map<UUID, ColeccionDTOOutput> coleccion = new HashMap<>();
   private final Map<Long, HechoDTOOutput> hechos = new HashMap<>();
   private final Map<Long, SolicitudEliminacionDTO> solicitudesEliminacion = new HashMap<>();
   private final Map<Long, SolicitudEdicionDTO> solicitudesEdicion = new HashMap<>();
+  private final Map<String, UsuarioDTO> usuarioDTO = new HashMap<>();
   private final AtomicLong idHecho = new AtomicLong(1);
   private final AtomicLong idSolicitudEliminacion = new AtomicLong(1);
   private final AtomicLong idSolicitudEdicion = new AtomicLong(1);
+  private final AtomicLong idUsuario = new AtomicLong(1);
   private final Long usuarioAdmin = 1L;
   private final Long usuarioContribuyente = 2L;
   private final Long usuarioContribuyente2 = 3L;
@@ -335,4 +343,35 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
         .toList();
   }
 
+  @Override
+  public AuthResponseDTO getTokens(String username, String password) {
+    UsuarioDTO usuarioDTO = this.usuarioDTO.get(username);
+    AuthResponseDTO responseDTO = new AuthResponseDTO();
+    responseDTO.setAccessToken(JwtUtil.generarAccessToken(usuarioDTO));
+    responseDTO.setRefreshToken(JwtUtil.generarRefreshToken(usuarioDTO));
+    return responseDTO;
+  }
+
+  @Override
+  public RolesPermisosDTO getRolesPermisos(String tokenAcceso) {
+    String email = JwtUtil.validarToken(tokenAcceso);
+    UsuarioDTO usuarioDTO = this.usuarioDTO.get(email);
+    RolesPermisosDTO rolesPermisosDTO = new RolesPermisosDTO();
+    rolesPermisosDTO.setRol(usuarioDTO.getRol());
+    rolesPermisosDTO.setPermisos(List.of(Permiso.CREARCOLECCION.name(), Permiso.ELIMINARCOLECCION.name()));
+    return  rolesPermisosDTO;
+  }
+
+  @Override
+  public UsuarioDTO crearUsuario(UsuarioDTO dto) {
+    Long id = this.idUsuario.getAndIncrement();
+    dto.setId(id);
+    this.usuarioDTO.put(dto.getEmail(), dto);
+    return dto;
+  }
+
+  @Override
+  public UsuarioDTO getMe() {
+    return null;
+  }
 }

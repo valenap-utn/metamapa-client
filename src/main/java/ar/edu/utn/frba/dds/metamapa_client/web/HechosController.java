@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios.Rol;
 import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
+import ar.edu.utn.frba.dds.metamapa_client.services.IConexionServicioUser;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDateTime;
@@ -32,9 +33,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HechosController {
   private final ClientSeader agregador;
 
-  private final ConexionServicioUser servicioUsuarios;
+  private final IConexionServicioUser servicioUsuarios;
 
-  public HechosController(ClientSeader agregador, ConexionServicioUser servicioUsuarios) {
+  public HechosController(ClientSeader agregador, IConexionServicioUser servicioUsuarios) {
     this.agregador = agregador;
     this.servicioUsuarios = servicioUsuarios;
   }

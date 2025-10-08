@@ -16,6 +16,6 @@ public class RolesPermisosDTO {
   @JsonProperty("rol")
   private String rol;
   @JsonProperty("permisos")
-  private java.util.List<String> permisos;
+  private List<String> permisos;
 
 }

@@ -4,6 +4,8 @@ import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.UsuarioDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
@@ -73,8 +76,28 @@ public class PageController {
   }
 
   @GetMapping("/crear-cuenta")
-  public String crearCuenta() {
+  public String crearCuenta(Model model) {
+    model.addAttribute("cuenta", new UsuarioDTO());
     return "crear-cuenta";
+  }
+
+  @PostMapping("/auth/register")
+  public String register(Model model, @ModelAttribute("cuenta") UsuarioDTO usuario) {
+    UsuarioDTO usuario2 = this.cliente.crearUsuario(new UsuarioDTO());
+    /*var r = api.register(email, password, rol);
+    if (r == null || !r.ok()) {
+      String code = (r != null && r.error() != null) ? r.error() : "unknown";
+      return "redirect:/crear-cuenta?error=" + code; // o mostrar mensaje “email ya registrado”
+    }
+
+    String role = normalizeRole(r.rol());
+    session.setAttribute("AUTH_EMAIL", email);
+    session.setAttribute("AUTH_ROLE",  role);
+
+    if ("on".equalsIgnoreCase(remember) || "1".equals(remember)) {
+      rememberService.setRememberCookie(response, email, role);
+    }*/
+    return "/main-gral"; //role.startsWith("ADMIN") ? "redirect:/admin" : "redirect:/main-gral";
   }
 
   @GetMapping("/privacidad")
