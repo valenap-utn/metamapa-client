@@ -8,32 +8,33 @@
 
 <section class="container-mis-hechos">
 
+    <!-- debug seguro -->
     <div style="font-size:.9rem;color:#6b8397;margin-bottom:8px;">
-        (debug) user_id sesión:
-        <strong th:text="${#httpSession.getAttribute('user_id')}">null</strong>
+        (debug) user_id sesión: <strong th:text="${session.user_id}">null</strong>
     </div>
 
-    <!-- Si no hay items -->
-    <div th:if="${#lists.isEmpty(items)}">Aún no cargaste hechos.</div>
+    <!-- vacío -->
+    <div th:if="${items == null or #lists.isEmpty(items)}">Aún no cargaste hechos.</div>
 
-    <!-- Tarjeta -->
-    <article class="mm-req" th:each="h : ${items}" th:with="
-           ahora=${T(java.time.LocalDateTime).now()},
-           fc=${h.fechaCarga},
-           editable=${fc != null} ? ahora.isBefore(fc.plusDays(7)) : false ">
+    <!-- tarjetas -->
+    <article class="mm-req"
+             th:each="h : ${items}"
+             th:with="ahora=${T(java.time.LocalDateTime).now()},
+                    fc=${h.fechaCarga},
+                    editable=${fc != null and ahora.isBefore(fc.plusDays(7))}">
 
         <header class="mm-req__header">
             <h3 class="mm-req__title" th:text="${h.titulo}">Título</h3>
 
             <div class="mm-req__meta">
-            <span class="badge badge-neutral">
-              Creado el&nbsp;
-              <span th:text="${h.fechaCarga} != null ? #temporals.format(h.fechaCarga,'dd/MM/yyyy') : '—'">—</span>
-            </span>
+        <span class="badge badge-neutral">
+          Creado el&nbsp;
+          <span th:text="${h.fechaCarga} != null ? ${#temporals.format(h.fechaCarga,'dd/MM/yyyy')} : '—'">—</span>
+        </span>
 
                 <span class="badge" th:classappend="${editable} ? ' badge-brand' : ' badge-neutral'">
-              <span th:text="${editable} ? 'Editable (≤ 7 días)' : 'Edición vencida'">Estado</span>
-            </span>
+          <span th:text="${editable} ? 'Editable (≤ 7 días)' : 'Edición vencida'">Estado</span>
+        </span>
             </div>
         </header>
 
@@ -51,9 +52,14 @@
             </form>
         </div>
 
-        <!-- Mensaje de error si viene de redirect -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     </article>
+
+    <div th:if="${hasMore}" style="margin-top:16px">
+        <a class="mm-btn" th:href="@{/hechos/mis-hechos(limit=${nextLimit}, step=${step})}">
+            Cargar más
+        </a>
+    </div>
 
 </section>
 </body>

@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import java.util.List;
-import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-@Builder
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/admin")
 public class AdminController {

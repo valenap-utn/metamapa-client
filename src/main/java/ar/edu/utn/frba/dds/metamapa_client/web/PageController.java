@@ -6,6 +6,8 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +33,16 @@ public class PageController {
     return "iniciar-sesion";
   }
 
+//  @GetMapping("/main-gral")
+//  public String mainGral() {
+//    return "main-gral";
+//  }
+
   @GetMapping("/main-gral")
-  public String mainGral() {
+  public String mainGral(HttpSession session, Model model) {
+    model.addAttribute("titulo", "MetaMapa");
+    model.addAttribute("isContribuyente", Boolean.TRUE.equals(session.getAttribute("isContribuyente")));
+    model.addAttribute("isAdmin",         Boolean.TRUE.equals(session.getAttribute("isAdmin")));
     return "main-gral";
   }
 
@@ -76,8 +86,5 @@ public class PageController {
   public String terminos() {
     return "terminos";
   }
-//  @GetMapping("/admin")
-//  public String admin() {
-//    return "admin";       // protegido por interceptor (abajo)
-//  }
+
 }

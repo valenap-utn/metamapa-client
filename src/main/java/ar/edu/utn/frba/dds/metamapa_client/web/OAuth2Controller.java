@@ -4,14 +4,14 @@ import ar.edu.utn.frba.dds.metamapa_client.core.BackendAPI;
 import ar.edu.utn.frba.dds.metamapa_client.core.dtos.LoginResp;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Builder
+@RequiredArgsConstructor
 @Controller
 public class OAuth2Controller {
   private final BackendAPI api;
