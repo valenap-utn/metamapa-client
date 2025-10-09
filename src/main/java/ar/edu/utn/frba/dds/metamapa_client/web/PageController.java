@@ -118,7 +118,7 @@ public class PageController {
     ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
     HttpServletRequest request = attributes.getRequest();
     String rol = request.getSession().getAttribute("rol").toString();
-    return rol.startsWith("ADMIN") ? "/admin" : "redirect:/main-gral";
+    return rol.startsWith("ADMIN") ? "redirect:/admin" : "redirect:/main-gral";
   }
 
 }

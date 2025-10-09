@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.metamapa_client.core.dtos.StatsResp;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +19,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-@RequiredArgsConstructor
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
   private final ClientSeader agregador;
   private final BackendAPI api;
 
+  public AdminController(ClientSeader agregador, BackendAPI api) {
+    this.agregador = agregador;
+    this.api = api;
+  }
+
+
   @GetMapping
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String dashboard(Model model) {
-//    // TODO: traer métricas reales del backend
-//    model.addAttribute("metrics", Map.of("hechos",124, "fuentes",8, "solicitudes",3));
-//    return "admin";
-//
     model.addAttribute("metrics", Map.of("hechos",124, "fuentes",8, "solicitudes",3));
     return "admin";
   }

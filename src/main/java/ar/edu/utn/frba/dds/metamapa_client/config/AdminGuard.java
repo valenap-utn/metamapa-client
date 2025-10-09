@@ -9,7 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AdminGuard implements HandlerInterceptor {
 
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-    String role = (String) request.getSession().getAttribute("AUTH_ROLE");
+    String role = (String) request.getSession().getAttribute("rol");
     if(role != null && role.startsWith("ADMIN")){
       return true;
     }

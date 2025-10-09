@@ -32,7 +32,8 @@ public class SecurityConfig {
                 "/favicon.ico", "/error/**",
                 "/auth/**", "/oauth2/**", "/login/**"
             ).permitAll()
-            .anyRequest().permitAll()
+                //.requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                .anyRequest().authenticated()
         ).oauth2Login(oauth -> oauth
             .loginPage("/iniciar-sesion")
             .defaultSuccessUrl("/oauth2/success", true) //se procesa el email/rol

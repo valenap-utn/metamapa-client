@@ -15,7 +15,7 @@
                 <div class="card mm-card mm-metric w-100 h-100">
                     <div class="card-body">
                         <h5 class="card-title">Hechos</h5>
-                        <p class="mm-metric__number" th:text="${metrics.hechos}">124</p>
+                        <p class="mm-metric__number" th:text="${metrics.get('hechos') }">124</p>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <div class="card mm-card mm-metric w-100 h-100">
                     <div class="card-body">
                         <h5 class="card-title">Fuentes</h5>
-                        <p class="mm-metric__number" th:text="${metrics.fuentes}">8</p>
+                        <p class="mm-metric__number" th:text="${metrics.get('fuentes')}">8</p>
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <div class="card mm-card mm-metric w-100 h-100">
                     <div class="card-body">
                         <h5 class="card-title">Solicitudes de eliminación</h5>
-                        <p class="mm-metric__number" th:text="${metrics.solicitudes}">3</p>
+                        <p class="mm-metric__number" th:text="${metrics.get('solicitudes')}">3</p>
                     </div>
                 </div>
             </div>
