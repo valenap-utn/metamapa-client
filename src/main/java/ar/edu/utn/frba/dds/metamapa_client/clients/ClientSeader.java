@@ -357,7 +357,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     String email = JwtUtil.validarToken(tokenAcceso);
     UsuarioDTO usuarioDTO = this.usuarioDTO.get(email);
     RolesPermisosDTO rolesPermisosDTO = new RolesPermisosDTO();
-    rolesPermisosDTO.setRol(usuarioDTO.getRol());
+    rolesPermisosDTO.setRol(usuarioDTO.getRol().toUpperCase());
     rolesPermisosDTO.setPermisos(List.of(Permiso.CREARCOLECCION.name(), Permiso.ELIMINARCOLECCION.name()));
     return  rolesPermisosDTO;
   }

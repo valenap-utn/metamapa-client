@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,19 +28,18 @@ public class AdminController {
   private final BackendAPI api;
 
   @GetMapping
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String dashboard(Model model) {
 //    // TODO: traer métricas reales del backend
 //    model.addAttribute("metrics", Map.of("hechos",124, "fuentes",8, "solicitudes",3));
 //    return "admin";
-//  }
-    StatsResp stats = api.getAdminStats();
-    model.addAttribute("metrics", stats);
+//
+    model.addAttribute("metrics", Map.of("hechos",124, "fuentes",8, "solicitudes",3));
     return "admin";
   }
 
   @GetMapping("/crear-coleccion")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String crearColeccion(Model model) {
     model.addAttribute("coleccion", new ColeccionDTOInput());
     model.addAttribute("titulo", "Crear Coleccion");
@@ -47,7 +47,7 @@ public class AdminController {
   }
 
   @PostMapping("/crear-coleccion")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String crearColeccionPost(@ModelAttribute("coleccion") ColeccionDTOInput coleccion, Model model) {
     ColeccionDTOOutput coleccionDTOOutput = this.agregador.crearColeccion(coleccion);
 
@@ -55,19 +55,19 @@ public class AdminController {
   }
 
   @GetMapping("/modificar-coleccion")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String modificarColeccion() {
     return "admins/modificar-coleccion";
   }
 
   @GetMapping("/importar-csv")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String importarCsv() {
     return "admins/importar-csv";
   }
 
   @PostMapping("/importar-csv")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String importarCsvPost(@RequestParam("file") MultipartFile file) {
 
     this.agregador.subirHechosCSV(file, 1L, "http://localhost:5000/");
@@ -75,7 +75,7 @@ public class AdminController {
   }
 
   @GetMapping("/gest-solEliminacion")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String solicitudes(Model model) {
     List<SolicitudEliminacionDTO> solicitudes = this.agregador.findAllSolicitudes();
     model.addAttribute("solicitudes", solicitudes);
@@ -84,7 +84,7 @@ public class AdminController {
   }
 
   @GetMapping("/dashboard-estadisticas")
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String estadisticas() {
 
     return "admins/dashboard-estadisticas";

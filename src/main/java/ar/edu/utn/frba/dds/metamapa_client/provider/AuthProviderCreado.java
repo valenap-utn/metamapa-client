@@ -28,10 +28,9 @@ public class AuthProviderCreado implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String password = authentication.getCredentials().toString();
-    String username = authentication.getName();
-
+    String email = authentication.getName();
     try {
-      AuthResponseDTO tokensDeAcceso = this.conexionServicioUser.getTokens(username, password);
+      AuthResponseDTO tokensDeAcceso = this.conexionServicioUser.getTokens(email, password);
       if(tokensDeAcceso == null) {
         throw new FalloEnLaAutenticacion("No se pudo recuperar el token");
       }
@@ -40,7 +39,7 @@ public class AuthProviderCreado implements AuthenticationProvider {
 
       request.getSession().setAttribute("accessToken", tokensDeAcceso.getAccessToken());
       request.getSession().setAttribute("refreshToken", tokensDeAcceso.getRefreshToken());
-      request.getSession().setAttribute("username", username);
+      request.getSession().setAttribute("email", email);
       //request.getSession().setAttribute("idUsuario", tokensDeAcceso.getTokenAcceso());
 
       RolesPermisosDTO rolesPermisos = conexionServicioUser.getRolesPermisos(tokensDeAcceso.getAccessToken());
@@ -53,7 +52,7 @@ public class AuthProviderCreado implements AuthenticationProvider {
       });
       authorities.add(new SimpleGrantedAuthority("ROLE_" + rolesPermisos.getRol()));
 
-      return new UsernamePasswordAuthenticationToken(username, password, authorities);
+      return new UsernamePasswordAuthenticationToken(email, password, authorities);
     } catch (Exception e) {
       throw new FalloEnLaAutenticacion("Hubo un error en la autenticación: " + e.getMessage());
     }

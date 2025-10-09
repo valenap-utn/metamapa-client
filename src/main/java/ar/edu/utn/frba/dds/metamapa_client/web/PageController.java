@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.UsuarioDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Controller
 public class PageController {
@@ -83,7 +86,7 @@ public class PageController {
 
   @PostMapping("/auth/register")
   public String register(Model model, @ModelAttribute("cuenta") UsuarioDTO usuario) {
-    UsuarioDTO usuario2 = this.cliente.crearUsuario(new UsuarioDTO());
+    UsuarioDTO usuario2 = this.cliente.crearUsuario(usuario);
     /*var r = api.register(email, password, rol);
     if (r == null || !r.ok()) {
       String code = (r != null && r.error() != null) ? r.error() : "unknown";
@@ -97,7 +100,7 @@ public class PageController {
     if ("on".equalsIgnoreCase(remember) || "1".equals(remember)) {
       rememberService.setRememberCookie(response, email, role);
     }*/
-    return "/main-gral"; //role.startsWith("ADMIN") ? "redirect:/admin" : "redirect:/main-gral";
+    return "redirect:/iniciar-sesion"; //role.startsWith("ADMIN") ? "redirect:/admin" : "redirect:/main-gral";
   }
 
   @GetMapping("/privacidad")
@@ -108,6 +111,14 @@ public class PageController {
   @GetMapping("/terminos")
   public String terminos() {
     return "terminos";
+  }
+
+  @GetMapping("/main")
+  public String mainDeUsuario() {
+    ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+    HttpServletRequest request = attributes.getRequest();
+    String rol = request.getSession().getAttribute("rol").toString();
+    return rol.startsWith("ADMIN") ? "/admin" : "redirect:/main-gral";
   }
 
 }

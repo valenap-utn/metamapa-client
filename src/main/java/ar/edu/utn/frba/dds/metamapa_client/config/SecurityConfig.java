@@ -39,6 +39,7 @@ public class SecurityConfig {
         ).logout(Customizer.withDefaults())
             .formLogin( form -> form
                     .loginPage("/iniciar-sesion")
+                    .defaultSuccessUrl("/main", true)
             )
             .csrf((AbstractHttpConfigurer::disable))
             .exceptionHandling( httpSecurityExceptionHandlingConfigurer ->
