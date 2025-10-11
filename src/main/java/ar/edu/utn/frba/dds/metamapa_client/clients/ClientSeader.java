@@ -162,6 +162,39 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
       this.hechos.put(hx.getId(), hx);
     }
 
+    //Ejemplos de solicitudes de eliminación !
+    SolicitudEliminacionDTO sol1 = new SolicitudEliminacionDTO();
+    sol1.setId(idSolicitudEliminacion.getAndIncrement());
+    sol1.setIdHecho(hecho2.getId());
+    sol1.setIdusuario(usuarioContribuyente);
+    sol1.setJustificacion("El hecho contiene información cuestionable");
+    sol1.setEstado("PENDIENTE");
+    this.solicitudesEliminacion.put(sol1.getId(), sol1);
+
+    SolicitudEliminacionDTO sol2 = new SolicitudEliminacionDTO();
+    sol2.setId(idSolicitudEliminacion.getAndIncrement());
+    sol2.setIdHecho(hecho2.getId());
+    sol2.setIdusuario(usuarioContribuyente2);
+    sol2.setJustificacion("Información incorrecta en la ubicación");
+    sol2.setEstado("PENDIENTE");
+    this.solicitudesEliminacion.put(sol2.getId(), sol2);
+
+    SolicitudEliminacionDTO sol3 = new SolicitudEliminacionDTO();
+    sol3.setId(idSolicitudEliminacion.getAndIncrement());
+    sol3.setIdHecho(hecho3.getId());
+    sol3.setIdusuario(usuarioContribuyente);
+    sol3.setJustificacion("Ya fue aprobada en otra fuente");
+    sol3.setEstado("ACEPTAR");
+    this.solicitudesEliminacion.put(sol3.getId(),sol3);
+
+    SolicitudEliminacionDTO sol4 = new SolicitudEliminacionDTO();
+    sol4.setId(idSolicitudEliminacion.getAndIncrement());
+    sol4.setIdHecho(hecho.getId());
+    sol4.setIdusuario(usuarioContribuyente2);
+    sol4.setJustificacion("No cumple criterios mínimos");
+    sol4.setEstado("CANCELADA");
+    this.solicitudesEliminacion.put(sol4.getId(),sol4);
+
   }
 
   @Override
@@ -268,7 +301,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   @Override
   public SolicitudEliminacionDTO cancelarSolicitud(Long idSolicitud) {
     SolicitudEliminacionDTO solicitudEliminacionDTO = this.solicitudesEliminacion.get(idSolicitud);
-    solicitudEliminacionDTO.setEstado("CANCELADO");
+    solicitudEliminacionDTO.setEstado("CANCELADA");
     return solicitudEliminacionDTO;
   }
 
@@ -276,7 +309,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   public SolicitudEliminacionDTO aceptarSolicitud(Long idSolicitud) {
     SolicitudEliminacionDTO solicitudEliminacionDTO = this.solicitudesEliminacion.get(idSolicitud);
     solicitudEliminacionDTO.setEstado("ACEPTAR");
-    HechoDTOOutput hecho = this.hechos.get(solicitudEliminacionDTO.getId());
+    HechoDTOOutput hecho = this.hechos.get(solicitudEliminacionDTO.getIdHecho());
     hecho.setEliminado(true);
     return solicitudEliminacionDTO;
   }

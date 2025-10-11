@@ -6,34 +6,83 @@
 </head>
 <body class="body-metamapa">
     <!-- Main -->
-    <section class="mm-card mx-auto" style="max-width: 920px;">
+    <section class="mm-card mx-auto" style="max-width: 920px;" th:attr="data-current-filter=${estado}">
         <h1 class="mm-form-title mb-2 text-center" style="padding-top: 60px">Solicitudes de eliminación</h1>
         <p class="mm-form-sub text-center mb-4">Revisá, aprobá o rechazá las solicitudes pendientes</p>
 
         <!-- Toolbar de filtros -->
-        <div class="mm-toolbar mb-3">
+        <form class="mm-toolbar mb-3" method="get" th:action="@{/admin/gest-solEliminacion}">
             <div class="mm-seg" role="tablist" aria-label="Filtrar por estado">
-                <button class="mm-seg__btn is-active" data-filter="TODAS" role="tab" aria-selected="true">
-                    Todas <span class="mm-seg__badge" id="count-todas">0</span>
+                <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='TODAS' ? 'is-active' : ''" name="estado" value="TODAS" th:attr="aria-selected=${estado}=='TODAS'">
+                    Todas <span class="mm-seg__badge" id="count-todas" th:text="${countTodas}">0</span>
                 </button>
-                <button class="mm-seg__btn" data-filter="PENDIENTE" role="tab" aria-selected="false">
-                    Pendientes <span class="mm-seg__badge" id="count-pend">0</span>
+                <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='PENDIENTE' ? 'is-active' : ''" name="estado" value="PENDIENTE" th:attr="aria-selected=${estado}=='PENDIENTE'">
+                    Pendientes <span class="mm-seg__badge" id="count-pend" th:text="${countPend}">0</span>
                 </button>
-                <button class="mm-seg__btn" data-filter="APROBADA" role="tab" aria-selected="false">
-                    Aprobadas <span class="mm-seg__badge" id="count-apr">0</span>
+                <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='ACEPTAR' ? 'is-active' : ''" name="estado" value="ACEPTAR" th:attr="aria-selected=${estado}=='ACEPTAR'">
+                    Aceptadas <span class="mm-seg__badge" id="count-apr" th:text="${countAcep}">0</span>
                 </button>
-                <button class="mm-seg__btn" data-filter="RECHAZADA" role="tab" aria-selected="false">
-                    Rechazadas <span class="mm-seg__badge" id="count-rech">0</span>
+                <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='CANCELADA' ? 'is-active' : ''"  name="estado" value="CANCELADA" th:attr="aria-selected=${estado}=='CANCELADA'">
+                    Canceladas <span class="mm-seg__badge" id="count-cancel" th:text="${countCancel}">0</span>
                 </button>
             </div>
 
             <div class="mm-search">
-                <input id="searchBox" class="mm-input" placeholder="Buscar por título o justificación…">
+                <input id="searchBox" class="mm-input" placeholder="Buscar por título o justificación…" name="q" th:value="${q}">
             </div>
-        </div>
+        </form>
 
         <!-- Lista de solicitudes -->
-        <ul class="mm-requests list-unstyled m-0"></ul>
+        <ul class="mm-requests list-unstyled m-0">
+            <li class="mm-req" th:if="${#lists.isEmpty(solicitudes)}" style="text-align: center; color: #6b7f90">No hay solicitudes para gestionar</li>
+
+            <li class="mm-req" th:each="solicitudesVM : ${solicitudes}">
+                <div class="mm-req__header">
+                    <div>
+                        <h3 class="mm-req__title m-0" th:text="${'Solicitud #' + solicitudesVM.solicitud.id}">
+                            Solicitud #1
+                        </h3>
+
+                        <div class="mm-req__meta">
+                            <span class="badge" th:classappend="${solicitudesVM.solicitud.estado}=='PENDIENTE' ? ' badge-brand' : ' badge-neutral'" th:text="${solicitudesVM.solicitud.estado}">
+                                PENDIENTE
+                            </span>
+
+                            <span class="badge badge-neutral" th:text="${'Creado por ' + (solicitudesVM.solicitud.idusuario != null ? ('Usuario ' + solicitudesVM.solicitud.idusuario) : 'Anónimo')}">
+                                Creado por Anónimo
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="mm-req__actions" th:if="${solicitudesVM.solicitud.estado}=='PENDIENTE'">
+                        <form th:action="@{|/admin/gest-solEliminacion/${solicitudesVM.solicitud.id}/aceptar|}" method="post" style="display: inline">
+                            <input type="hidden" name="estado" th:value="${estado}">
+                            <input type="hidden" name="q" th:value="${q}">
+                            <button class="mm-btn mm-btn--round mm-btn--approve" aria-label="Aceptar solicitud" type="submit">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </form>
+
+                        <form th:action="@{|/admin/gest-solEliminacion/${solicitudesVM.solicitud.id}/cancelar|}" method="post" style="display:inline; margin-left:8px;">
+                            <input type="hidden" name="estado" th:value="${estado}">
+                            <input type="hidden" name="q" th:value="${q}">
+                            <button class="mm-btn mm-btn--round mm-btn--reject" aria-label="Cancelar solicitud" type="submit">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mm-req__body">
+                    <p class="m-0"><strong>Justificación:</strong>
+                        <span th:text="${solicitudesVM.solicitud.justificacion ?: '—'}">—</span></p>
+                    <p class="m-0"><strong>Hecho referenciado:</strong>
+                        <a class="blue-link" th:href="${solicitudesVM.urlHecho}" th:text="${solicitudesVM.tituloHecho}">—</a></p>
+                </div>
+            </li>
+
+        </ul>
     </section>
 
     <script type="module" th:src="@{/js/admins/gest-solEliminacion.js}"></script>
@@ -47,6 +96,93 @@
             li.style.transition = 'opacity .25s, transform .25s';
             li.style.opacity = '0'; li.style.transform = 'translateY(-4px)';
             setTimeout(() => li.remove(), 250);
+        });
+    </script>
+
+    <script>
+        const EST_APR  = 'ACEPTAR';
+        const EST_RECH = 'CANCELADA';
+
+        const section = document.querySelector('section.mm-card');
+
+        // Helper para contadores
+        function inc(id, delta) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const n = parseInt(el.textContent || '0', 10);
+            el.textContent = String(Math.max(0, n + delta));
+        }
+
+        document.addEventListener('submit', (e) => {
+            const form = e.target;
+            // Solo interceptamos formularios de acciones dentro de la card
+            if (!form.closest('.mm-req__actions')) return;
+
+            e.preventDefault();
+
+            // Deshabilitamos solo el botón que disparó el submit (evitamos doble click)
+            const btn = e.submitter || form.querySelector('button[type="submit"]');
+            btn?.setAttribute('disabled', 'disabled');
+
+            const li  = form.closest('.mm-req');
+            const url = form.getAttribute('action');
+            const isApprove   = url.includes('/aprobar');
+            const nuevoEstado = isApprove ? EST_APR : EST_RECH;
+
+            const badge = li.querySelector('.mm-req__meta .badge');
+            const prevBadgeTxt  = badge?.textContent ?? 'PENDIENTE';
+            const prevBadgeClass = badge?.className ?? 'badge';
+
+            //Actualizamos badge
+            if (badge) {
+                badge.textContent = nuevoEstado;
+                badge.className = 'badge badge-neutral';
+            }
+
+            //Actualizamos contadores
+            inc('count-pend', -1);
+            if (isApprove) inc('count-apr', 1);
+            else inc('count-cancel', 1);
+
+            //Si el filtro actual no incluye el nuevo estado, sacamos la card con fade
+            const filtro = section?.getAttribute('data-current-filter') || 'TODAS';
+            const debeSalir = (filtro !== 'TODAS' && filtro !== nuevoEstado);
+            if (debeSalir) {
+                li.style.transition = 'opacity .2s, transform .2s';
+                li.style.opacity = '0';
+                li.style.transform = 'translateY(-4px)';
+                setTimeout(() => li.remove(), 200);
+            }
+
+            // Rehabilitamos el botón un toque después
+            setTimeout(() => btn?.removeAttribute('disabled'), 300);
+
+            //Enviamos request al backend
+            fetch(url, {
+                method: 'POST',
+                headers: CSRF_TOKEN ? { [CSRF_HEADER]: CSRF_TOKEN } : {}
+            })
+                .then(res => {
+                    if (res.status === 204 || res.ok) return; // OK
+                    throw new Error('HTTP ' + res.status);
+                })
+                .catch(err => {
+                    console.error('Fallo al resolver solicitud:', err);
+
+                    //Rollback mínimo si falló:
+                    if (badge) {
+                        badge.textContent = prevBadgeTxt;
+                        badge.className = prevBadgeClass;
+                    }
+                    //Revertimos contadores
+                    inc('count-pend', +1);
+                    if (isApprove) inc('count-apr', -1);
+                    else inc('count-cancel', -1);
+
+                    // Si la card se había removido, lo más simple es recargar:
+                    // location.reload();
+                    // (o mostrar un toast de error)
+                });
         });
     </script>
 </body>
