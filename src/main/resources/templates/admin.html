@@ -41,7 +41,6 @@
         <h2 class="h5 mt-4 mb-3">Gestión de Colecciones</h2>
         <div class="mm-actions">
             <a class="btn btn-back btn-lg mb-3" aria-label="Crear coleccion" th:href="@{/admin/crear-coleccion}">Crear colección</a>
-            <!--                <button class="btn btn-back btn-lg mb-3" aria-label="Crear coleccion">Crear colección</button>-->
             <button class="btn btn-back btn-lg mb-3" aria-label="Editar colección">Editar colección</button>
             <button class="btn btn-back btn-lg mb-3" aria-label="Eliminar colección">Eliminar colección</button>
         </div>
@@ -50,15 +49,13 @@
         <h2 class="h5 mt-4 mb-3">Acciones sobre hechos y solicitudes</h2>
         <!--            <div class="d-flex gap-2 flex-wrap mb-3">-->
         <div class="mm-actions">
-            <a class="btn btn-back btn-lg mb-3" aria-label="Rechazar solicitud" th:href="@{/admin/importar-csv}">Importar hechos CSV</a>
-            <!--                <button class="btn btn-back btn-lg mb-3" aria-label="Aprobar hecho">Aprobar hecho</button>-->
-            <!--                <button class="btn btn-back btn-lg mb-3" aria-label="Rechazar hecho">Rechazar hecho</button>-->
+            <a class="btn btn-back btn-lg mb-3" aria-label="Importar archivo CSV de hechos" th:href="@{/admin/importar-csv}">Importar CSV con hechos</a>
 
+            <a class="btn btn-back btn-lg mb-3" aria-label="Revisar nuevos hechos subidos" th:href="@{/admin/gest-nuevosHechos}">Gestionar nuevos hechos</a>
             <!-- Qué era esto de aceptar con modificaciones ? xd -->
-            <button class="btn btn-back btn-lg mb-3" aria-label="Aceptar con modificaciones">Aceptar con modificaciones</button>
+            <a class="btn btn-back btn-lg mb-3" aria-label="Aceptar con modificaciones" th:href="@{/admin/gest-solEdicion}">Gestionar solicitudes de edición</a>
 
-            <!--                <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" href="admins/gest-solEliminacion.html">Gestionar Solicitudes de Eliminación de Hechos</a>-->
-            <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" th:href="@{/admin/gest-solEliminacion}">Gestionar Hechos</a>
+            <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" th:href="@{/admin/gest-solEliminacion}">Gestionar solicitudes de eliminación</a>
             <a class="btn btn-back btn-lg mb-3" aria-label="Consultar estadísticas" th:href="@{/admin/dashboard-estadisticas}">Consultar estadísticas</a>
         </div>
     </section>

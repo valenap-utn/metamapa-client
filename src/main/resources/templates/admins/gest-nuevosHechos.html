@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/layout :: layout('Nuevos Hechos', ~{::link}, ~{::section})}">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles-commons.css}">
+    <link rel="stylesheet" th:href="@{/css/estilos-admin/styles-gest-solEliminacion.css}">
+</head>
+<body class="body-metamapa">
+<!-- Main -->
+<section class="mm-card mx-auto" style="max-width: 920px;" th:attr="data-current-filter=${estado}">
+    <h1 class="mm-form-title mb-2 text-center" style="padding-top: 60px">Hechos en moderación</h1>
+    <p class="mm-form-sub text-center mb-4">Revisá, aprobá o rechazá los hechos subidos</p>
+
+    <!-- Toolbar de filtros -->
+    <form class="mm-toolbar mb-3" method="get" th:action="@{/admin/gest-nuevosHechos}">
+        <div class="mm-seg" role="tablist" aria-label="Filtrar por estado">
+            <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='TODAS' ? 'is-active' : ''" name="estado" value="TODAS" th:attr="aria-selected=${estado}=='TODAS'">
+                Todos <span class="mm-seg__badge" id="count-todas" th:text="${countTodas}">0</span>
+            </button>
+            <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='PENDIENTE' ? 'is-active' : ''" name="estado" value="PENDIENTE" th:attr="aria-selected=${estado}=='PENDIENTE'">
+                Pendientes <span class="mm-seg__badge" id="count-pend" th:text="${countPend}">0</span>
+            </button>
+            <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='APROBAR' ? 'is-active' : ''" name="estado" value="APROBAR" th:attr="aria-selected=${estado}=='APROBAR'">
+                Aprobados <span class="mm-seg__badge" id="count-apr" th:text="${countAcep}">0</span>
+            </button>
+            <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='RECHAZAR' ? 'is-active' : ''"  name="estado" value="RECHAZAR" th:attr="aria-selected=${estado}=='RECHAZAR'">
+                Rechazados <span class="mm-seg__badge" id="count-cancel" th:text="${countCancel}">0</span>
+            </button>
+        </div>
+
+        <div class="mm-search">
+            <input id="searchBox" class="mm-input" placeholder="Buscar por título o justificación…" name="q" th:value="${q}">
+        </div>
+    </form>
+
+    <!-- Lista de Hechos -->
+    <ul class="mm-requests list-unstyled m-0">
+        <li class="mm-req" th:if="${#lists.isEmpty(hechos)}" style="text-align: center; color: #6b7f90">No hay hechos para mostrar</li>
+
+        <li class="mm-req" th:each="h : ${hechos}">
+            <div class="mm-req__header">
+                <div>
+                    <h3 class="mm-req__title m-0" th:text="${h.titulo}">
+                        Título #1
+                    </h3>
+
+                    <div class="mm-req__meta">
+                        <span class="badge" th:classappend="${h.estado}=='PENDIENTE' ? ' badge-brand' : ' badge-neutral'" th:text="${h.estado}">
+                            PENDIENTE
+                        </span>
+
+                        <span class="badge badge-neutral" th:text="${'Creado por ' + (h.idUsuario != null ? ('Usuario ' + h.idUsuario) : 'Anónimo')}">
+                                Creado por Anónimo
+                        </span>
+                        <span class="badge badge-neutral" th:text="${h.fechaCarga != null ? 'Cargado: ' + #temporals.format(h.fechaCarga, 'dd/MM/yyyy HH:mm') : ''}"></span>
+                        <span class="badge badge-neutral" th:text="${h.idUsuario != null ? 'Usuario ' + h.idUsuario : 'Anónimo'}"></span>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="mm-req__actions" th:if="${h.estado}=='PENDIENTE'">
+                    <form th:action="@{|/admin/gest-nuevosHechos/${h.id}/aprobar|}" method="post" style="display: inline">
+                        <input type="hidden" name="estado" th:value="${estado}">
+                        <input type="hidden" name="q" th:value="${q}">
+                        <button class="mm-btn mm-btn--round mm-btn--approve" aria-label="Aprobar hecho" type="submit">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </form>
+
+                    <form th:action="@{|/admin/gest-nuevosHechos/${h.id}/rechazar|}" method="post" style="display:inline; margin-left:8px;">
+                        <input type="hidden" name="estado" th:value="${estado}">
+                        <input type="hidden" name="q" th:value="${q}">
+                        <button class="mm-btn mm-btn--round mm-btn--reject" aria-label="Rechazar hecho" type="submit">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mm-req__body">
+                <p class="m-0"><strong>Categoría:</strong> <span th:text="${h.categoria != null ? h.categoria.nombre : '—'}">—</span></p>
+                <p class="m-0"><strong>Descripción:</strong> <span th:text="${h.descripcion ?: '—'}">—</span></p>
+                <p class="m-0"><strong>Ubicación:</strong>
+                    <span th:text="${h.ubicacion != null ? (h.ubicacion.latitud + ', ' + h.ubicacion.longitud) : '—'}">—</span>
+                </p>
+                <p class="m-0"><a class="blue-link" th:href="@{|/hechos/${h.id}|}">Ver detalle</a></p>
+            </div>
+        </li>
+
+    </ul>
+</section>
+
+<script type="module" th:src="@{/js/admins/gest-solEliminacion.js}"></script>
+
+<!-- Script para quitar item si se aprueba/rechaza -->
+<script>
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.mm-btn--approve, .mm-btn--reject');
+        if (!btn) return;
+        const li = btn.closest('.mm-req');
+        li.style.transition = 'opacity .25s, transform .25s';
+        li.style.opacity = '0'; li.style.transform = 'translateY(-4px)';
+        setTimeout(() => li.remove(), 250);
+    });
+</script>
+
+<script>
+    const EST_APR  = 'APROBADO';
+    const EST_RECH = 'RECHAZADO';
+    const section = document.querySelector('section.mm-card');
+
+    function inc(id, delta) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const n = parseInt(el.textContent || '0', 10);
+        el.textContent = String(Math.max(0, n + delta));
+    }
+
+    // Efecto fade al click (opcional)
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.mm-btn--approve, .mm-btn--reject');
+        if (!btn) return;
+        const li = btn.closest('.mm-req');
+        li.style.transition = 'opacity .25s, transform .25s';
+        li.style.opacity = '0'; li.style.transform = 'translateY(-4px)';
+        setTimeout(() => li.remove(), 250);
+    });
+
+    // Interceptamos submit para usar fetch y actualizar contadores en vivo
+    document.addEventListener('submit', (e) => {
+        const form = e.target;
+        if (!form.closest('.mm-req__actions')) return; // solo los botones de aprobar/rechazar
+        e.preventDefault();
+
+        const btn = e.submitter || form.querySelector('button[type="submit"]');
+        btn?.setAttribute('disabled', 'disabled');
+
+        const li  = form.closest('.mm-req');
+        const url = form.getAttribute('action');
+        const isApprove   = url.includes('/aprobar');
+        const nuevoEstado = isApprove ? EST_APR : EST_RECH;
+
+        const badge = li.querySelector('.mm-req__meta .badge');
+        const prevBadgeTxt  = badge?.textContent ?? 'PENDIENTE';
+        const prevBadgeClass = badge?.className ?? 'badge';
+
+        // UI: actualizar badge y contadores
+        if (badge) { badge.textContent = nuevoEstado; badge.className = 'badge badge-neutral'; }
+        inc('count-pend', -1);
+        if (isApprove) inc('count-apr', +1); else inc('count-rech', +1);
+
+        const filtro = section?.getAttribute('data-current-filter') || 'TODAS';
+        const debeSalir = (filtro !== 'TODAS' && filtro !== nuevoEstado);
+        if (debeSalir) {
+            li.style.transition = 'opacity .2s, transform .2s';
+            li.style.opacity = '0';
+            li.style.transform = 'translateY(-4px)';
+            setTimeout(() => li.remove(), 200);
+        }
+
+        // Enviar request al backend
+        const headers = {};
+
+        fetch(url, { method: 'POST', headers })
+            .then(res => { if (res.status === 204 || res.ok) return; throw new Error('HTTP ' + res.status); })
+            .catch(err => {
+                console.error('Fallo al resolver moderación:', err);
+                // rollback UI
+                if (badge) { badge.textContent = prevBadgeTxt; badge.className = prevBadgeClass; }
+                inc('count-pend', +1);
+                if (isApprove) inc('count-apr', -1); else inc('count-rech', -1);
+            })
+            .finally(() => setTimeout(() => btn?.removeAttribute('disabled'), 300));
+    });
+</script>
+</body>
+</html>

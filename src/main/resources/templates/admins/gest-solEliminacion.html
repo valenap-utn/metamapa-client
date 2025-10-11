@@ -160,7 +160,6 @@
             //Enviamos request al backend
             fetch(url, {
                 method: 'POST',
-                headers: CSRF_TOKEN ? { [CSRF_HEADER]: CSRF_TOKEN } : {}
             })
                 .then(res => {
                     if (res.status === 204 || res.ok) return; // OK

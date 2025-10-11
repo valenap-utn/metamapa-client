@@ -202,6 +202,11 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     HechoDTOOutput hechoParseado = this.toHechoDTOOutput(hecho);
     Long id = this.idHecho.getAndIncrement();
     hechoParseado.setId(id);
+    if(hechoParseado.getFechaCarga() == null){
+      hechoParseado.setFechaCarga(LocalDateTime.now());
+    }
+    hechoParseado.setEstado("PENDIENTE");
+    hechoParseado.setFechaAprobacion(null);
     this.hechos.put(id, hechoParseado);
     return hechoParseado;
   }
