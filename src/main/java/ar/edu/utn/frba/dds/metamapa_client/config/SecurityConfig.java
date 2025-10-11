@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import ar.edu.utn.frba.dds.metamapa_client.provider.AuthProviderCreado;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
