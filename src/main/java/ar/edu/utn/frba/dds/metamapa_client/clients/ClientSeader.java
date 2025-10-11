@@ -236,6 +236,25 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     return this.hechos.get(idHecho);
   }
 
+  //Para subidas de hechos
+  public HechoDTOOutput aprobarHecho(Long idHecho) {
+    HechoDTOOutput hecho = this.hechos.get(idHecho);
+    if(hecho != null){
+      hecho.setEstado("APROBAR");
+      hecho.setFechaAprobacion(LocalDateTime.now());
+    }
+    return hecho;
+  }
+
+  public HechoDTOOutput rechazarHecho(Long idHecho) {
+    HechoDTOOutput hecho = this.hechos.get(idHecho);
+    if(hecho != null){
+      hecho.setEstado("RECHAZAR");
+//      hecho.setEliminado(true);
+    }
+    return hecho;
+  }
+
   @Override
   public SolicitudEdicionDTO solicitarModificacion(SolicitudEdicionDTO solicitudEdicion, String baseUrl) {
     Long idSolicitudEdicion = this.idSolicitudEdicion.getAndIncrement();
