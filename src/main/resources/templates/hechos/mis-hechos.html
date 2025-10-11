@@ -9,12 +9,14 @@
 <section class="container-mis-hechos">
 
     <!-- debug seguro -->
-    <div style="font-size:.9rem;color:#6b8397;margin-bottom:8px;">
-        (debug) user_id sesión: <strong th:text="${session.user_id}">null</strong>
-    </div>
+<!--    <div style="font-size:.9rem;color:#6b8397;margin-bottom:8px;">-->
+<!--        (debug) user_id sesión: <strong th:text="${session.user_id}">null</strong>-->
+<!--    </div>-->
 
     <!-- vacío -->
     <div th:if="${items == null or #lists.isEmpty(items)}">Aún no cargaste hechos.</div>
+
+    <h1 class="title-main" style="margin-top: 50px; text-align: center; font-weight: 700;">Mis Hechos</h1>
 
     <!-- tarjetas -->
     <article class="mm-req"

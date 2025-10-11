@@ -528,3 +528,29 @@ body {
         justify-content: center;
     }
 }
+
+/* Detallecitos para editar hechos */
+.mm-grid--2 {
+    grid-template-columns: 1fr;
+}
+.mm-col-span-2 {
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 900px) {
+    .mm-grid--2 { grid-template-columns: 1fr 1fr; gap: 18px 22px; }
+}
+.mm-req {
+    color: #e74c3c;
+    margin-left: 4px;
+}
+.mm-input--file {
+    height: auto;
+    padding: 10px 12px;
+    background: #fff;
+}
+.mm-help {
+    color: #869bb1;
+    font-size: 12px;
+}
+

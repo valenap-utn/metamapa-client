@@ -34,7 +34,7 @@
 
         <!-- Lista de solicitudes -->
         <ul class="mm-requests list-unstyled m-0">
-            <li class="mm-req" th:if="${#lists.isEmpty(solicitudes)}" style="text-align: center; color: #6b7f90">No hay solicitudes para gestionar</li>
+            <li class="mm-req" th:if="${#lists.isEmpty(solicitudes)}" style="text-align: center; color: #6b7f90">No hay solicitudes pendientes</li>
 
             <li class="mm-req" th:each="solicitudesVM : ${solicitudes}">
                 <div class="mm-req__header">

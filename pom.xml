@@ -171,18 +171,27 @@
 		</plugins>
 
         <!-- No filtrar resources (o al menos properties/yml) -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
+<!--        <resources>-->
+<!--            <resource>-->
+<!--                <directory>src/main/resources</directory>-->
+<!--                <filtering>false</filtering>-->
 <!--                <nonFilteredFileExtensions>-->
 <!--                    <nonFilteredFileExtension>properties</nonFilteredFileExtension>-->
 <!--                    <nonFilteredFileExtension>yml</nonFilteredFileExtension>-->
 <!--                    <nonFilteredFileExtension>yaml</nonFilteredFileExtension>-->
 <!--                </nonFilteredFileExtensions>-->
-            </resource>
-        </resources>
+<!--            </resource>-->
+<!--        </resources>-->
 
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
 
 	</build>
 
