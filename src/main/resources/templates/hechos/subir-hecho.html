@@ -59,6 +59,9 @@
                     <!-- guardamos coordenadas y mostramos un preview -->
                     <input id="lat" type="hidden" required th:field="*{ubicacion.latitud}">
                     <input id="lng" type="hidden" required th:field="*{ubicacion.longitud}">
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('ubicacion.latitud') || #fields.hasErrors('ubicacion.longitud')}">
+                        Debés elegir una ubicación en el mapa.
+                    </div>
 
                     <div id="locPreview" class="mm-pill mt-2" hidden>
                         <i class="fa-solid fa-location-dot"></i>
@@ -84,25 +87,34 @@
                         <!-- Título -->
                         <div class="mm-field mm-col-span-all">
                             <label for="titulo" class="mm-label">Título</label>
-                            <input id="titulo" name="titulo" type="text" class="mm-input" placeholder="Ej: Derrame en ribera del río" required th:field="*{titulo}">
+                            <input id="titulo" name="titulo" type="text" class="mm-input" placeholder="Ej: Derrame en ribera del río" required th:field="*{titulo}" th:classappend="${#fields.hasErrors('titulo')} ? ' is-invalid' : ''">
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}">
+                                Error en título
+                            </div>
                         </div>
 
                         <!-- Categoría -->
                         <div class="mm-field">
                             <label for="categoria" class="mm-label">Categoría</label>
-                            <select id="categoria" name="categoria" class="mm-input" required th:field="*{categoria.nombre}">
+                            <select id="categoria" name="categoria" class="mm-input" required th:field="*{categoria.nombre}" th:classappend="${#fields.hasErrors('categoria.nombre')} ? ' is-invalid' : ''">
                                 <option value="" disabled selected>Seleccioná una categoría…</option>
                                 <option value="EVENTO_SANITARIO">Evento sanitario</option>
                                 <option value="CONTAMINACION">Contaminación</option>
                                 <option value="DERRAME">Derrame</option>
                                 <!-- agregá más si aplica -->
                             </select>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('categoria.nombre')}" th:errors="*{categoria.nombre}">
+                                Error en categoría
+                            </div>
                         </div>
 
                         <!-- Fecha acontecimiento -->
                         <div class="mm-field">
                             <label for="fechaAcontecimiento" class="mm-label">Fecha del acontecimiento</label>
-                            <input id="fechaAcontecimiento" name="fechaAcontecimiento" type="datetime-local" class="mm-input" required th:field="*{fechaAcontecimiento}">
+                            <input id="fechaAcontecimiento" name="fechaAcontecimiento" type="datetime-local" class="mm-input" required th:field="*{fechaAcontecimiento}" th:classappend="${#fields.hasErrors('fechaAcontecimiento')} ? ' is-invalid' : ''">
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('fechaAcontecimiento')}" th:errors="*{fechaAcontecimiento}">
+                                Error en fecha
+                            </div>
                         </div>
 
                         <!-- Descripción -->
@@ -110,11 +122,16 @@
                             <label for="descripcion" class="mm-label">Descripción</label>
                             <textarea id="descripcion" name="descripcion" class="mm-input mm-input--textarea"
                                       minlength="500" required data-min-guest="500" data-min-auth="0"
-                                      placeholder="Contá brevemente qué ocurrió…" th:field="*{descripcion}"></textarea>
+                                      placeholder="Contá brevemente qué ocurrió…" th:field="*{descripcion}" th:classappend="${#fields.hasErrors('descripcion')} ? ' is-invalid' : ''"></textarea>
 <!--                            <div id="descCounter" class="form-text">0 / 500</div>-->
                             <div class="d-flex justify-content-between mt-1">
                                 <small id="descReq" class="text-muted"></small>
                                 <small id="descCounter" class="text-muted"></small>
+                            </div>
+
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('descripcion')}"
+                                 th:errors="*{descripcion}">
+                                Error en descripción
                             </div>
                         </div>
                     </div>
@@ -158,7 +175,21 @@
         </div>
     </section>
 
-    <script th:rc="@{/js/commons.js}"></script>
+    <script th:src="@{/js/commons.js}"></script>
     <script th:src="@{/js/subir-hecho.js}"></script>
+    <script>
+        (function(){
+            const form = document.getElementById('form-hecho');
+            if(!form) return;
+            form.addEventListener('submit', function(){
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'Enviando… <i class="fa-solid fa-circle-notch fa-spin"></i>';
+                }
+            });
+        })();
+    </script>
+
 </body>
 </html>

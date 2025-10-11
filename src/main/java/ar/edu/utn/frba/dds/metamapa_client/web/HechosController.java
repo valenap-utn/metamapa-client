@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,10 +78,37 @@ public class HechosController {
   }
 
   @PostMapping("/subir-hecho")
-  public String subirHechoPost(@ModelAttribute("hecho") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-    HechoDTOOutput hechoDTO = this.agregador.crearHecho(hechoDtoInput, "http://localhost:4000");
+//  public String subirHechoPost(@ModelAttribute("hecho") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+//    HechoDTOOutput hechoDTO = this.agregador.crearHecho(hechoDtoInput, "http://localhost:4000");
+//
+//    return "hechos/subir-hecho";
+//  }
+  public String subirHechoPost(@Valid @ModelAttribute("hecho") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
+    if(bindingResult.hasErrors()){
+      redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.hecho", bindingResult);
+      redirectAttributes.addFlashAttribute("hecho", hechoDtoInput);
+      redirectAttributes.addFlashAttribute("titulo", "Revisá los campos marcados");
+      return "redirect:/hechos/subir-hecho";
+    }
 
-    return "hechos/subir-hecho";
+    //Obtenemos user
+    String accessToken = session.getAttribute("accessToken").toString();
+    Long userId = JwtUtil.getId(accessToken);
+
+    try{
+      hechoDtoInput.setIdUsuario(userId);
+      if(hechoDtoInput.getFechaCarga() == null){
+        hechoDtoInput.setFechaCarga(LocalDateTime.now());
+      }
+      this.agregador.crearHecho(hechoDtoInput, "http://localhost:4000");
+      redirectAttributes.addFlashAttribute("success", "Tu hecho se creó exitosamente, pronto un administrador lo estará revisado !");
+      return "redirect:/main-gral";
+    }catch(Exception e){
+      log.error("Error al crear el hecho", e);
+      redirectAttributes.addFlashAttribute("error", "Ha ocurrido un error al crear el hecho. Volvé a intentarlo");
+      redirectAttributes.addFlashAttribute("hecho", hechoDtoInput);
+      return "redirect:/hechos/subir-hecho";
+    }
   }
 
   //Método para chequear que tenga rol
