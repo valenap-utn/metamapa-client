@@ -5,10 +5,14 @@ import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 import ar.edu.utn.frba.dds.metamapa_client.core.dtos.StatsResp;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.http.ResponseEntity;
@@ -83,8 +87,62 @@ public class AdminController {
     return "admins/importar-csv";
   }
 
-  //Para solicitudes de eliminación
+  //Para gestionar Nuevos Hechos (Aprobar o Rechazar)
+  @GetMapping("/gest-nuevosHechos")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public String gestNuevosHechos(Model model, @RequestParam(value = "estado", required = false, defaultValue = "TODAS") String estado, @RequestParam(value = "q", required = false, defaultValue = "") String q) {
+   List<HechoDTOOutput> hechos = this.agregador.findAllHechos(new FiltroDTO());
 
+   long total = hechos.size();
+   long pendientes = hechos.stream().filter(h -> "PENDIENTE".equals(h.getEstado())).count();
+   long aprobados = hechos.stream().filter(h -> "APROBAR".equals(h.getEstado())).count();
+   long rechazados = hechos.stream().filter(h -> "RECHAZAR".equals(h.getEstado())).count();
+
+   //Filtro por Estado
+    Stream<HechoDTOOutput> filtrados = hechos.stream();
+    if(!"TODAS".equalsIgnoreCase(estado)){
+      filtrados = filtrados.filter(h -> estado.equalsIgnoreCase(String.valueOf(h.getEstado())));
+    }
+
+    //Filtro por búsqueda
+    String qNorm = q.trim().toLowerCase();
+    if(!qNorm.isEmpty()){
+      filtrados = filtrados.filter(h ->
+          (h.getTitulo() != null && h.getTitulo().toLowerCase().contains(qNorm)) ||
+              (h.getDescripcion() != null && h.getDescripcion().toLowerCase().contains(qNorm))
+      );
+    }
+
+    List<HechoDTOOutput> filtradosList = filtrados.toList();
+
+    model.addAttribute("hechos", filtradosList);
+    model.addAttribute("estado", estado);
+    model.addAttribute("q", q);
+
+    model.addAttribute("countTodas", total);
+    model.addAttribute("countPend", pendientes);
+    model.addAttribute("countApro", aprobados);
+    model.addAttribute("countRech", rechazados);
+
+    model.addAttribute("titulo", "Gestionar Nuevos Hechos");
+    return "admins/gest-nuevosHechos";
+  }
+
+  @PostMapping("/gest-nuevosHechos/{id}/aprobar")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public ResponseEntity<Void> aprobarHecho(@PathVariable("id") Long id){
+    this.agregador.aprobarHecho(id);
+    return ResponseEntity.noContent().build(); //204 en caso de exito !
+  }
+
+  @PostMapping("/gest-nuevosHechos/{id}/rechazar")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public ResponseEntity<Void> rechazarHecho(@PathVariable("id") Long id){
+    this.agregador.rechazarHecho(id);
+    return ResponseEntity.noContent().build(); //204 en caso de exito !
+  }
+
+  //Para solicitudes de eliminación
   //View-Model simple para la vista
   public static class SolicitudVM {
     public final SolicitudEliminacionDTO solicitud;
@@ -163,4 +221,5 @@ public class AdminController {
 
     return "admins/dashboard-estadisticas";
   }
+
 }

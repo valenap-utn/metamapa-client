@@ -55,7 +55,11 @@ public class HechosController {
   @GetMapping("/nav-hechos")
   public String navHechos(Model model) {
     FiltroDTO filtroDTO = new FiltroDTO();
-    List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO);
+    List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO).stream()
+        .filter(h-> "APROBAR".equalsIgnoreCase(h.getEstado()))
+        .filter(h -> !h.isEliminado())
+        .toList();
+
     model.addAttribute("hechos", hechos);
     model.addAttribute("filtros", filtroDTO);
     model.addAttribute("titulo", "Listado de todos los hechos");
@@ -123,17 +127,28 @@ public class HechosController {
   // Para ver Hechos subidos por uno mismo
   @GetMapping("/mis-hechos")
   @PreAuthorize("hasRole('CONTRIBUYENTE')")
-  public String misHechos(@RequestParam(defaultValue = "12") int limit, @RequestParam(defaultValue = "12") int step, @RequestParam(required = false) boolean partial, HttpSession session, Model model, RedirectAttributes ra) {
+  public String misHechos(@RequestParam(defaultValue = "12") int limit, @RequestParam(defaultValue = "12") int step, HttpSession session, Model model) {
+
     String accessToken = session.getAttribute("accessToken").toString();
-
     Long userId = JwtUtil.getId(accessToken);
-    // Listamos y acumulamos los hechos
-    List<HechoDTOOutput> all = agregador.listHechosDelUsuario(userId);
+    if (userId == null) return "redirect:/iniciar-sesion";
 
-    log.info("[mis-hechos] userId={}, isContrib={}, totalItems={}", userId, hasRole(session, Rol.CONTRIBUYENTE), (all==null?0:all.size()));
-    if (all != null && !all.isEmpty()) {
-      log.info("[mis-hechos] firstItemId={}, title={}", all.get(0).getId(), all.get(0).getTitulo());
-    }
+    // Traemos todos los hechos y solo mostramos los ya APROBADOS
+    List<HechoDTOOutput> all = agregador.listHechosDelUsuario(userId).stream()
+        .filter(h -> "APROBAR".equalsIgnoreCase(h.getEstado()))
+        .sorted((a,b)-> {
+          var ka = (a.getFechaAprobacion() !=null ? a.getFechaAprobacion() : a.getFechaCarga());
+          var kb = (b.getFechaAprobacion() !=null ? b.getFechaAprobacion() : b.getFechaCarga());
+          if(ka == null && kb == null) return 0;
+          if(ka ==null) return 1;
+          if(kb ==null) return -1;
+          return kb.compareTo(ka);
+        }).toList();
+
+//    log.info("[mis-hechos] userId={}, isContrib={}, totalItems={}", userId, hasRole(session, Rol.CONTRIBUYENTE), (all==null?0:all.size()));
+//    if (all != null && !all.isEmpty()) {
+//      log.info("[mis-hechos] firstItemId={}, title={}", all.get(0).getId(), all.get(0).getTitulo());
+//    }
 
     int total = all.size();
     int shown = Math.min(Math.max(limit,0), total);
