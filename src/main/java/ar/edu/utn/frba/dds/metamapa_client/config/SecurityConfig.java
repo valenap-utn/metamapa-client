@@ -24,7 +24,8 @@ public class SecurityConfig {
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
+                .requestMatchers("/hechos/mis-hechos").authenticated()
+                .requestMatchers(
                 "/", "/index", "/iniciar-sesion", "/crear-cuenta",
                 "/main-gral", "/colecciones", "/terminos", "/privacidad",
                 "/hechos/**",

@@ -49,7 +49,7 @@ public class ConexionServicioUser implements IConexionServicioUser {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         throw new UsuarioNoEncontrado("Las credenciales de usuario no se encuentran en el sistema");
       } else if(e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-        throw new FalloEnLaAutenticacion("El username o la password no son válidos");
+        throw new FalloEnLaAutenticacion("El email o la password no son válidos");
       }
       throw new RuntimeException("Error en el servicio de autenticación: " + e.getMessage(), e);
     } catch (Exception e) {

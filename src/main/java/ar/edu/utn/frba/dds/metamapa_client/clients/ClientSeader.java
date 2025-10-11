@@ -323,12 +323,6 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     return coleccionDTOOutput;
   }
 
-  //Para obtener hechos por ID de Usuario
-//  public List<HechoDTOOutput> listHechosDelUsuario(Long userId) {
-//    return this.hechos.values().stream()
-//        .filter(h -> userId != null && userId.equals(h.getIdUsuario()))
-//        .toList();
-//  }
 
   public List<HechoDTOOutput> listHechosDelUsuario(Long userId) {
     return this.hechos.values().stream()

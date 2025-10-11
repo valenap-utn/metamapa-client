@@ -6,12 +6,7 @@
 </head>
 <body>
     <!-- Main -->
-    <section class="d-flex justify-content-center flex-column align-items-center" style="padding-top: 200px" th:with="isContribuyente=${#bools.isTrue(session.isContribuyente)}, isAdmin=${#bools.isTrue(session.isAdmin)}">
-        <!-- Pruebita para chequear si se asigna o no un rol -->
-        <div style="color:#6b8397;font-size:.9rem;margin-bottom:8px;">-->
-            isContribuyente: <b th:text="${isContribuyente}">false</b> | isAdmin: <b th:text="${isAdmin}">false</b>
-        </div>
-
+    <section class="d-flex justify-content-center flex-column align-items-center" style="padding-top: 200px">
         <h2 class="title-main text-md-center">¿Qué querés hacer?</h2>
 
         <a th:href="@{/hechos/nav-hechos}"><button class="btn btn-sin-login btn-lg mb-3" aria-label="Ir a la sección de Navegar Hechos">Navegar Hechos</button></a>
@@ -19,7 +14,7 @@
         <a th:href="@{/hechos/subir-hecho}"><button class="btn btn-sin-login btn-lg mb-3" aria-label="Subir un Nuevo Hecho al sistema">Subir un Hecho</button></a>
 <!--        <a href="hecho-completo.html"><button id="btn-solicitar-eliminacion" class="btn btn-sin-login btn-lg mb-3" aria-label="Solicitar eliminacion de un hecho">Solicitar Eliminación</button></a>-->
 
-        <a th:if="${isContribuyente}" th:href="@{/hechos/mis-hechos}">
+        <a sec:authorize="hasRole('CONTRIBUYENTE')"  th:href="@{/hechos/mis-hechos}">
             <button class="btn btn-sin-login btn-lg mb-3" aria-label="Ver Hechos que subí al sistema">
                 Ver mis Hechos
             </button>
@@ -34,7 +29,7 @@
             crossorigin="anonymous"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        /*document.addEventListener("DOMContentLoaded", () => {
           const auth = JSON.parse(localStorage.getItem("mm_auth") || sessionStorage.getItem("mm_auth"));
           const btn = document.getElementById("btn-solicitar-eliminacion");
           console.log("auth:", auth); //para ver q es lo q toma de datos auth
@@ -47,7 +42,7 @@
           } else {
             console.log("btn NO encontrado");
           }
-        });
+        });*/
     </script>
 
 </body>

@@ -87,19 +87,7 @@ public class PageController {
   @PostMapping("/auth/register")
   public String register(Model model, @ModelAttribute("cuenta") UsuarioDTO usuario) {
     UsuarioDTO usuario2 = this.cliente.crearUsuario(usuario);
-    /*var r = api.register(email, password, rol);
-    if (r == null || !r.ok()) {
-      String code = (r != null && r.error() != null) ? r.error() : "unknown";
-      return "redirect:/crear-cuenta?error=" + code; // o mostrar mensaje “email ya registrado”
-    }
 
-    String role = normalizeRole(r.rol());
-    session.setAttribute("AUTH_EMAIL", email);
-    session.setAttribute("AUTH_ROLE",  role);
-
-    if ("on".equalsIgnoreCase(remember) || "1".equals(remember)) {
-      rememberService.setRememberCookie(response, email, role);
-    }*/
     return "redirect:/iniciar-sesion"; //role.startsWith("ADMIN") ? "redirect:/admin" : "redirect:/main-gral";
   }
 

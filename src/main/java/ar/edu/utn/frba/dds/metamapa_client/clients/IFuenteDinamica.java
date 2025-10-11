@@ -6,7 +6,7 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.RevisionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
 
 public interface IFuenteDinamica {
-  public HechoDTOOutput crearHecho(HechoDTOInput hecho, String baseUrl);
+  HechoDTOOutput crearHecho(HechoDTOInput hecho, String baseUrl);
 
   HechoDTOOutput actualizarHecho(HechoDTOInput hecho, String baseUrl);
 

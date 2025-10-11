@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.metamapa_client.web;
 
 import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
+import ar.edu.utn.frba.dds.metamapa_client.clients.utils.JwtUtil;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -92,18 +94,11 @@ public class HechosController {
 
   // Para ver Hechos subidos por uno mismo
   @GetMapping("/mis-hechos")
+  @PreAuthorize("hasRole('CONTRIBUYENTE')")
   public String misHechos(@RequestParam(defaultValue = "12") int limit, @RequestParam(defaultValue = "12") int step, @RequestParam(required = false) boolean partial, HttpSession session, Model model, RedirectAttributes ra) {
+    String accessToken = session.getAttribute("accessToken").toString();
 
-    if(!hasRole(session, Rol.CONTRIBUYENTE)) {
-      ra.addFlashAttribute("error", "Necesitas rol CONTRIBUYENTE");
-      return "redirect:/main-gral";
-    }
-
-    Long userId = resolveUserId(session);
-    if(userId == null) {
-      return "redirect:/iniciar-sesion";
-    }
-
+    Long userId = JwtUtil.getId(accessToken);
     // Listamos y acumulamos los hechos
     List<HechoDTOOutput> all = agregador.listHechosDelUsuario(userId);
 
@@ -131,13 +126,12 @@ public class HechosController {
   // Si falla => redirige con flash error (ver si lo queremos cambiar a esto)
   // Sino => renderiza editar.html (reutilizamos subir-hecho con click-to-edit)
   @GetMapping("/{idHecho}/editar")
+  @PreAuthorize("hasRole('CONTRIBUYENTE')")
   public String editar(@PathVariable Long idHecho, HttpSession session, RedirectAttributes ra, Model model) {
-    if(!hasRole(session, Rol.CONTRIBUYENTE)) {
-      ra.addFlashAttribute("error", "Necesitas rol CONTRIBUYENTE");
-      return "redirect:/main-gral";
-    }
+    String accessToken = session.getAttribute("accessToken").toString();
 
-    Long userId = resolveUserId(session);
+    Long userId = JwtUtil.getId(accessToken);
+
     if(userId == null) {
         return "redirect:/iniciar-sesion";
     }
@@ -165,30 +159,8 @@ public class HechosController {
 
   // ---------- Helper para el ID ----------
 
-  // Fallback de dev: si está vacío, no se usa
-  @Value("${metamapa.dev.forceUserId:}")
-  private Long forceUserId;
 
-  private Long resolveUserId(HttpSession session) {
-    Object cached = session.getAttribute("user_id");
-    if (cached instanceof Long id) return id;
 
-    // Intento real: /auth/me (usa access/refresh token y WebApiCallerService)
-    try {
-      var me = servicioUsuarios.getMe();
-      if (me != null && me.getId() != null) {
-        session.setAttribute("user_id", me.getId());
-        return me.getId();
-      }
-    } catch (Exception ignored) { /* si falla, pasamos al fallback */ }
-
-    // Fallback DEV (propiedad) — quitalo en prod
-    if (forceUserId != null) {
-      session.setAttribute("user_id", forceUserId);
-      return forceUserId;
-    }
-    return null;
-  }
 
   //-------------------------------------
 
