@@ -122,3 +122,21 @@
     .container-mis-hechos{ padding: .75rem; }
     .mm-grid-2{ grid-template-columns: 1fr; }
 }
+
+.mm-req__meta{
+    margin: 10px 0 10px 8px;
+}
+.mm-req__title{
+    font-weight: 700;
+    margin: 10px 0 10px 10px;
+}
+.mm-req__body{
+    padding-right: 0;
+    margin: 10px 0 10px 0;
+}
+.mm-req{
+    border-radius: 20px;
+}
+.mm-btn--round{
+    background: var(--muted);
+}

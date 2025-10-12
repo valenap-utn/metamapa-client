@@ -13,10 +13,10 @@
 <!--        (debug) user_id sesión: <strong th:text="${session.user_id}">null</strong>-->
 <!--    </div>-->
 
-    <!-- vacío -->
-    <div th:if="${items == null or #lists.isEmpty(items)}">Aún no cargaste hechos.</div>
-
     <h1 class="title-main" style="margin-top: 50px; text-align: center; font-weight: 700;">Mis Hechos</h1>
+
+    <!-- vacío -->
+    <div style="margin-top: 50px" th:if="${items == null or #lists.isEmpty(items)}">Aún no cargaste hechos.</div>
 
     <!-- tarjetas -->
     <article class="mm-req"
@@ -35,7 +35,7 @@
         </span>
 
                 <span class="badge" th:classappend="${editable} ? ' badge-brand' : ' badge-neutral'">
-          <span th:text="${editable} ? 'Editable (≤ 7 días)' : 'Edición vencida'">Estado</span>
+          <span th:text="${editable} ? 'Editable' : 'Edición vencida'">Estado</span>
         </span>
             </div>
         </header>
