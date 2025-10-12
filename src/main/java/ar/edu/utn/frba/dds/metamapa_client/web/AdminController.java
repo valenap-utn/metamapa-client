@@ -155,7 +155,8 @@ public class AdminController {
         .filter(h->"TODAS".equalsIgnoreCase(estado) || estado.equalsIgnoreCase(h.getEstado()))
         .map(h -> {
           HechoDTOOutput original = this.agregador.getHecho(h.getIdHecho());
-          return Map.of("sol",h,"orig",original);
+          String nombreUsuario = this.agregador.getNombreUsuario(original.getIdUsuario());
+          return Map.of("sol",h,"orig",original, "nombreUsuario",nombreUsuario);
         })
         .filter(vm -> {
           String qNorm = q.trim().toLowerCase();

@@ -39,6 +39,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   private final Map<Long, SolicitudEliminacionDTO> solicitudesEliminacion = new HashMap<>();
   private final Map<Long, SolicitudEdicionDTO> solicitudesEdicion = new HashMap<>();
   private final Map<String, UsuarioDTO> usuarioDTO = new HashMap<>();
+  private final Map<Long, UsuarioDTO> usuariosById = new HashMap<>();
   private final AtomicLong idHecho = new AtomicLong(1);
   private final AtomicLong idSolicitudEliminacion = new AtomicLong(1);
   private final AtomicLong idSolicitudEdicion = new AtomicLong(1);
@@ -459,11 +460,21 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     Long id = this.idUsuario.getAndIncrement();
     dto.setId(id);
     this.usuarioDTO.put(dto.getEmail(), dto);
+    this.usuariosById.put(id,dto);
     return dto;
   }
 
   @Override
   public UsuarioDTO getMe() {
     return null;
+  }
+
+  public String getNombreUsuario(Long id) {
+    UsuarioDTO usuario = this.usuariosById.get(id);
+    if(usuario == null) return "Usuario " + id;
+    String nombre = (usuario.getNombre() != null ? usuario.getNombre() : "");
+    String apellido = (usuario.getApellido() != null ? usuario.getApellido() : "");
+    String nombreCompleto = (nombre + " " + apellido).trim();
+    return nombreCompleto.isEmpty() ? "Usuario " + id : nombreCompleto;
   }
 }

@@ -140,3 +140,7 @@
 .mm-btn--round{
     background: var(--muted);
 }
+
+p{
+    margin: 10px;
+}

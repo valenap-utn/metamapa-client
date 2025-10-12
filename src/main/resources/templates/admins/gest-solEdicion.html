@@ -46,7 +46,7 @@
   <ul class="mm-requests list-unstyled m-0">
     <li class="mm-req" th:if="${#lists.isEmpty(items)}" style="text-align: center; color: #6b7f90">No hay solicitudes pendientes</li>
 
-    <li class="mm-req" th:each="vm : ${items}" th:with="sol=${vm['sol']}, orig=${vm['orig']}">
+    <li class="mm-req" th:each="vm : ${items}" th:with="sol=${vm['sol']}, orig=${vm['orig']}, nombreUsuario=${vm['nombreUsuario']}">
       <div class="mm-req__header">
         <div>
           <h3 class="mm-req__title m-0" th:text="${'Edición Hecho #' + sol['idHecho']}">
@@ -54,14 +54,17 @@
           </h3>
 
           <div class="mm-req__meta">
-            <span class="badge" th:classappend="${sol['estado']}=='PENDIENTE' ? ' badge-brand' : ' badge-neutral'" th:text="${sol['estado']}">
+            <span class="badge" style="margin: 10px 0 10px 0;" th:classappend="${sol['estado']}=='PENDIENTE' ? ' badge-brand' : ' badge-neutral'" th:text="${sol['estado']}">
                 PENDIENTE
             </span>
 
             <span class="badge badge-neutral" th:text="${sol['fechaSolicitud'] != null ? 'Solicitado: ' + #temporals.format(sol['fechaSolicitud'],'dd/MM/yyyy HH:mm') : ''}"></span>
 
-            <span class="badge badge-neutral" th:text="${'Creado por ' + (sol['idusuario'] != null ? ('Usuario ' + sol['idusuario']) : 'Anónimo')}">
-              Creado por Anónimo
+<!--            <span class="badge badge-neutral" th:text="${'Creado por ' + (sol['idusuario'] != null ? ('Usuario ' + sol['idusuario']) : 'Anónimo')}">-->
+<!--              Creado por Anónimo-->
+<!--            </span>-->
+            <span class="badge badge-neutral" th:text="${'Creado por ' + (nombreUsuario != null ? nombreUsuario : ('Usuario ' + sol['idusuario']))}">
+              Creado por —
             </span>
           </div>
         </div>
