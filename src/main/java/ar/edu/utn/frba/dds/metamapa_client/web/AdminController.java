@@ -6,7 +6,10 @@ import ar.edu.utn.frba.dds.metamapa_client.core.dtos.StatsResp;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.RevisionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -141,6 +144,69 @@ public class AdminController {
     this.agregador.rechazarHecho(id);
     return ResponseEntity.noContent().build(); //204 en caso de exito !
   }
+
+  //Para solicitudes de Edición
+  @GetMapping("/gest-solEdicion")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public String solicitudesEdicion(Model model, @RequestParam(value = "estado", required = false, defaultValue = "PENDIENTE") String estado, @RequestParam(value = "q", required = false, defaultValue = "") String q) {
+    List<SolicitudEdicionDTO> solicitudes = this.agregador.findAllSolicitudesEdicion();
+
+    List<Map<String,Object>> vms = solicitudes.stream()
+        .filter(h->"TODAS".equalsIgnoreCase(estado) || estado.equalsIgnoreCase(h.getEstado()))
+        .map(h -> {
+          HechoDTOOutput original = this.agregador.getHecho(h.getIdHecho());
+          return Map.of("sol",h,"orig",original);
+        })
+        .filter(vm -> {
+          String qNorm = q.trim().toLowerCase();
+          if(qNorm.isEmpty()){ return true; }
+          HechoDTOOutput otpDTO = (HechoDTOOutput) vm.get("orig");
+          SolicitudEdicionDTO solEdDTO = (SolicitudEdicionDTO) vm.get("sol");
+          return (otpDTO != null && otpDTO.getTitulo() != null && otpDTO.getTitulo().toLowerCase().contains(qNorm))
+              || (solEdDTO.getPropuesta() != null && solEdDTO.getPropuesta().getTitulo() != null && solEdDTO.getPropuesta().getTitulo().toLowerCase().contains(qNorm));
+        }).toList();
+
+    long total = solicitudes.size();
+    long pendientes = solicitudes.stream().filter(h -> "PENDIENTE".equals(h.getEstado())).count();
+    long aceptadas = solicitudes.stream().filter(h -> "ACEPTAR".equals(h.getEstado())).count();
+    long canceladas = solicitudes.stream().filter(h -> "CANCELADA".equals(h.getEstado())).count();
+
+    model.addAttribute("items", vms);
+    model.addAttribute("estado",estado);
+    model.addAttribute("q",q);
+
+    model.addAttribute("countTodas", total);
+    model.addAttribute("countPend", pendientes);
+    model.addAttribute("countAcep", aceptadas);
+    model.addAttribute("countCancel",canceladas);
+
+    model.addAttribute("titulo", "Solicitudes de Edición");
+    return "admins/gest-solEdicion";
+  }
+
+  @PostMapping("/gest-solEdicion/{idSolicitud}/aprobar")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public ResponseEntity<Void> aprobarSolicitudEdicion(@PathVariable("idSolicitud") Long idSolicitud){
+    RevisionDTO revision = new RevisionDTO();
+    revision.setEstado("ACEPTAR");
+    revision.setComentario("Solicitud de edición aprobada por el administrador");
+
+    this.agregador.procesarSolicitudEdicion(idSolicitud,"http://localhost:4000/",revision);
+    return ResponseEntity.noContent().build(); //204 en caso de exito !
+  }
+
+  @PostMapping("/gest-solEdicion/{idSolicitud}/rechazar")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public ResponseEntity<Void> rechazarSolicitudEdicion(@PathVariable("idSolicitud") Long idSolicitud){
+    RevisionDTO revision = new RevisionDTO();
+    revision.setEstado("RECHAZAR");
+//    revision.setEstado("CANCELADA");
+    revision.setComentario("Edición rechazada por el administrador");
+
+    this.agregador.procesarSolicitudEdicion(idSolicitud, "http://localhost:4000/", revision);
+    return ResponseEntity.noContent().build(); //204 en caso de exito !
+  }
+
 
   //Para solicitudes de eliminación
   //View-Model simple para la vista

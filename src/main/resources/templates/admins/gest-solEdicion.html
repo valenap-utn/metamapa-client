@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/layout :: layout('Solicitudes de Edición', ~{::link}, ~{::section})}">
+<head>
+  <link rel="stylesheet" th:href="@{/css/styles-commons.css}">
+  <link rel="stylesheet" th:href="@{/css/estilos-admin/styles-gest-solEliminacion.css}">
+  <style>
+    /* para comparar ANTES / DESPUÉS */
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .mm-diff { background:#f8fbff; border:1px solid #e5eef8; border-radius:12px; padding:12px; }
+    .mm-diff h5 { margin:0 0 8px; font-weight:600; }
+    .mm-fieldrow { margin:6px 0; }
+    .mm-label-s { font-size:12px; color:#6b7f90; display:block; margin-bottom:2px; }
+    .mm-value { white-space:pre-wrap; }
+    @media (max-width: 720px){ .cols { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body class="body-metamapa">
+<!-- Main -->
+<section class="mm-card mx-auto" style="max-width: 920px;" th:attr="data-current-filter=${estado}">
+  <h1 class="mm-form-title mb-2 text-center" style="padding-top: 60px">Solicitudes de edición</h1>
+  <p class="mm-form-sub text-center mb-4">Revisá, aprobá o rechazá las ediciones propuestas</p>
+
+  <!-- Toolbar de filtros -->
+  <form class="mm-toolbar mb-3" method="get" th:action="@{/admin/gest-solEdicion}">
+    <div class="mm-seg" role="tablist" aria-label="Filtrar por estado">
+      <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='TODAS' ? 'is-active' : ''" name="estado" value="TODAS" th:attr="aria-selected=${estado}=='TODAS'">
+        Todas <span class="mm-seg__badge" id="count-todas" th:text="${countTodas}">0</span>
+      </button>
+      <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='PENDIENTE' ? 'is-active' : ''" name="estado" value="PENDIENTE" th:attr="aria-selected=${estado}=='PENDIENTE'">
+        Pendientes <span class="mm-seg__badge" id="count-pend" th:text="${countPend}">0</span>
+      </button>
+      <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='ACEPTAR' ? 'is-active' : ''" name="estado" value="ACEPTAR" th:attr="aria-selected=${estado}=='ACEPTAR'">
+        Aceptadas <span class="mm-seg__badge" id="count-apr" th:text="${countAcep}">0</span>
+      </button>
+      <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='RECHAZAR' ? 'is-active' : ''"  name="estado" value="RECHAZAR" th:attr="aria-selected=${estado}=='RECHAZAR'">
+        Rechazadas <span class="mm-seg__badge" id="count-cancel" th:text="${countCancel}">0</span>
+      </button>
+    </div>
+
+    <div class="mm-search">
+      <input id="searchBox" class="mm-input" placeholder="Buscar por título o justificación…" name="q" th:value="${q}">
+    </div>
+  </form>
+
+  <!-- Lista de solicitudes -->
+  <ul class="mm-requests list-unstyled m-0">
+    <li class="mm-req" th:if="${#lists.isEmpty(items)}" style="text-align: center; color: #6b7f90">No hay solicitudes pendientes</li>
+
+    <li class="mm-req" th:each="vm : ${items}" th:with="sol=${vm['sol']}, orig=${vm['orig']}">
+      <div class="mm-req__header">
+        <div>
+          <h3 class="mm-req__title m-0" th:text="${'Edición Hecho #' + sol['idHecho']}">
+            Edición Hecho #
+          </h3>
+
+          <div class="mm-req__meta">
+            <span class="badge" th:classappend="${sol['estado']}=='PENDIENTE' ? ' badge-brand' : ' badge-neutral'" th:text="${sol['estado']}">
+                PENDIENTE
+            </span>
+
+            <span class="badge badge-neutral" th:text="${sol['fechaSolicitud'] != null ? 'Solicitado: ' + #temporals.format(sol['fechaSolicitud'],'dd/MM/yyyy HH:mm') : ''}"></span>
+
+            <span class="badge badge-neutral" th:text="${'Creado por ' + (sol['idusuario'] != null ? ('Usuario ' + sol['idusuario']) : 'Anónimo')}">
+              Creado por Anónimo
+            </span>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="mm-req__actions" th:if="${sol['estado']}=='PENDIENTE'">
+          <form th:action="@{|/admin/gest-solEdicion/${sol['id']}/aprobar|}" method="post" style="display: inline">
+            <input type="hidden" name="estado" th:value="${estado}">
+            <input type="hidden" name="q" th:value="${q}">
+            <button class="mm-btn mm-btn--round mm-btn--approve" aria-label="Aprobar edición" type="submit">
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </form>
+
+          <form th:action="@{|/admin/gest-solEdicion/${sol['id']}/rechazar|}" method="post" style="display:inline; margin-left:8px;">
+            <input type="hidden" name="estado" th:value="${estado}">
+            <input type="hidden" name="q" th:value="${q}">
+            <button class="mm-btn mm-btn--round mm-btn--reject" aria-label="Rechazar edición" type="submit">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+<!--      <div class="mm-req__body">-->
+<!--        <p class="m-0"><strong>Justificación:</strong>-->
+<!--          <span th:text="${solicitudesVM.solicitud.justificacion ?: '—'}">—</span></p>-->
+<!--        <p class="m-0"><strong>Hecho referenciado:</strong>-->
+<!--          <a class="blue-link" th:href="${solicitudesVM.urlHecho}" th:text="${solicitudesVM.tituloHecho}">—</a></p>-->
+<!--      </div>-->
+<!--    </li>-->
+
+      <!-- ANTES y DESPUÉS de la edición -->
+      <div class="cols">
+        <div class="mm-diff">
+          <h5 class="mm-form-title" style="padding-top: 10px">Sin edición</h5>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Título</span>
+            <div class="mm-value" th:text="${orig != null ? orig['titulo'] : '—'}">—</div>
+          </div>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Descripción</span>
+            <div class="mm-value" th:text="${orig != null ? orig['descripcion'] : '—'}">—</div>
+          </div>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Categoría</span>
+            <div class="mm-value" th:text="${orig != null && orig['categoria'] != null ? orig['categoria']['nombre'] : '—'}">—</div>
+          </div>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Ubicación</span>
+            <div class="mm-value" th:text="${orig != null && orig['ubicacion'] != null ? (orig['ubicacion']['latitud'] + ', ' + orig['ubicacion']['longitud']) : '—'}">—</div>
+          </div>
+        </div>
+
+        <br>
+        <hr>
+        <br>
+
+        <div class="mm-diff">
+          <h5 class="mm-form-title" style="padding-top: 10px">Edición propuesta</h5>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Título</span>
+            <div class="mm-value" th:text="${sol['propuesta'] != null ? sol['propuesta']['titulo'] : '—'}">—</div>
+          </div>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Descripción</span>
+            <div class="mm-value" th:text="${sol['propuesta'] != null ? sol['propuesta']['descripcion'] : '—'}">—</div>
+          </div>
+<!--          <div class="mm-fieldrow">-->
+<!--            <span class="mm-label-s" style="font-weight: 700">Categoría</span>-->
+<!--            <div class="mm-value" th:text="${sol['propuesta'] != null && sol['propuesta']['categoria'] != null ? sol['propuesta']['categoria']['nombre'] : '—'}">—</div>-->
+<!--          </div>-->
+          <!-- Por el momento no editable la categoría -->
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Categoría</span>
+            <div class="mm-value" th:text="${orig != null && orig['categoria'] != null ? orig['categoria']['nombre'] : '—'}">—</div>
+          </div>
+          <div class="mm-fieldrow">
+            <span class="mm-label-s" style="font-weight: 700">Ubicación</span>
+            <div class="mm-value" th:text="${sol['propuesta'] != null && sol['propuesta']['ubicacion'] != null ? (sol['propuesta']['ubicacion']['latitud'] + ', ' + sol['propuesta']['ubicacion']['longitud']) : '—'}">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2">
+<!--       class="blue-link" -->
+<!--        <a class=" mm-btn mm-btn-ghost" th:href="@{|/hechos/${sol['idHecho']}|}">Ver hecho original</a>-->
+      </div>
+    </li>
+
+  </ul>
+</section>
+
+<!--<script type="module" th:src="@{/js/admins/gest-solEliminacion.js}"></script>-->
+
+<!-- Script para quitar item si se aprueba/rechaza -->
+<!--<script>-->
+<!--  document.addEventListener('click', (e) => {-->
+<!--    const btn = e.target.closest('.mm-btn&#45;&#45;approve, .mm-btn&#45;&#45;reject');-->
+<!--    if (!btn) return;-->
+<!--    const li = btn.closest('.mm-req');-->
+<!--    li.style.transition = 'opacity .25s, transform .25s';-->
+<!--    li.style.opacity = '0'; li.style.transform = 'translateY(-4px)';-->
+<!--    setTimeout(() => li.remove(), 250);-->
+<!--  });-->
+<!--</script>-->
+
+<script>
+  // Helpers
+  function inc(id, delta) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const n = parseInt(el.textContent || '0', 10);
+    el.textContent = String(Math.max(0, n + delta));
+  }
+
+  const section = document.querySelector('section.mm-card'); // tiene data-current-filter
+  const filtroActual = () => section?.getAttribute('data-current-filter') || 'TODAS';
+
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    // Solo interceptar los formularios de acciones dentro de la card
+    if (!form.closest('.mm-req__actions')) return;
+    e.preventDefault();
+
+    const btn = e.submitter || form.querySelector('button[type="submit"]');
+    btn?.setAttribute('disabled', 'disabled');
+
+    const li  = form.closest('.mm-req');
+    const url = form.getAttribute('action') || '';
+    const isAceptar = url.includes('/aprobar');      // <-- tus endpoints
+    const isRechazar = url.includes('/rechazar');    // <--
+
+    // Actualización optimista: badge + contadores
+    const badge = li.querySelector('.mm-req__meta .badge');
+    const prevBadgeTxt  = badge?.textContent ?? '';
+    const prevBadgeClass= badge?.className ?? 'badge';
+
+    if (badge) {
+      badge.textContent = isAceptar ? 'ACEPTAR' : 'RECHAZAR';
+      badge.className = 'badge badge-neutral';
+    }
+
+    // Contadores
+    inc('count-pend', -1);
+    if (isAceptar) inc('count-apr', +1); else if (isRechazar) inc('count-cancel', +1);
+
+    // Si el filtro activo no coincide con el nuevo estado, la sacamos visualmente
+    const debeSalir = (filtroActual() !== 'TODAS' && filtroActual() !== (isAceptar ? 'ACEPTAR' : 'RECHAZAR'));
+    if (debeSalir) {
+      li.style.transition = 'opacity .2s, transform .2s';
+      li.style.opacity = '0';
+      li.style.transform = 'translateY(-4px)';
+      setTimeout(() => li.remove(), 200);
+    }
+
+    // Llamada al backend
+    fetch(url, { method: 'POST' })
+            .then(res => {
+              if (res.status === 204 || res.ok) {
+                // Si el filtro SÍ coincide (o estás en TODAS), igual podés remover la card si querés:
+                if (!debeSalir) {
+                  li.style.transition = 'opacity .2s, transform .2s';
+                  li.style.opacity = '0';
+                  li.style.transform = 'translateY(-4px)';
+                  setTimeout(() => li.remove(), 200);
+                }
+                return;
+              }
+              throw new Error('HTTP ' + res.status);
+            })
+            .catch(err => {
+              console.error('Fallo al resolver solicitud:', err);
+              // Rollback visual mínimo
+              if (badge) {
+                badge.textContent = prevBadgeTxt;
+                badge.className   = prevBadgeClass;
+              }
+              inc('count-pend', +1);
+              if (isAceptar) inc('count-apr', -1); else if (isRechazar) inc('count-cancel', -1);
+              // Si ya habíamos removido el li, la forma simple de recuperar estado es recargar:
+              // location.reload();
+            })
+            .finally(() => setTimeout(() => btn?.removeAttribute('disabled'), 250));
+  });
+</script>
+</body>
+</html>

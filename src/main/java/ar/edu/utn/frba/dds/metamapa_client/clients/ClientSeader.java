@@ -260,19 +260,60 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     return hecho;
   }
 
+
+  //Para solicitudes de edición
+  public List<SolicitudEdicionDTO> findAllSolicitudesEdicion() {
+    return new ArrayList<>(this.solicitudesEdicion.values());
+  }
+
   @Override
   public SolicitudEdicionDTO solicitarModificacion(SolicitudEdicionDTO solicitudEdicion, String baseUrl) {
+    if(solicitudEdicion == null)return null;
     Long idSolicitudEdicion = this.idSolicitudEdicion.getAndIncrement();
     solicitudEdicion.setId(idSolicitudEdicion);
-    this.solicitudesEdicion.put(solicitudEdicion.getId(), solicitudEdicion);
+    if(solicitudEdicion.getEstado() == null)solicitudEdicion.setEstado("PENDIENTE");
+    if(solicitudEdicion.getFechaSolicitud() == null)solicitudEdicion.setFechaSolicitud(LocalDateTime.now());
+//    this.solicitudesEdicion.put(solicitudEdicion.getId(), solicitudEdicion);
+    this.solicitudesEdicion.put(idSolicitudEdicion, solicitudEdicion);
     return solicitudEdicion;
   }
 
   @Override
   public SolicitudEdicionDTO procesarSolicitudEdicion(Long idSolicitud, String baseUrl, RevisionDTO revisionDTO) {
     SolicitudEdicionDTO solicitudEdicionDTO = this.solicitudesEdicion.get(idSolicitud);
-    solicitudEdicionDTO.setEstado(revisionDTO.getEstado());
-    solicitudEdicionDTO.setJustificacion(revisionDTO.getComentario());
+    if(solicitudEdicionDTO == null)return null;
+    String nuevoEstado = revisionDTO != null && revisionDTO.getEstado() != null ? revisionDTO.getEstado() : "CANCELADA";
+
+    solicitudEdicionDTO.setEstado(nuevoEstado);
+    solicitudEdicionDTO.setJustificacion(revisionDTO != null ? revisionDTO.getComentario() : null);
+
+    if("ACEPTAR".equalsIgnoreCase(nuevoEstado)){
+      HechoDTOOutput original = this.hechos.get(solicitudEdicionDTO.getIdHecho());
+      HechoDTOInput p = solicitudEdicionDTO.getPropuesta();
+      if(original != null && p != null){
+        if(p.getTitulo() != null){
+          original.setTitulo(p.getTitulo());
+        }
+        if(p.getDescripcion() != null){
+          original.setDescripcion(p.getDescripcion());
+        }
+        if(p.getCategoria() != null){
+          original.setCategoria(p.getCategoria());
+        }
+        if(p.getUbicacion() != null){
+          original.setUbicacion(p.getUbicacion());
+        }
+        if(p.getFechaAcontecimiento() != null){
+          original.setFechaAcontecimiento(p.getFechaAcontecimiento());
+        }
+        if(original.getEstado() == null || !"APROBAR".equalsIgnoreCase(original.getEstado())){
+          original.setEstado("APROBAR");
+        }
+        original.setFechaAprobacion(LocalDateTime.now());
+      }
+    }
+    // Si queremos que desaparezca de la bandeja al resolverse
+    // this.solicitudesEdicion.remove(idSolicitud);
     return solicitudEdicionDTO;
   }
 

@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.metamapa_client.clients.utils.JwtUtil;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios.Rol;
 import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
 import ar.edu.utn.frba.dds.metamapa_client.services.IConexionServicioUser;
@@ -12,6 +13,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -133,9 +136,16 @@ public class HechosController {
     Long userId = JwtUtil.getId(accessToken);
     if (userId == null) return "redirect:/iniciar-sesion";
 
-    // Traemos todos los hechos y solo mostramos los ya APROBADOS
+    //Hechos con solicitud de edición PENDIENTE
+    Set<Long> enRevision = agregador.findAllSolicitudesEdicion().stream()
+        .filter(h -> "PENDIENTE".equalsIgnoreCase(h.getEstado()))
+        .map(SolicitudEdicionDTO :: getIdHecho)
+        .collect(Collectors.toSet());
+
+    // Mostramos solo todos los hechos ya APROBADOS
     List<HechoDTOOutput> all = agregador.listHechosDelUsuario(userId).stream()
         .filter(h -> "APROBAR".equalsIgnoreCase(h.getEstado()))
+        .filter(h-> !enRevision.contains(h.getId()))
         .sorted((a,b)-> {
           var ka = (a.getFechaAprobacion() !=null ? a.getFechaAprobacion() : a.getFechaCarga());
           var kb = (b.getFechaAprobacion() !=null ? b.getFechaAprobacion() : b.getFechaCarga());
@@ -198,6 +208,25 @@ public class HechosController {
     model.addAttribute("hecho", hecho);
     model.addAttribute("titulo", "Editar Hecho");
     return "hechos/editar";
+  }
+
+  @PostMapping("/{idHecho}/editar")
+  @PreAuthorize("hasRole('CONTRIBUYENTE')")
+  public String enviarEdicion(@PathVariable Long idHecho, @ModelAttribute("hecho")HechoDTOInput hechoDtoInput, HttpSession session, RedirectAttributes ra) {
+    String accessToken = session.getAttribute("accessToken").toString();
+    Long userId = JwtUtil.getId(accessToken);
+
+    SolicitudEdicionDTO solicitud = new SolicitudEdicionDTO();
+    solicitud.setIdHecho(idHecho);
+    solicitud.setEstado("PENDIENTE");
+    solicitud.setFechaSolicitud(LocalDateTime.now());
+    solicitud.setPropuesta(hechoDtoInput);
+
+    this.agregador.solicitarModificacion(solicitud, "http://localhost:4000");
+
+    ra.addFlashAttribute("success","Tu edición fue enviada a revisión. Aparecerá nuevamente cuando sea aprobada.");
+
+    return "redirect:/hechos/mis-hechos";
   }
 
   // ---------- Helper para el ID ----------

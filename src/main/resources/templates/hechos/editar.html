@@ -15,7 +15,7 @@
             <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
 
             <!-- Ajustar el action a endpoint de guardado -->
-            <form th:object="${hecho}" th:action="@{'/hechos/' + ${hecho.getId()}}"  method="post" enctype="multipart/form-data" class="mm-form">
+            <form th:object="${hecho}" th:action="@{'/hechos/' + ${hecho.getId() + '/editar'}}"  method="post" enctype="multipart/form-data" class="mm-form">
                 <div class="mm-grid mm-grid--2">
                     <!-- Título -->
                     <div class="mm-field mm-col-span-2">
