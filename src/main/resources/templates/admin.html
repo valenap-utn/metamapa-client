@@ -58,6 +58,28 @@
             <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" th:href="@{/admin/gest-solEliminacion}">Gestionar solicitudes de eliminación</a>
             <a class="btn btn-back btn-lg mb-3" aria-label="Consultar estadísticas" th:href="@{/admin/dashboard-estadisticas}">Consultar estadísticas</a>
         </div>
+
+        <a class="btn btn-back btn-lg mb-3" aria-label="Gestionar solicitudes de eliminación de Hechos" th:href="@{/admin/gest-solEliminacion}">Gestionar solicitudes de eliminación</a>
+        <a class="btn btn-back btn-lg mb-3" aria-label="Consultar estadísticas" th:href="@{/admin/dashboard-estadisticas}">Consultar estadísticas</a>
+        </div>
+
+        <!-- ALERT DE CONFIRMACIÓN -->
+        <th:block th:if="${success != null}">
+            <script th:inline="javascript">
+                alert(/*[[${success}]]*/'');
+            </script>
+        </th:block>
+
+        <th:block th:if="${error != null}">
+            <script th:inline="javascript">
+                alert(/*[[${error}]]*/'');
+            </script>
+        </th:block>
+
     </section>
+</body>
+</html>
+
+</section>
 </body>
 </html>

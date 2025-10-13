@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
@@ -64,10 +65,11 @@ public class AdminController {
 
   @PostMapping("/crear-coleccion")
   @PreAuthorize("hasRole('ADMINISTRADOR')")
-  public String crearColeccionPost(@ModelAttribute("coleccion") ColeccionDTOInput coleccion, Model model) {
+  public String crearColeccionPost(@ModelAttribute("coleccion") ColeccionDTOInput coleccion, Model model, RedirectAttributes ra) {
     ColeccionDTOOutput coleccionDTOOutput = this.agregador.crearColeccion(coleccion);
+    ra.addFlashAttribute("success", "Colecciòn creada correctamente");
 
-    return "admins/crear-coleccion";
+    return "redirect:/admin/crear-coleccion";
   }
 
   @GetMapping("/modificar-coleccion")
