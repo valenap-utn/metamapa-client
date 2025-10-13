@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,15 +99,10 @@ public class AuthController {
   }
 
   // Dev: ver qué quedó en sesión
-  @GetMapping("/dev/whoami")
+  @GetMapping("/whoami")
   @ResponseBody
-  public Map<String,Object> whoami(HttpSession s) {
-    Map<String,Object> m = new HashMap<>();
-    m.put("user_id", s.getAttribute("user_id"));
-    m.put("isContribuyente", s.getAttribute("isContribuyente"));
-    m.put("isAdmin", s.getAttribute("isAdmin"));
-    m.put("hasAccessToken", s.getAttribute("accessToken") != null);
-    return m;
+  public String whoami(Authentication auth) {
+    return (auth == null) ? "anon" : "principal=" + auth.getName() + " auths=" + auth.getAuthorities();
   }
 
   @PostMapping("/logout")

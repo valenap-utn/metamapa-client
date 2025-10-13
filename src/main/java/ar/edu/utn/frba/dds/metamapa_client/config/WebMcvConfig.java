@@ -1,3 +1,4 @@
+/*
 package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import ar.edu.utn.frba.dds.metamapa_client.security.RememberInterceptor;
@@ -23,3 +24,4 @@ public class WebMcvConfig implements WebMvcConfigurer {
     registry.addInterceptor(adminGuard).addPathPatterns("/admin/**","/admin").order(1);
   }
 }
+*/

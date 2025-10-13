@@ -1,3 +1,4 @@
+/*
 package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import ar.edu.utn.frba.dds.metamapa_client.security.RememberInterceptor;
@@ -20,3 +21,4 @@ public class WebConfig implements WebMvcConfigurer {
         .excludePathPatterns("/css/**","/js/**","/images/**","/webjars/**");
   }
 }
+*/

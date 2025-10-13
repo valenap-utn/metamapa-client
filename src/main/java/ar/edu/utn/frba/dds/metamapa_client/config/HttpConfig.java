@@ -1,3 +1,4 @@
+/*
 package ar.edu.utn.frba.dds.metamapa_client.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -21,3 +22,4 @@ public class HttpConfig {
 //        .build();
 //  }
 }
+*/
