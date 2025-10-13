@@ -262,7 +262,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   }
 
 
-  //Para solicitudes de edición
+  //Solicitudes de EDICIÓN
   public List<SolicitudEdicionDTO> findAllSolicitudesEdicion() {
     return new ArrayList<>(this.solicitudesEdicion.values());
   }
@@ -339,9 +339,11 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   }
 
 
-  @Override
+  @Override //retorna solo los hechos NO eliminados
   public List<HechoDTOOutput> findAllHechos(FiltroDTO filtro) {
-    return this.hechos.values().stream().toList();
+    return this.hechos.values().stream()
+        .filter(h -> !h.isEliminado())
+        .toList();
   }
 
   @Override
@@ -350,6 +352,8 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     Collections.shuffle(hechos);
     return hechos.subList(0, 3);
   }
+
+  //Solicitudes de ELIMINACION
 
   @Override
   public List<SolicitudEliminacionDTO> findAllSolicitudes() {
@@ -360,6 +364,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   public SolicitudEliminacionDTO crearSolicitud(SolicitudEliminacionDTO solicitudEliminacionDTO) {
     Long id = this.idSolicitudEliminacion.getAndIncrement();
     solicitudEliminacionDTO.setId(id);
+    solicitudEliminacionDTO.setEstado("PENDIENTE");
     this.solicitudesEliminacion.put(id, solicitudEliminacionDTO);
     return solicitudEliminacionDTO;
   }
@@ -374,9 +379,15 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   @Override
   public SolicitudEliminacionDTO aceptarSolicitud(Long idSolicitud) {
     SolicitudEliminacionDTO solicitudEliminacionDTO = this.solicitudesEliminacion.get(idSolicitud);
+    if(solicitudEliminacionDTO == null)return null;
+
     solicitudEliminacionDTO.setEstado("ACEPTAR");
+
     HechoDTOOutput hecho = this.hechos.get(solicitudEliminacionDTO.getIdHecho());
-    hecho.setEliminado(true);
+    if(hecho != null){
+      hecho.setEliminado(true);
+      hecho.setFechaDeBaja(LocalDateTime.now());
+    }
     return solicitudEliminacionDTO;
   }
 
@@ -426,6 +437,7 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   public List<HechoDTOOutput> listHechosDelUsuario(Long userId) {
     return this.hechos.values().stream()
         .filter(h -> userId != null && userId.equals(h.getIdUsuario()))
+        .filter(h -> !h.isEliminado())
         .sorted((a,b) -> {
           var fa = a.getFechaCarga(); var fb = b.getFechaCarga();
           if (fa == null && fb == null) return 0;

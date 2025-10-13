@@ -6,9 +6,11 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios.Rol;
 import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
 import ar.edu.utn.frba.dds.metamapa_client.services.IConexionServicioUser;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -119,11 +122,11 @@ public class HechosController {
   }
 
   //Método para chequear que tenga rol
-  private boolean hasRole(HttpSession session, Rol r) {
-    boolean isAdmin  = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
-    boolean isContrib= Boolean.TRUE.equals(session.getAttribute("isContribuyente"));
-    return (r == Rol.ADMINISTRADOR && isAdmin) || (r == Rol.CONTRIBUYENTE && isContrib);
-  }
+//  private boolean hasRole(HttpSession session, Rol r) {
+//    boolean isAdmin  = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+//    boolean isContrib= Boolean.TRUE.equals(session.getAttribute("isContribuyente"));
+//    return (r == Rol.ADMINISTRADOR && isAdmin) || (r == Rol.CONTRIBUYENTE && isContrib);
+//  }
 
   private static final Logger log = LoggerFactory.getLogger(HechosController.class);
 
@@ -155,11 +158,6 @@ public class HechosController {
           return kb.compareTo(ka);
         }).toList();
 
-//    log.info("[mis-hechos] userId={}, isContrib={}, totalItems={}", userId, hasRole(session, Rol.CONTRIBUYENTE), (all==null?0:all.size()));
-//    if (all != null && !all.isEmpty()) {
-//      log.info("[mis-hechos] firstItemId={}, title={}", all.get(0).getId(), all.get(0).getTitulo());
-//    }
-
     int total = all.size();
     int shown = Math.min(Math.max(limit,0), total);
 
@@ -174,10 +172,11 @@ public class HechosController {
   }
 
   // Para editar el Hecho
-  // Validamos existencia del Usuario actual,
-  // y ventana de 7 días desde fecha de Carga del Hecho
-  // Si falla => redirige con flash error (ver si lo queremos cambiar a esto)
-  // Sino => renderiza editar.html (reutilizamos subir-hecho con click-to-edit)
+  /* Validamos existencia del Usuario actual,
+   y ventana de 7 días desde fecha de Carga del Hecho
+   Si falla => redirige con flash error (ver si lo queremos cambiar a esto)
+   Sino => renderiza editar.html (reutilizamos subir-hecho con click-to-edit)
+ */
   @GetMapping("/{idHecho}/editar")
   @PreAuthorize("hasRole('CONTRIBUYENTE')")
   public String editar(@PathVariable Long idHecho, HttpSession session, RedirectAttributes ra, Model model) {
@@ -229,9 +228,29 @@ public class HechosController {
     return "redirect:/hechos/mis-hechos";
   }
 
-  // ---------- Helper para el ID ----------
+  //Solicitudes de Eliminación
+  @PostMapping("/{idHecho}/solicitud-eliminacion")
+  @PreAuthorize("hasRole('CONTRIBUYENTE')")
+  public ResponseEntity<?> crearSolicitudEliminacion(@PathVariable Long idHecho, @RequestParam String justificacion, HttpSession session){
+    String accessToken = session.getAttribute("accessToken").toString();
+    if(accessToken == null) return ResponseEntity.status(401).body("No autenticado");
 
+    Long userId = JwtUtil.getId(accessToken);
+    if(userId == null) return ResponseEntity.status(401).body("Token inválido");
 
+    if(justificacion == null || justificacion.trim().length() < 500){
+      return ResponseEntity.badRequest().body("La justificación debe tener al menos 500 caracteres");
+    }
+
+    SolicitudEliminacionDTO solicitud = new SolicitudEliminacionDTO();
+    solicitud.setIdHecho(idHecho);
+    solicitud.setIdusuario(userId);
+    solicitud.setJustificacion(justificacion);
+    solicitud.setEstado("PENDIENTE");
+    solicitud.setFechaSolicitud(LocalDateTime.now());
+    this.agregador.crearSolicitud(solicitud);
+    return ResponseEntity.noContent().build(); //204 en caso de éxito!
+  }
 
 
   //-------------------------------------

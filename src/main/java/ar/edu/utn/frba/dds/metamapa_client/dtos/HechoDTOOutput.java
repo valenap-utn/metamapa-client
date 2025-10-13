@@ -23,4 +23,6 @@ public class HechoDTOOutput {
 
   private String estado;
   private LocalDateTime fechaAprobacion;
+
+  private LocalDateTime fechaDeBaja; //para saber cuando se eliminó
 }
