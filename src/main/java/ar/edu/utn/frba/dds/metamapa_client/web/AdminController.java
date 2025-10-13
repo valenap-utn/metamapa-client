@@ -69,7 +69,7 @@ public class AdminController {
     ColeccionDTOOutput coleccionDTOOutput = this.agregador.crearColeccion(coleccion);
     ra.addFlashAttribute("success", "Colecciòn creada correctamente");
 
-    return "redirect:/admin/crear-coleccion";
+    return "redirect:/admins/crear-coleccion";
   }
 
   @GetMapping("/modificar-coleccion")
