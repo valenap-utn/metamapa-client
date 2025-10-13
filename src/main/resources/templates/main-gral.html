@@ -21,6 +21,20 @@
         </a>
 
         <a th:href="@{/iniciar-sesion}"><button class="btn btn-back btn-lg mb-3" aria-label="Volver a la página anterior">Volver atrás</button></a>
+
+        <!-- Alerts por flash attributes -->
+        <th:block th:if="${success != null}">
+            <script th:inline="javascript">
+                alert(/*[[${success}]]*/'');
+            </script>
+        </th:block>
+
+        <th:block th:if="${error != null}">
+            <script th:inline="javascript">
+                alert(/*[[${error}]]*/'');
+            </script>
+        </th:block>
+
     </section>
 
     <!-- Par que funcione el collapse -->
