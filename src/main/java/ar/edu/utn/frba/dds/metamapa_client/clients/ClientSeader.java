@@ -343,6 +343,13 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
   public List<HechoDTOOutput> findAllHechos(FiltroDTO filtro) {
     return this.hechos.values().stream()
         .filter(h -> !h.isEliminado())
+
+        //Excluimos a los que tienen la solicitud de eliminación aceptada
+        .filter(h -> this.solicitudesEliminacion.values().stream()
+            .noneMatch(sol ->
+                sol.getIdHecho().equals(h.getId()) &&
+                    "ACEPTAR".equalsIgnoreCase(sol.getEstado())))
+
         .toList();
   }
 
