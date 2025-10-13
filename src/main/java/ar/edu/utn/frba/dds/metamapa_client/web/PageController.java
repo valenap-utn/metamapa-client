@@ -39,10 +39,6 @@ public class PageController {
     return "iniciar-sesion";
   }
 
-//  @GetMapping("/main-gral")
-//  public String mainGral() {
-//    return "main-gral";
-//  }
 
   @GetMapping("/main-gral")
   public String mainGral(HttpSession session, Model model) {
@@ -88,7 +84,7 @@ public class PageController {
   public String register(Model model, @ModelAttribute("cuenta") UsuarioDTO usuario) {
     UsuarioDTO usuario2 = this.cliente.crearUsuario(usuario);
 
-    return "redirect:/iniciar-sesion"; //role.startsWith("ADMIN") ? "redirect:/admin" : "redirect:/main-gral";
+    return "redirect:/iniciar-sesion";
   }
 
   @GetMapping("/privacidad")

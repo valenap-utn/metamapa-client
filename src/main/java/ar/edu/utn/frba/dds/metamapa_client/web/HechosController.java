@@ -88,11 +88,6 @@ public class HechosController {
   }
 
   @PostMapping("/subir-hecho")
-//  public String subirHechoPost(@ModelAttribute("hecho") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-//    HechoDTOOutput hechoDTO = this.agregador.crearHecho(hechoDtoInput, "http://localhost:4000");
-//
-//    return "hechos/subir-hecho";
-//  }
   public String subirHechoPost(@Valid @ModelAttribute("hecho") HechoDTOInput hechoDtoInput, Model model, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
     if(bindingResult.hasErrors()){
       redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.hecho", bindingResult);
@@ -102,8 +97,11 @@ public class HechosController {
     }
 
     //Obtenemos user
-    String accessToken = session.getAttribute("accessToken").toString();
-    Long userId = JwtUtil.getId(accessToken);
+    String accessToken = (String) session.getAttribute("accessToken");
+    Long userId = null;
+    if (accessToken != null) {
+      userId = JwtUtil.getId(accessToken);
+    }
 
     try{
       hechoDtoInput.setIdUsuario(userId);
@@ -121,12 +119,6 @@ public class HechosController {
     }
   }
 
-  //Método para chequear que tenga rol
-//  private boolean hasRole(HttpSession session, Rol r) {
-//    boolean isAdmin  = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
-//    boolean isContrib= Boolean.TRUE.equals(session.getAttribute("isContribuyente"));
-//    return (r == Rol.ADMINISTRADOR && isAdmin) || (r == Rol.CONTRIBUYENTE && isContrib);
-//  }
 
   private static final Logger log = LoggerFactory.getLogger(HechosController.class);
 

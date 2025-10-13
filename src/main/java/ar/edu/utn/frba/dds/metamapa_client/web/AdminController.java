@@ -67,9 +67,9 @@ public class AdminController {
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String crearColeccionPost(@ModelAttribute("coleccion") ColeccionDTOInput coleccion, Model model, RedirectAttributes ra) {
     ColeccionDTOOutput coleccionDTOOutput = this.agregador.crearColeccion(coleccion);
-    ra.addFlashAttribute("success", "Colecciòn creada correctamente");
+    ra.addFlashAttribute("success", "Colección creada correctamente");
 
-    return "redirect:/admins/crear-coleccion";
+    return "redirect:/admin";
   }
 
   @GetMapping("/modificar-coleccion")
