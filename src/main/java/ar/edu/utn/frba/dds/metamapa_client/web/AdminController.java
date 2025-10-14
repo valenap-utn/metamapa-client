@@ -3,14 +3,7 @@ package ar.edu.utn.frba.dds.metamapa_client.web;
 import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 //import ar.edu.utn.frba.dds.metamapa_client.core.BackendAPI;
 import ar.edu.utn.frba.dds.metamapa_client.core.dtos.StatsResp;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.ColeccionDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.RevisionDTO;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.*;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -39,12 +33,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminController {
   private final ClientSeader agregador;
   private final DefaultErrorAttributes defaultErrorAttributes;
+  private final WebClient georefWebClient;
 //  private final BackendAPI api;
 
-  public AdminController(ClientSeader agregador, /*, BackendAPI api */DefaultErrorAttributes defaultErrorAttributes) {
+  public AdminController(ClientSeader agregador, /*, BackendAPI api */DefaultErrorAttributes defaultErrorAttributes, WebClient georefWebClient) {
     this.agregador = agregador;
 //    this.api = api;
     this.defaultErrorAttributes = defaultErrorAttributes;
+    this.georefWebClient = georefWebClient;
   }
 
 
@@ -60,6 +56,16 @@ public class AdminController {
   public String crearColeccion(Model model) {
     model.addAttribute("coleccion", new ColeccionDTOInput());
     model.addAttribute("titulo", "Crear Coleccion");
+
+    //Agregado provincia resp
+    ProvinciaResp provinciasResponse = georefWebClient.get()
+            .uri("/provincias?campos=id,nombre")
+            .retrieve()
+            .bodyToMono(ProvinciaResp.class)
+            .block();
+
+    model.addAttribute("provincias", provinciasResponse.getProvincias());
+
     return "admins/crear-coleccion";
   }
 

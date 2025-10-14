@@ -2,11 +2,7 @@ package ar.edu.utn.frba.dds.metamapa_client.web;
 
 import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 import ar.edu.utn.frba.dds.metamapa_client.clients.utils.JwtUtil;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.FiltroDTO;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOInput;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.HechoDTOOutput;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEdicionDTO;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.*;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.usuarios.Rol;
 import ar.edu.utn.frba.dds.metamapa_client.services.ConexionServicioUser;
 import ar.edu.utn.frba.dds.metamapa_client.services.IConexionServicioUser;
@@ -41,12 +37,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/hechos")
 public class HechosController {
   private final ClientSeader agregador;
-
   private final IConexionServicioUser servicioUsuarios;
+  private final WebClient georefWebClient;
 
-  public HechosController(ClientSeader agregador, IConexionServicioUser servicioUsuarios) {
+  public HechosController(ClientSeader agregador, IConexionServicioUser servicioUsuarios, WebClient georefWebClient) {
     this.agregador = agregador;
     this.servicioUsuarios = servicioUsuarios;
+      this.georefWebClient = georefWebClient;
   }
 
   @GetMapping("/{idHecho}")
@@ -61,11 +58,21 @@ public class HechosController {
   @GetMapping("/nav-hechos")
   public String navHechos(Model model) {
     FiltroDTO filtroDTO = new FiltroDTO();
+
+    ProvinciaResp provinciasResponse = georefWebClient.get()
+            .uri("/provincias?campos=id,nombre")
+            .retrieve()
+            .bodyToMono(ProvinciaResp.class)
+            .block();
+
+    List<UbicacionDTO> provincias = provinciasResponse.getProvincias();
+
     List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO).stream()
         .filter(h-> "APROBAR".equalsIgnoreCase(h.getEstado()))
         .filter(h -> !h.isEliminado())
         .toList();
 
+    model.addAttribute("provincias", provincias);
     model.addAttribute("hechos", hechos);
     model.addAttribute("filtros", filtroDTO);
     model.addAttribute("titulo", "Listado de todos los hechos");
