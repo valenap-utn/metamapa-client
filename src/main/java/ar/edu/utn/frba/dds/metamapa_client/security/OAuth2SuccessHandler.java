@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.metamapa_client.security;
 
 import ar.edu.utn.frba.dds.metamapa_client.config.RoleMappingProperties;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.AuthResponseDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,6 +59,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     boolean byDomain = roleProperties.getAdminDomains().stream()
         .map(String::toLowerCase).anyMatch(dom -> lower.endsWith("@" + dom));
     String role = (byEmail || byDomain) ? "ADMINISTRADOR" : "CONTRIBUYENTE";
+    /*
+    AuthResponseDTO respDTO = this.conexionUserService.verSiCuentaEstaCreada(provider, username);
+    if(respDTO == null){
+      respDTO = this.conexionUserService.crearCuentaAuth(provider, username, email, role);
+    }
+    //Se guardan los roles, el email y eso
+    */
+
 
     //Authorities finales
     List<GrantedAuthority> newAuths = new ArrayList<>();
@@ -77,6 +86,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     request.getSession(true); //si no existe la sesión => la crea
     contextRepo.saveContext(securityContext, request, response);
+
 
     HttpSession newSession = request.getSession();
     newSession.setAttribute("AUTH_PROVIDER", provider);

@@ -78,6 +78,13 @@ public class AdminController {
     return "admins/modificar-coleccion";
   }
 
+  @PostMapping("/modificar-coleccion")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  public String modificarColeccionPost(Model model) {
+
+    return "admins/modificar-coleccion";
+  }
+
   @GetMapping("/importar-csv")
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   public String importarCsv() {
