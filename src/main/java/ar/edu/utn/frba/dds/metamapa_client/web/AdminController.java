@@ -1,10 +1,7 @@
 package ar.edu.utn.frba.dds.metamapa_client.web;
 
 import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
-//import ar.edu.utn.frba.dds.metamapa_client.core.BackendAPI;
-import ar.edu.utn.frba.dds.metamapa_client.core.dtos.StatsResp;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.*;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
