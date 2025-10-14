@@ -5,6 +5,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import ar.edu.utn.frba.dds.metamapa_client.provider.AuthProviderCreado;
 import ar.edu.utn.frba.dds.metamapa_client.security.CustomOAuth2UserService;
+import ar.edu.utn.frba.dds.metamapa_client.security.GoogleSelectAccountResolver;
 import ar.edu.utn.frba.dds.metamapa_client.security.OAuth2SuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
@@ -27,7 +29,12 @@ public class SecurityConfig {
   }
 
   @Bean
-  SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService, OAuth2SuccessHandler oAuth2SuccessHandler) throws Exception {
+  public OAuth2AuthorizationRequestResolver googleSelectAccountResolver(ClientRegistrationRepository clientRegistrationRepository) {
+    return new GoogleSelectAccountResolver(clientRegistrationRepository);
+  }
+
+  @Bean
+  SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService, OAuth2SuccessHandler oAuth2SuccessHandler, OAuth2AuthorizationRequestResolver googleSelectAccountResolver) throws Exception {
     http
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/hechos/mis-hechos").authenticated()
@@ -45,6 +52,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         ).oauth2Login(oauth -> oauth
             .loginPage("/iniciar-sesion")
+            .authorizationEndpoint(ae -> ae
+                .authorizationRequestResolver(googleSelectAccountResolver))
             .userInfoEndpoint(ui -> ui.userService(customOAuth2UserService))
             .successHandler(oAuth2SuccessHandler)
             .failureHandler((request, response, exception) -> {
