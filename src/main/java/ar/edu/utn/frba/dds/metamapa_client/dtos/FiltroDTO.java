@@ -22,4 +22,9 @@ public class FiltroDTO {
   Float longitud;
   Boolean curada = false;
   Boolean entiemporeal = false;
+
+  private String provincia;
+  private String municipio;
+  private String departamento;
+
 }

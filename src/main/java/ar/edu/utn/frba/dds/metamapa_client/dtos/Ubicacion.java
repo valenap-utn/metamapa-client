@@ -8,9 +8,13 @@ import lombok.NoArgsConstructor;
 public class Ubicacion {
   private Float latitud;
   private Float longitud;
+  private String provincia;
+  private String municipio;
+  private String departamento;
 
   public Ubicacion(float latitud, float longitud) {
     this.latitud = latitud;
     this.longitud = longitud;
+
   }
 }
