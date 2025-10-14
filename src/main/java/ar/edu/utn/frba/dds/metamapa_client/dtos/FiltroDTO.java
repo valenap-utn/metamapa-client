@@ -1,10 +1,6 @@
 package ar.edu.utn.frba.dds.metamapa_client.dtos;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
@@ -23,6 +19,7 @@ public class FiltroDTO {
   Boolean curada = false;
   Boolean entiemporeal = false;
 
+  // para georef API
   private String provincia;
   private String municipio;
   private String departamento;
