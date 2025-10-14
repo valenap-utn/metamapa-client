@@ -17,4 +17,12 @@ public class WebClientConfig {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
+
+    @Bean
+    public WebClient georefWebClient() {
+        return WebClient.builder()
+                .baseUrl("https://apis.datos.gob.ar/georef/api")
+                .build();
+    }
+
 }
