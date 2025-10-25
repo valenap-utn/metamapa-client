@@ -67,10 +67,7 @@ public class HechosController {
 
     List<UbicacionDTO> provincias = provinciasResponse.getProvincias();
 
-    List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO).stream()
-        .filter(h-> "APROBAR".equalsIgnoreCase(h.getEstado()))
-        .filter(h -> !h.isEliminado())
-        .toList();
+    List<HechoDTOOutput> hechos = this.agregador.findAllHechos(filtroDTO);
 
     model.addAttribute("provincias", provincias);
     model.addAttribute("hechos", hechos);
@@ -231,11 +228,11 @@ public class HechosController {
   @PostMapping("/{idHecho}/solicitud-eliminacion")
   @PreAuthorize("hasRole('CONTRIBUYENTE')")
   public ResponseEntity<?> crearSolicitudEliminacion(@PathVariable Long idHecho, @RequestParam String justificacion, HttpSession session){
-    String accessToken = session.getAttribute("accessToken").toString();
-    if(accessToken == null) return ResponseEntity.status(401).body("No autenticado");
-
-    Long userId = JwtUtil.getId(accessToken);
-    if(userId == null) return ResponseEntity.status(401).body("Token inválido");
+    String accessToken = (String) session.getAttribute("accessToken");
+    Long userId = null;
+    if (accessToken != null) {
+      userId = JwtUtil.getId(accessToken);
+    }
 
     if(justificacion == null || justificacion.trim().length() < 500){
       return ResponseEntity.badRequest().body("La justificación debe tener al menos 500 caracteres");

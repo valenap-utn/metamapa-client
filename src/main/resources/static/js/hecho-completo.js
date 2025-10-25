@@ -232,11 +232,6 @@ function initMap(h) {
     // renderMedia(h);
     initMap(h);
 
-    // Acciones demo
-    const btnReportar = qs('#btnReportar');
-    if (btnReportar) btnReportar.addEventListener('click', () => alert('Gracias por tu reporte. Nuestro equipo lo revisará.'));
-    const btnEliminar = qs('#btnEliminar');
-    if (btnEliminar) btnEliminar.addEventListener('click', () => alert('Solicitud enviada. Un moderador la evaluará.'));
 })();
 
 // Solicitud de eliminacion
@@ -250,7 +245,7 @@ function initMap(h) {
     if (!txt || !counter || !btnEnviar || !modalEl) return;   // antes de empezar, si falta cualquiera de esos elementos, termina con la ejecucion.
 
     const hechoDiv = document.getElementById('hecho');
-    const hechoId = Number(hechoDiv?.dataset.id) || Number(new URLSearchParams(location.search).get('id'));
+    const hechoId = document.getElementById('hechoId').textContent;
 
     // Contador + habilitar/deshabilitar botón
     txt.addEventListener('input', () => {
