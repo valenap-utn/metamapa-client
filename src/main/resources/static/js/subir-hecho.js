@@ -68,21 +68,21 @@ btnPrev2?.addEventListener('click', () => gotoStep(1));
 const desc = document.getElementById('descripcion');
 const counter = document.getElementById('descCounter');
 
-function applyDescRules(){
-    const auth   = (window.MM && MM.getAuth) ? MM.getAuth() : { loggedIn:false, role:'VISUALIZADOR' };
-    const isAnon = !auth.loggedIn || auth.role === 'VISUALIZADOR';
-
-    // Siempre requerida; el mínimo depende del rol
-    desc.required = true;
-    if (isAnon) {
-        desc.setAttribute('minlength', '500');
-    } else {
-        desc.removeAttribute('minlength'); // logueado: sin mínimo
-    }
-    // Refresca el contador con el formato correcto
-    const len = (desc.value || '').trim().length;
-    counter.textContent = isAnon ? `${len} / 500` : `${len}`;
-}
+// function applyDescRules(){
+//     const auth   = (window.MM && MM.getAuth) ? MM.getAuth() : { loggedIn:false, role:'VISUALIZADOR' };
+//     const isAnon = !auth.loggedIn || auth.role === 'VISUALIZADOR';
+//
+//     // Siempre requerida; el mínimo depende del rol
+//     desc.required = true;
+//     if (isAnon) {
+//         desc.setAttribute('minlength', '500');
+//     } else {
+//         desc.removeAttribute('minlength'); // logueado: sin mínimo
+//     }
+//     // Refresca el contador con el formato correcto
+//     const len = (desc.value || '').trim().length;
+//     counter.textContent = isAnon ? `${len} / 500` : `${len}`;
+// }
 
 // Contador dinámico (respeta si hay mínimo o no)
 desc?.addEventListener('input', () => {

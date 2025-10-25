@@ -116,7 +116,7 @@ public class HechosController {
         hechoDtoInput.setFechaCarga(LocalDateTime.now());
       }
       this.agregador.crearHecho(hechoDtoInput, "http://localhost:4000");
-      redirectAttributes.addFlashAttribute("success", "Tu hecho se creó exitosamente, pronto un administrador lo estará revisado !");
+      redirectAttributes.addFlashAttribute("success", "Tu hecho se creó exitosamente, pronto un administrador lo estará revisando !");
       return "redirect:/main-gral";
     }catch(Exception e){
       log.error("Error al crear el hecho", e);

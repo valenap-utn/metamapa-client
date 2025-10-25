@@ -121,7 +121,7 @@
                         <div class="mm-field" style="grid-column: 1 / -1;">
                             <label for="descripcion" class="mm-label">Descripción</label>
                             <textarea id="descripcion" name="descripcion" class="mm-input mm-input--textarea"
-                                      minlength="500" required data-min-guest="500" data-min-auth="0"
+
                                       placeholder="Contá brevemente qué ocurrió…" th:field="*{descripcion}" th:classappend="${#fields.hasErrors('descripcion')} ? ' is-invalid' : ''"></textarea>
 <!--                            <div id="descCounter" class="form-text">0 / 500</div>-->
                             <div class="d-flex justify-content-between mt-1">

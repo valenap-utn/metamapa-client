@@ -147,7 +147,7 @@ public class AdminController {
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   public ResponseEntity<Void> aprobarHecho(@PathVariable("id") Long id){
     this.agregador.aprobarHecho(id);
-    return ResponseEntity.noContent().build(); //204 en caso de exito !
+    return ResponseEntity.ok().build(); // 200 en caso de exito !
   }
 
   @PostMapping("/gest-nuevosHechos/{id}/rechazar")
