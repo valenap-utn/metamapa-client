@@ -27,6 +27,10 @@ public interface IServicioAgregador {
 
   ColeccionDTOOutput crearColeccion(ColeccionDTOInput coleccion);
 
+  ColeccionDTOOutput revisarColeccion(UUID idColeccion);
+
+  ColeccionDTOOutput actualizarColeccion(ColeccionDTOInput coleccion, UUID idColeccion);
+
   HechoDTOOutput getHecho(Long idHecho);
 
   List<ColeccionDTOOutput> findColecciones();

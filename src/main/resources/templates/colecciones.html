@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{layout/layout :: layout('Colecciones', ~{::link}, ~{::section})}">
 <head>
     <link rel="stylesheet" th:href="@{/css/styles-colecciones.css}">
@@ -55,7 +55,14 @@
 
                     <div class="mm-card-actions d-flex justify-content-between">
                         <a class="mm-btn mm-btn-primary" th:href="@{/colecciones/{id}/nav-hechos(id=${coleccion.getId()})}">Ver colección</a>
-                        <a class="mm-btn mm-btn-ghost" href="#" th:attr="onclick=|accionCompartir( '${coleccion.titulo}', '${coleccion.getId()}' )|" >Compartir</a>
+                        <div class="d-flex gap-2">
+                            <a class="mm-btn mm-btn-ghost" sec:authorize="hasRole('ADMINISTRADOR')"
+                               th:href="@{/admin/modificar-coleccion/{id}/editar(id=${coleccion.id})}">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
+
+                            <a class="mm-btn mm-btn-ghost" href="#" th:attr="onclick=|accionCompartir( '${coleccion.titulo}', '${coleccion.getId()}' )|" >Compartir</a>
+                        </div>
                     </div>
                 </article>
             </section>

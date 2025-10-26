@@ -11,8 +11,14 @@ import ar.edu.utn.frba.dds.metamapa_client.dtos.SolicitudEliminacionDTO;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriBuilder;
 
 @Component
@@ -95,6 +101,39 @@ public class ServicioAgregador implements IServicioAgregador {
     return this.agregadorWebClient.post().uri(uriBuilder -> uriBuilder.path("/api/colecciones").build())
             .bodyValue(coleccion)
             .retrieve().bodyToMono(ColeccionDTOOutput.class).block();
+  }
+
+  public ColeccionDTOOutput revisarColeccion(UUID idColeccion){
+    try{
+      return agregadorWebClient
+          .get()
+          .uri("colecciones/{id}",idColeccion)
+          .retrieve()
+          .bodyToMono(ColeccionDTOOutput.class)
+          .block();
+    }catch(WebClientResponseException e){
+      if(e.getStatusCode() == HttpStatus.NOT_FOUND){
+        return null;
+      }
+      throw e;
+    }
+  };
+
+  public ColeccionDTOOutput actualizarColeccion(ColeccionDTOInput coleccion, UUID idColeccion){
+    try {
+      return agregadorWebClient
+          .put()
+          .uri("colecciones/{id}",idColeccion)
+          .bodyValue(coleccion)
+          .retrieve()
+          .bodyToMono(ColeccionDTOOutput.class)
+          .block();
+    }catch(WebClientResponseException e){
+      if(e.getStatusCode() == HttpStatus.NOT_FOUND){
+        return null;
+      }
+      throw e;
+    }
   }
 
   @Override

@@ -45,6 +45,18 @@
                                       class="mm-input mm-input--textarea" placeholder="Dejá una breve descripción..." required></textarea>
                         </div>
 
+                        <!-- Algoritmo de consenso -->
+                        <div class="mm-field mm-col-span-all">
+                            <label for="algoritmo" class="mm-label">Algoritmo de consenso</label>
+                            <select id="algoritmo" class="mm-input" th:field="*{algoritmo}">
+                                <option value="" disabled>Seleccioná un algoritmo…</option>
+                                <option value="MULTIPLES_MENCIONES">Múltiples menciones</option>
+                                <option value="MAYORIA_SIMPLE">Mayoría simple</option>
+                                <option value="ABSOLUTA">Absoluta</option>
+                                <option value="SIN_ALGORITMO_CONSENSO">Ninguno</option>
+                            </select>
+                        </div>
+
                         <!-- Tipos de Fuente y URLs -->
                         <div class="mm-criteria mm-col-span-all" id="fuentesWrap" >
                             <div class="mm-criteria__grid fuenteInput">

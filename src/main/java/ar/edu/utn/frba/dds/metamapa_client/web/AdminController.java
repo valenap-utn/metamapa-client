@@ -4,9 +4,9 @@ import ar.edu.utn.frba.dds.metamapa_client.clients.ClientSeader;
 import ar.edu.utn.frba.dds.metamapa_client.dtos.*;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -75,18 +74,67 @@ public class AdminController {
     return "redirect:/admin";
   }
 
-  @GetMapping("/modificar-coleccion")
+  @GetMapping("/modificar-coleccion/{id}/editar")
   @PreAuthorize("hasRole('ADMINISTRADOR')")
-  public String modificarColeccion() {
+  public String modificarColeccion(@PathVariable UUID id, Model model, RedirectAttributes ra) {
+    //Traemos la Coleccion
+    ColeccionDTOOutput out = this.agregador.revisarColeccion(id);
+    if(out == null){
+      ra.addFlashAttribute("error", "La colección no existe.");
+      return "redirect:/colecciones";
+    }
+
+    //Mapeamos el Output
+    ColeccionDTOInput in = new ColeccionDTOInput();
+    in.setTitulo(out.getTitulo());
+    in.setDescripcion(out.getDescripcion());
+    in.setFuentes(out.getFuentes() != null ? out.getFuentes() : List.of());
+    in.setAlgoritmo(out.getAlgoritmoDeConsenso());
+    in.setCriterios(out.getCriterios() != null ? out.getCriterios() : List.of());
+
+    model.addAttribute("coleccionId", out.getId());
+    model.addAttribute("coleccion", in);
+    model.addAttribute("titulo", "Modificar Coleccion");
+
     return "admins/modificar-coleccion";
   }
 
-  @PostMapping("/modificar-coleccion")
+  @PostMapping("/modificar-coleccion/{id}/editar")
   @PreAuthorize("hasRole('ADMINISTRADOR')")
-  public String modificarColeccionPost(Model model) {
+  public String modificarColeccionPost(@PathVariable UUID id, @ModelAttribute("coleccion") ColeccionDTOInput in, Model model, RedirectAttributes ra) {
 
-    return "admins/modificar-coleccion";
+    try{
+      ColeccionDTOOutput actualizado = this.agregador.modificarColeccion(in, id);
+      if (actualizado == null) {
+        model.addAttribute("error", "No se pudo actulizar la colección.");
+        model.addAttribute("coleccionId", id);
+        model.addAttribute("titulo", "Modificar Coleccion");
+        return "redirect:/colecciones";
+      }
+      ra.addFlashAttribute("success","Colección actulizada correctamente.");
+      return "redirect:/colecciones";
+    }catch(WebClientResponseException e){
+      // Muestra el cuerpo de error del backend
+      String body = e.getResponseBodyAsString();
+      model.addAttribute("error", "Error del backend: " + e.getRawStatusCode() + " " + body);
+      model.addAttribute("coleccionId", id);
+      model.addAttribute("titulo", "Modificar Colección");
+      return "redirect:/colecciones";
+    }catch(Exception e){
+      model.addAttribute("error", "Error inesperado: " + e.getMessage());
+      model.addAttribute("coleccionId", id);
+      model.addAttribute("titulo", "Editar Colección");
+      return "redirect:/colecciones";
+    }
   }
+
+    @GetMapping("/colecciones")
+    public String listarColecciones(Model model) {
+      var items = agregador.findColecciones();        // <- trae las colecciones del ClientSeader
+      model.addAttribute("colecciones", items);       // <- nombre que usa tu template
+      model.addAttribute("titulo", "Colecciones");
+      return "colecciones";                           // <- si tu archivo es templates/colecciones.html
+    }
 
   @GetMapping("/importar-csv")
   @PreAuthorize("hasRole('ADMINISTRADOR')")
