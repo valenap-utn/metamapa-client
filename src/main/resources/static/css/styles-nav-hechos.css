@@ -143,7 +143,7 @@ body {
 /* === Collapse MetaMapa: details/summary estilado === */
 .mm-adv {
     border: 1px solid var(--muted);
-    border-radius: 16px;
+    border-radius: 25px;
     background: #fff;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
@@ -161,6 +161,8 @@ body {
     color: var(--brand-800);
     background: #EAF3FA; /* pill suave */
     transition: background-color .2s ease;
+    border-radius: 25px;
+    border-bottom: 1px solid var(--accent);
 }
 
 .mm-adv summary::-webkit-details-marker {
@@ -205,7 +207,7 @@ body {
 .mm-adv__body {
     padding: 14px;
     background: #fff;
-    border-top: 1px solid var(--muted);
+    /*border-top: 1px solid var(--muted);*/
 }
 
 /* Grid interno de filtros avanzados */
@@ -538,4 +540,16 @@ span.chip__label{
         width: 100%;
         justify-content: center;
     }
+}
+
+.form-check-input[type=checkbox] {
+    border-radius: 25px;
+    /*border-color: var(--brand-500);*/
+}
+
+.form-check-input:checked[type=checkbox] {
+    border-radius: 25px;
+    border-color: var(--brand-500);
+    background-color: var(--brand-500);
+    box-shadow: 0 1px 2px rgba(59,79,97,.12);
 }
