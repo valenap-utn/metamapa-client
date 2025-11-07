@@ -88,3 +88,9 @@
         height: 260px;
     }
 }
+
+.back-container {
+    width: 100%;
+    text-align: center;
+    margin-top: 65px;
+}

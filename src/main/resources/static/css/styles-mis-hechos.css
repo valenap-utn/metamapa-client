@@ -144,3 +144,25 @@
 p{
     margin: 10px;
 }
+
+/* Botón back */
+.btn-back {
+    font-size: medium;
+    color: #F2F7FA;
+    background-color: #86a8c2;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: #3B4F61;
+    color: #F2F7FA;
+}
+.back-container {
+    width: 100%;
+    text-align: center;
+    margin-top: 65px;
+}

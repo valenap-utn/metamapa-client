@@ -85,8 +85,12 @@
                 <p class="m-0"><a class="blue-link" th:href="@{|/hechos/${h.id}|}">Ver detalle</a></p>
             </div>
         </li>
-
     </ul>
+
+    <div class="back-container">
+        <a th:href="@{/admin}"><button class="btn btn-back btn-lg mb-3" aria-label="Volver a la página anterior">Volver atrás</button></a>
+    </div>
+
 </section>
 
 <script type="module" th:src="@{/js/admins/gest-solEliminacion.js}"></script>
