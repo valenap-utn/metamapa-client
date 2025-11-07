@@ -20,10 +20,10 @@
                 Pendientes <span class="mm-seg__badge" id="count-pend" th:text="${countPend}">0</span>
             </button>
             <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='APROBAR' ? 'is-active' : ''" name="estado" value="APROBAR" th:attr="aria-selected=${estado}=='APROBAR'">
-                Aprobados <span class="mm-seg__badge" id="count-apr" th:text="${countAcep}">0</span>
+                Aprobados <span class="mm-seg__badge" id="count-apr" th:text="${countApro}">0</span>
             </button>
             <button type="submit" class="mm-seg__btn" th:classappend="${estado}=='RECHAZAR' ? 'is-active' : ''"  name="estado" value="RECHAZAR" th:attr="aria-selected=${estado}=='RECHAZAR'">
-                Rechazados <span class="mm-seg__badge" id="count-cancel" th:text="${countCancel}">0</span>
+                Rechazados <span class="mm-seg__badge" id="count-cancel" th:text="${countRech}">0</span>
             </button>
         </div>
 
