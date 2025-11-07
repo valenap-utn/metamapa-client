@@ -72,8 +72,10 @@ setx GITHUB_CLIENT_SECRET "tu_client_secret"
 
 ---
 
-### 🔑 Cómo generar credenciales OAuth2
-
+ ### 🔑 Cómo generar credenciales OAuth2
+ 
+<details><summary>Para Google</summary>
+   
 #### 🟦 Google
 1. Ingresá a [Google Cloud Console](https://console.cloud.google.com/).
 2. Creá un nuevo proyecto o usá uno existente.
@@ -99,8 +101,10 @@ setx GOOGLE_CLIENT_ID "tu_client_id"
 setx GOOGLE_CLIENT_SECRET "tu_client_secret"
 ```
 
----
+</details>
 
+<details><summary>Para Github</summary>
+   
 #### 🐙 GitHub
 
 1. Ingresá a [GitHub Developer Settings → OAuth Apps](https://github.com/settings/developers).
@@ -130,7 +134,8 @@ setx GITHUB_CLIENT_ID "tu_client_id"
 setx GITHUB_CLIENT_SECRET "tu_client_secret"
 ```
 
----
+</details>
+
 
 > ⚠️ **Importante:** nunca subas tus credenciales reales a GitHub.
 > Guardalas solo en tu entorno local (por ejemplo, en un archivo `.env` o en tu configuración de sistema) y asegurate de que estén incluidas en el `.gitignore`.
