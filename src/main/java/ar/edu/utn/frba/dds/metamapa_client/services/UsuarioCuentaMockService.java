@@ -39,71 +39,98 @@ public class UsuarioCuentaMockService implements IUsuarioCuentaService {
   @Override
   public UsuarioDTO obtenerUsuarioActual(HttpSession session, Authentication authentication) {
 
-    // 1) Si guardaste USER_ID en sesión (después de login) => usalo
-    Object idAttr = session.getAttribute("USER_ID");
-    if (idAttr instanceof Long) {
-      UsuarioDTO u = clientSeader.obtenerUsuarioPorId((Long) idAttr);
-      if (u != null) return u;
-    } else if (idAttr instanceof Integer) {
-      UsuarioDTO u = clientSeader.obtenerUsuarioPorId(((Integer) idAttr).longValue());
-      if (u != null) return u;
-    }
-
-    // 2) accessToken propio (login con formulario)
-    Object tokenObj = session.getAttribute("accessToken");
-    if (tokenObj instanceof String accessToken && !accessToken.isBlank()) {
-      try {
-        Long userId = JwtUtil.getId(accessToken);
-        if (userId != null) {
-          UsuarioDTO u = clientSeader.obtenerUsuarioPorId(userId);
-          if (u != null) return u;
-        }
-        String email = JwtUtil.validarToken(accessToken);
-        if (email != null && !email.isBlank()) {
-          UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(email);
-          if (u != null) return u;
-        }
-      } catch (Exception ignored) {}
-    }
-
-    // 3) Datos de sesión puestos por OAuth2SuccessHandler
-    String email = (String) session.getAttribute("AUTH_EMAIL");
-    String username = (String) session.getAttribute("AUTH_USERNAME");
-    String role = (String) session.getAttribute("AUTH_ROLE");
-    if (email != null && !email.isBlank()) {
-      UsuarioDTO existente = clientSeader.obtenerUsuarioPorEmail(email);
-      if (existente != null) return existente;
-
-      UsuarioDTO dto = new UsuarioDTO();
-      dto.setEmail(email);
-      dto.setNombre(username);
-      dto.setRol(role != null ? role : extraerRol(authentication));
-      return dto;
-    }
-
-    // 4) Fallback: Authentication directo
-    if (authentication != null) {
-      Object principal = authentication.getPrincipal();
-
-      if (principal instanceof OAuth2User oAuth2User) {
-        String mail = (String) oAuth2User.getAttributes().get("email");
-        if (mail == null || mail.isBlank()) {
-          Object login = oAuth2User.getAttributes().get("login");
-          mail = (login != null) ? login.toString() : authentication.getName();
-        }
-        if (mail != null && !mail.isBlank()) {
-          UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(mail);
-          if (u != null) return u;
-        }
-      } else {
-        String usernameAuth = authentication.getName();
-        if (usernameAuth != null && !usernameAuth.isBlank()) {
-          UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(usernameAuth);
-          if (u != null) return u;
+    // Si ya tenemos USER_ID en sesión
+    if (session != null) {
+      Object idAttr = session.getAttribute("USER_ID");
+      if (idAttr instanceof Number num) {
+        Long id = num.longValue();
+        UsuarioDTO u = clientSeader.obtenerUsuarioPorId(id);
+        if (u != null) {
+          return u;
         }
       }
     }
 
+    // Si tenemos AUTH_EMAIL (OAuth2SuccessHandler)
+    if (session != null) {
+      String authEmail = (String) session.getAttribute("AUTH_EMAIL");
+      if (authEmail != null && !authEmail.isBlank()) {
+        UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(authEmail);
+        if (u != null) {
+          // cacheamos el id para futuros usos
+          if (u.getId() != null) {
+            session.setAttribute("USER_ID", u.getId());
+          }
+          return u;
+        }
+      }
+    }
+
+    // Si seguimos usando accessToken propio para login clásico
+    if (session != null) {
+      String accessToken = (String) session.getAttribute("accessToken");
+      if (accessToken != null && !accessToken.isBlank()) {
+        try {
+          Long id = JwtUtil.getId(accessToken);
+          if (id != null) {
+            UsuarioDTO u = clientSeader.obtenerUsuarioPorId(id);
+            if (u != null) {
+              session.setAttribute("USER_ID", u.getId());
+              return u;
+            }
+          }
+          String email = JwtUtil.validarToken(accessToken);
+          if (email != null && !email.isBlank()) {
+            UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(email);
+            if (u != null) {
+              if (u.getId() != null) {
+                session.setAttribute("USER_ID", u.getId());
+              }
+              return u;
+            }
+          }
+        } catch (Exception ignored) {
+          // si el token no es válido, seguimos probando otros caminos
+        }
+      }
+    }
+
+    // 4) Fallback con Authentication (sirve para login con formulario sin tokens)
+    if (authentication != null) {
+      Object principal = authentication.getPrincipal();
+
+      // 4.a) Si es OAuth2User y por algún motivo no usamos AUTH_EMAIL
+      if (principal instanceof OAuth2User oauth2User) {
+        String email = (String) oauth2User.getAttributes().get("email");
+        if (email == null || email.isBlank()) {
+          Object login = oauth2User.getAttributes().get("login");
+          email = (login != null) ? login.toString() : authentication.getName();
+        }
+        if (email != null && !email.isBlank()) {
+          UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(email);
+          if (u != null) {
+            if (u.getId() != null && session != null) {
+              session.setAttribute("USER_ID", u.getId());
+            }
+            return u;
+          }
+        }
+      }
+
+      // 4.b) Login normal: username suele ser el email
+      String username = authentication.getName();
+      if (username != null && !username.isBlank()) {
+        UsuarioDTO u = clientSeader.obtenerUsuarioPorEmail(username);
+        if (u != null) {
+          if (u.getId() != null && session != null) {
+            session.setAttribute("USER_ID", u.getId());
+          }
+          return u;
+        }
+      }
+    }
+
+    // Si no pudimos determinar el usuario
     return null;
   }
 

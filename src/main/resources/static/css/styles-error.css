@@ -47,3 +47,7 @@ body {
     background-color: #3B4F61;
     color: #F2F7FA;
 }
+
+.mt-4{
+    margin-top: 250px !important;
+}

@@ -188,31 +188,37 @@ public class HechosController {
  */
   @GetMapping("/{idHecho}/editar")
   @PreAuthorize("hasRole('CONTRIBUYENTE')")
-  public String editar(@PathVariable Long idHecho, HttpSession session, RedirectAttributes ra, Model model) {
-    String accessToken = session.getAttribute("accessToken").toString();
-
-    Long userId = JwtUtil.getId(accessToken);
-
-    if (userId == null) {
-      return "redirect:/iniciar-sesion";
+  public String editar(@PathVariable Long idHecho, HttpSession session, RedirectAttributes ra, Model model, Authentication authentication) {
+    // Usuario actual (por Jwt - OAuth2 - el que sea)
+    UsuarioDTO usuario = usuarioCuentaService.obtenerUsuarioActual(session, authentication);
+    if (usuario == null || usuario.getId() == null) {
+      ra.addFlashAttribute("error", "No se pudo identificar al usuario actual");
+      return "redirect:/main-gral";
     }
 
+    Long userId = usuario.getId();
+
+    // Obtenemos el hecho
     HechoDTOOutput hecho = agregador.revisarHecho(idHecho, "http://localhost:3000");
     if (hecho == null) {
       ra.addFlashAttribute("error", "El hecho no existe.");
       return "redirect:/hechos/mis-hechos";
     }
+
+    // Validamos que el hecho sea del usuario actual
     if (!userId.equals(hecho.getIdUsuario())) {
       ra.addFlashAttribute("error", "No podés editar un hecho que no es tuyo.");
       return "redirect:/hechos/mis-hechos";
     }
 
+    //Validamos la ventana de 7 días de poder editar (desde la fecha de carga)
     boolean editable = hecho.getFechaCarga() != null && LocalDateTime.now().isBefore(hecho.getFechaCarga().plusDays(7));
     if (!editable) {
       ra.addFlashAttribute("error", "La edición está disponible solo durante los primeros 7 días");
       return "redirect:/hechos/mis-hechos";
     }
 
+    //Enviamos datos a la vista
     model.addAttribute("hecho", hecho);
     model.addAttribute("titulo", "Editar Hecho");
     return "hechos/editar";
@@ -220,10 +226,38 @@ public class HechosController {
 
   @PostMapping("/{idHecho}/editar")
   @PreAuthorize("hasRole('CONTRIBUYENTE')")
-  public String enviarEdicion(@PathVariable Long idHecho, @ModelAttribute("hecho") HechoDTOInput hechoDtoInput, HttpSession session, RedirectAttributes ra) {
-    String accessToken = session.getAttribute("accessToken").toString();
-    Long userId = JwtUtil.getId(accessToken);
+  public String enviarEdicion(@PathVariable Long idHecho, @ModelAttribute("hecho") HechoDTOInput hechoDtoInput, HttpSession session, RedirectAttributes ra, Authentication authentication) {
+    // Usuario actual
+    UsuarioDTO usuario = usuarioCuentaService.obtenerUsuarioActual(session, authentication);
+    if (usuario == null || usuario.getId() == null) {
+      ra.addFlashAttribute("error", "No se pudo identificar al usuario actual.");
+      return "redirect:/iniciar-sesion";
+    }
 
+    Long userId = usuario.getId();
+
+    // Verificamos que el hecho exista y sea del usuario
+    HechoDTOOutput hechoOriginal = agregador.revisarHecho(idHecho, "http://localhost:3000");
+    if (hechoOriginal == null) {
+      ra.addFlashAttribute("error", "El hecho que intentas editar no existe.");
+      return "redirect:/hechos/mis-hechos";
+    }
+
+    if (!userId.equals(hechoOriginal.getIdUsuario())) {
+      ra.addFlashAttribute("error", "No podés editar un hecho que no es tuyo.");
+      return "redirect:/hechos/mis-hechos";
+    }
+
+    // Validamos la ventana de 7 días
+    boolean editable = hechoOriginal.getFechaCarga() != null
+        && LocalDateTime.now().isBefore(hechoOriginal.getFechaCarga().plusDays(7));
+
+    if (!editable) {
+      ra.addFlashAttribute("error", "La edición está disponible solo durante los primeros 7 días desde la carga.");
+      return "redirect:/hechos/mis-hechos";
+    }
+
+    // Creamos la solicitud
     SolicitudEdicionDTO solicitud = new SolicitudEdicionDTO();
     solicitud.setIdHecho(idHecho);
     solicitud.setEstado("PENDIENTE");
