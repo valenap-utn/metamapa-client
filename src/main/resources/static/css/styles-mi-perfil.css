@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lexend:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import "styles-layout.css";
+
+.perfil-wrapper {
+    margin-top: 4rem;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    .perfil-wrapper {
+        margin-top: 2.5rem;
+    }
+}
+
+.perfil-card {
+    background-color: #ffffff;
+    border-radius: 18px;
+}
+
+.perfil-label {
+    color: #7c90a0;
+}
+
+.perfil-rol-badge {
+    background-color: var(--brand-500);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.2rem 0.9rem;
+    font-size: 0.85rem;
+    text-transform: lowercase;
+}
+
+.btn-pill {
+    border-radius: 999px;
+    padding: 0.45rem 1.5rem;
+    font-weight: 500;
+}
+
+.mm-meta {
+    list-style: none;
+    padding: 0;
+    margin: 2px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mm-chip {
+    display: inline-block;
+    padding: .28rem .6rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--brand-800);
+    font-size: .9rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.mm-chip.soft {
+    background: #E7EFF6;
+}
+
+.btn-sin-login {
+    font-size: medium;
+    color: #86a8c2;
+    border-color: #86a8c2;
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+}
+
+.btn-sin-login:hover {
+    color: #3B4F61;
+    border-color: #3B4F61;
+}
+
+.btn-danger {
+    border-radius: 999px;
+}

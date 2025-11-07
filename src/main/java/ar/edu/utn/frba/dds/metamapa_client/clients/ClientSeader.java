@@ -525,4 +525,12 @@ public class ClientSeader implements IFuenteDinamica, IFuenteEstatica, IServicio
     String nombreCompleto = (nombre + " " + apellido).trim();
     return nombreCompleto.isEmpty() ? "Usuario " + id : nombreCompleto;
   }
+
+  public UsuarioDTO obtenerUsuarioPorId(Long id) {
+    return this.usuariosById.get(id);
+  }
+
+  public UsuarioDTO obtenerUsuarioPorEmail(String email) {
+    return this.usuarioDTO.get(email);
+  }
 }

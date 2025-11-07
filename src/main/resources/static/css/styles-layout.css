@@ -192,3 +192,26 @@ body.scrolled .mm-header-2{
     color: #7c90a0;
 }
 
+@media (max-width: 576px) {
+    .mm-user-menu { padding: .75rem !important; }
+    .mm-header__logo { max-width: 150px !important; }
+}
+
+.btn-outline-primary {
+    color: rgba(53, 92, 127, 0.992);
+    border: none;
+    border-radius: 25px;
+}
+.btn-outline-primary:hover {
+    color: var(--bg);
+    border: none;
+    background-color: rgba(53, 92, 127, 0.992);
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+}
+.btn-outline-primary:active {
+    color: var(--bg);
+    border: none;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
+    background-color: rgba(53, 92, 127, 0.992) !important;
+}

@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.metamapa_client.security;
 
 import ar.edu.utn.frba.dds.metamapa_client.config.RoleMappingProperties;
-import ar.edu.utn.frba.dds.metamapa_client.dtos.AuthResponseDTO;
+import ar.edu.utn.frba.dds.metamapa_client.dtos.UsuarioDTO;
+import ar.edu.utn.frba.dds.metamapa_client.services.IUsuarioCuentaService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,9 +31,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
   private final RoleMappingProperties roleProperties;
   private final SecurityContextRepository contextRepo = new HttpSessionSecurityContextRepository();
+  private final IUsuarioCuentaService usuarioCuentaService;
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
     if(!(authentication instanceof OAuth2AuthenticationToken token)){
       response.sendRedirect("/iniciar-sesion?error=oauth_failed");
       return;
@@ -87,12 +89,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     request.getSession(true); //si no existe la sesión => la crea
     contextRepo.saveContext(securityContext, request, response);
 
-
     HttpSession newSession = request.getSession();
     newSession.setAttribute("AUTH_PROVIDER", provider);
     newSession.setAttribute("AUTH_EMAIL", email);
     newSession.setAttribute("AUTH_USERNAME", username);
     newSession.setAttribute("AUTH_ROLE", role);
+
+    // Crear o recuperar usuario real (mock o API)
+    UsuarioDTO usuario = usuarioCuentaService.ensureFromOAuth(email, username, provider, role);
+    if (usuario != null && usuario.getId() != null) {
+      newSession.setAttribute("USER_ID", usuario.getId());
+    }
 
     response.sendRedirect(role.equals("ADMINISTRADOR") ? "/admin" : "/main-gral");
   }

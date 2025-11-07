@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(titulo, extraLinks, contenido)">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(titulo, extraLinks, contenido)"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,6 +33,27 @@
                 <img th:src="@{/components/logo-mm.png}" alt="MetaMapa" class="mm-header__logo" style="max-width: 180px;">
             </a>
         </div>
+
+        <!-- Menú usuario (derecha) -->
+        <!-- Menú usuario (derecha) SIN dropdown -->
+        <div class="mm-user-menu position-absolute top-0 end-0 p-3">
+            <!-- Mostrar “Iniciar sesión” si NO está autenticado O si es VISUALIZADOR -->
+            <div sec:authorize="isAnonymous() or hasRole('VISUALIZADOR')">
+                <a class="btn btn-outline-primary" th:href="@{/iniciar-sesion}">
+<!--                    <i class="bi bi-box-arrow-in-right"></i> -->
+                    Iniciar sesión
+                </a>
+            </div>
+
+            <!-- Mostrar “Mi perfil” si está autenticado y NO es VISUALIZADOR -->
+            <div sec:authorize="isAuthenticated() and !hasRole('VISUALIZADOR')">
+                <a class="btn btn-outline-primary d-inline-flex align-items-center" th:href="@{/mi-perfil}">
+<!--                    <i class="bi bi-person-circle me-2"></i> -->
+                    Mi perfil
+                </a>
+            </div>
+        </div>
+
     </header>
 
     <!-- Contenido principal -->
