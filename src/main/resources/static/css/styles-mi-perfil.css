@@ -74,4 +74,5 @@
 
 .btn-danger {
     border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(59, 79, 97, 0.25);
 }
